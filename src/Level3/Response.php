@@ -17,7 +17,7 @@ class Response
     public function __construct(Hal $hal = null, $status = StatusCode::OK)
     {
         $this->setStatus($status);
-        $this->setHAL($hal);
+        if ($hal) $this->setHAL($hal);
     }
 
     public function setHAL(Hal $hal)
@@ -68,11 +68,6 @@ class Response
         $this->content = $content;
     }
 
-    private function setContent($content = null)
-    {
-        $this->content = $content;
-    }
-
     protected function update()
     {
         $content = null;
@@ -80,11 +75,11 @@ class Response
             case null:
             case self::AS_JSON:
                 $mime = 'application/hal+json';
-                if ($this->data) $content = $this->data->asJSON();
+                if ($this->hal) $content = $this->hal->asJSON();
                 break;
             case self::AS_XML:
                 $mime = 'application/hal+xml';
-                if ($this->data) $content = $this->data->asXML();
+                if ($this->hal) $content = $this->hal->asXML();
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf(

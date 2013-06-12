@@ -3,5 +3,5 @@ namespace Level3\Resources;
 
 interface DeleteInterface
 {
-    public function delete($id):
+    public function delete($id);
 }

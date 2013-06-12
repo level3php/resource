@@ -2,38 +2,33 @@
 namespace Level3;
 
 use Pimple;
-use Level3\Resources\DeleteInterface
-use Level3\Resources\GetInterface
-use Level3\Resources\PostInterface
-use Level3\Resources\PutInterface
+use Level3\Resources\DeleteInterface;
+use Level3\Resources\GetInterface;
+use Level3\Resources\PostInterface;
+use Level3\Resources\PutInterface;
 
 
 class ResourceHub extends Pimple {
     private $mapper;
-    private $baseURI;
+    private $baseURI = '/';
 
     public function setMapper(MapperInterface $mapper)
     {
         $this->mapper = $mapper;
     }
 
-    public function getMapper($uri)
+    public function getMapper()
     {
         return $this->mapper;
     }
 
-    public function getBaseURI($uri)
-    {
-        return $this->baseURI;
-    }
-
     public function setBaseURI($uri)
     {
+        if ( $uri[strlen($uri)-1] != '/' ) $uri .= '/';
         $this->baseURI = $uri;
-        if ( $this->baseURI[count($this->baseURI)-1] != '/' ) $this->baseURI .= '/';
     }
 
-    public function getBaseURI($uri)
+    public function getBaseURI()
     {
         return $this->baseURI;
     }
@@ -46,22 +41,22 @@ class ResourceHub extends Pimple {
     public function boot()
     {
         foreach($this->keys() as $key) {
-            $this->map($app, $key);
+            $this->map($key);
         }
     }
 
-    public function map($key)
+    private function map($key)
     {
-        $generalURI = $this->baseURI . $uri;
-        $particularURI = $this->baseURI . $uri . '/{id}';
+        $generalURI = $this->baseURI . $key;
+        $particularURI = $this->baseURI . $key . '/{id}';
 
         if ($this[$key] instanceOf GetInterface) {
             $this->mapper->mapList($generalURI, sprintf('%s:list', $key));
-            $this->mapper->mapGet($generalURI, sprintf('%s:get', $key);
+            $this->mapper->mapGet($particularURI, sprintf('%s:get', $key));
         }
 
         if ($this[$key] instanceOf PostInterface) {
-            $this->mapper->mapPost($generalURI, sprintf('%s:post', $key));
+            $this->mapper->mapPost($particularURI, sprintf('%s:post', $key));
         }
 
         if ($this[$key] instanceOf PutInterface) {
@@ -69,7 +64,7 @@ class ResourceHub extends Pimple {
         }
 
         if ($this[$key] instanceOf DeleteInterface) {
-            $this->mapper->mapDelete($generalURI, sprintf('%s:delete', $key));
+            $this->mapper->mapDelete($particularURI, sprintf('%s:delete', $key));
         }
     }
 }

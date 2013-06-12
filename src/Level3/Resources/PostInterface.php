@@ -1,7 +1,7 @@
 <?php
-namespace Level3;
+namespace Level3\Resources;
 
 interface PostInterface
 {
-    public function post($id, $data):
+    public function post($id, $data);
 }

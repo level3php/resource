@@ -8,7 +8,7 @@ class Silex implements MapperInterface
 {
     private $app;
 
-    public function __contruct(Application $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
     }

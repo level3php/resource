@@ -3,5 +3,5 @@ namespace Level3\Resources;
 
 interface PutInterface
 {
-    public function put($data):
+    public function put($data);
 }
