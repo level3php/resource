@@ -1,0 +1,26 @@
+{
+    "name": "yunait/level3",
+    "homepage": "http://github.com/yunait/level3",
+    "description": "A RESTful API builder based on 3-level model (URI, HTTP and Hypermedia)",
+    "type": "library",
+    "keywords": ["rest", "restfull", "hal", "hateoas"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Máximo Cuadros",
+            "email": "maximo@yunait.com",
+            "homepage": "http://yunait.com",
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "shrikeh/teapot": "dev-master",
+        "pimple/pimple": "v1.0.2",
+        "zircote/hal": "0.3.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "Level3": "src/"
+        }
+    }
+}
