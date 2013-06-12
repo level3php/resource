@@ -4,8 +4,8 @@ Level3 RESTful API builder [![Build Status](https://travis-ci.org/yunait/level3.
 A RESTful API builder based on 3-level model (URI, HTTP and Hypermedia) 
 
 Read about *3-level model of restful maturity* at:
-http://www.infoq.com/news/2010/03/RESTLevels
-http://www.crummy.com/writing/speaking/2008-QCon/act3.html
+* http://www.infoq.com/news/2010/03/RESTLevels
+* http://www.crummy.com/writing/speaking/2008-QCon/act3.html
 
 > Under heavy development
 
