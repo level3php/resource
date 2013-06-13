@@ -2,10 +2,11 @@
 namespace Level3;
 
 use Pimple;
-use Level3\Resources\DeleteInterface;
-use Level3\Resources\GetInterface;
-use Level3\Resources\PostInterface;
-use Level3\Resources\PutInterface;
+use Level3\ResourceDriver;
+use Level3\ResourceDriver\DeleteInterface;
+use Level3\ResourceDriver\GetInterface;
+use Level3\ResourceDriver\PostInterface;
+use Level3\ResourceDriver\PutInterface;
 
 
 class ResourceHub extends Pimple {
@@ -41,7 +42,17 @@ class ResourceHub extends Pimple {
     public function boot()
     {
         foreach($this->keys() as $key) {
+            $this->validate($key);
             $this->map($key);
+        }
+    }
+
+    private function validate($key)
+    {
+        if ( !is_object($this[$key]) || !$this[$key] instanceOf ResourceDriver ) {
+            throw new \UnexpectedValueException(
+                sprintf('The resource "%s" must return a ResourceDriver instance', $key)
+            );
         }
     }
 

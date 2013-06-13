@@ -11,7 +11,7 @@
 namespace Level3\Tests;
 use Level3\ResourceHub;
 use Level3\Mocks\Mapper;
-use Level3\Mocks\Resource;
+use Level3\Mocks\ResourceDriver;
 
 use Teapot\StatusCode;
 
@@ -24,7 +24,7 @@ class ResourceHubTest extends TestCase {
         $hub->setMapper($mapper);
 
         $hub['mock'] = $hub->share(function ($c) {
-            return new Resource();
+            return new ResourceDriver();
         });
 
         return $hub; 
@@ -65,5 +65,31 @@ class ResourceHubTest extends TestCase {
         $this->assertSame('/mock/{id}', $hub->getURI('mock', 'post'));
         $this->assertSame('/mock', $hub->getURI('mock', 'put'));
         $this->assertSame('/mock/{id}', $hub->getURI('mock', 'delete'));
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testBootWrongDriverNonObject()
+    {
+        $hub = $this->getHub();
+        $hub['nonObject'] = $hub->share(function ($c) {
+            return null;
+        });
+
+        $hub->boot();
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testBootWrongDriverNonResourceDriver()
+    {
+        $hub = $this->getHub();
+        $hub['nonResourceDriver'] = $hub->share(function ($c) {
+            return (object)1;
+        });
+
+        $hub->boot();
     }
 }

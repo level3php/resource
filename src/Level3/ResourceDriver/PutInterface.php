@@ -1,5 +1,5 @@
 <?php
-namespace Level3\Resources;
+namespace Level3\ResourceDriver;
 
 interface PutInterface
 {

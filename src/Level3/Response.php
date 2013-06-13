@@ -1,34 +1,35 @@
 <?php
 namespace Level3;
 use Teapot\StatusCode;
+use Hal\Resource;
 
 class Response
 {
     const AS_JSON = 10;
     const AS_XML = 20;
 
-    protected $hal;
+    protected $resource;
     protected $format;
     protected $status;
     protected $headers = array();
 
     protected $content;
 
-    public function __construct(Hal $hal = null, $status = StatusCode::OK)
+    public function __construct(Resource $resource = null, $status = StatusCode::OK)
     {
         $this->setStatus($status);
-        if ($hal) $this->setHAL($hal);
+        if ($resource) $this->setResource($resource);
     }
 
-    public function setHAL(Hal $hal)
+    public function setResource(Resource $resource)
     {
-        $this->hal = $hal;
+        $this->resource = $resource;
         return $this->update();
     }
 
-    public function getHAL()
+    public function getResource()
     {
-        return $this->hal;
+        return $this->resource;
     }
 
     public function setStatus($status)
@@ -68,6 +69,11 @@ class Response
         $this->content = $content;
     }
 
+    public function getContent($content = null)
+    {
+        return $this->content;
+    }
+
     protected function update()
     {
         $content = null;
@@ -75,11 +81,11 @@ class Response
             case null:
             case self::AS_JSON:
                 $mime = 'application/hal+json';
-                if ($this->hal) $content = $this->hal->asJSON();
+                if ($this->resource) $content = (string)$this->resource;
                 break;
             case self::AS_XML:
                 $mime = 'application/hal+xml';
-                if ($this->hal) $content = $this->hal->asXML();
+                if ($this->resource) $content = $this->resource->getXML()->asXML();
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf(

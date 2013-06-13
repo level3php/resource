@@ -1,8 +1,8 @@
 <?php
 namespace Level3;
+use Hal\Resource;
 
-
-abstract class Resource {
+abstract class ResourceDriver {
     private $uri;
     private $metadata = array();
 
@@ -26,7 +26,7 @@ abstract class Resource {
         return $this->uri;
     }
 
-    public function getMetadata()
+    public function create()
     {
         return $this->metadata;
     }

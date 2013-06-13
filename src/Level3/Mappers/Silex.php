@@ -1,5 +1,4 @@
 <?php
-
 namespace Level3\Mappers;
 use Silex\Application;
 use Level3\MapperInterface;
