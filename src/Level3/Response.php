@@ -47,7 +47,6 @@ class Response
         $this->headers[$header] = $value;
     }
 
-
     public function getHeaders()
     {
         return $this->headers;

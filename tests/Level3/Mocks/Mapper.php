@@ -34,6 +34,14 @@ class Mapper implements MapperInterface
 
     public function getURI($alias, array $parameters = null)
     {
-        return $this->routes[$alias];
+        if (!isset($this->routes[$alias])) return false;
+        
+        $uri = $this->routes[$alias];
+        foreach($parameters as $key => $value) {
+            $search = sprintf('{%s}', $key);
+            $uri = str_replace($search, $value, $uri);
+        }
+
+        return $uri;
     }
 }

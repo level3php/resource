@@ -1,14 +1,17 @@
 <?php
 
 namespace Level3\Mocks;
-use Level3\ResourceDriver as Level3ResourceDriver;
-use Level3\ResourceDriver\DeleteInterface;
-use Level3\ResourceDriver\GetInterface;
-use Level3\ResourceDriver\PostInterface;
-use Level3\ResourceDriver\PutInterface;
+use Level3\ResourceManager as Level3ResourceManager;
+use Level3\ResourceManager\DeleteInterface;
+use Level3\ResourceManager\GetInterface;
+use Level3\ResourceManager\PostInterface;
+use Level3\ResourceManager\PutInterface;
 
-class ResourceDriver 
-    extends Level3ResourceDriver 
+/**
+* Foo
+*/
+class ResourceManager 
+    extends Level3ResourceManager 
     implements GetInterface, PostInterface, PutInterface, DeleteInterface
 {
     public function getOne($id)

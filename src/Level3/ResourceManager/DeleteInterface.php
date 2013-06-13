@@ -1,5 +1,5 @@
 <?php
-namespace Level3\ResourceDriver;
+namespace Level3\ResourceManager;
 
 interface DeleteInterface
 {
