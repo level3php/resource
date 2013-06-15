@@ -14,6 +14,7 @@ use Pimple;
 use Level3\ResourceManager;
 use Level3\ResourceManager\DeleteInterface;
 use Level3\ResourceManager\GetInterface;
+use Level3\ResourceManager\FindInterface;
 use Level3\ResourceManager\PostInterface;
 use Level3\ResourceManager\PutInterface;
 
@@ -76,7 +77,10 @@ class ResourceHub extends Pimple {
         $particularURI = $this->baseURI . $key . '/{id}';
 
         if ($rm instanceOf GetInterface) {
-            $this->mapper->mapList($generalURI, sprintf('%s:list', $key));
+            $this->mapper->mapFind($generalURI, sprintf('%s:find', $key));
+        }
+
+        if ($rm instanceOf GetInterface) {
             $this->mapper->mapGet($particularURI, sprintf('%s:get', $key));
         }
 

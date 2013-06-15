@@ -51,6 +51,13 @@ abstract class ResourceManager {
         }
 
         $uri = $this->hub->getURI($this->key, 'get', array('id' => $id));
-        return new Resource($uri);
+        
+
+        $resource = new Resource($uri);
+        $resource->setData($this->resource($id));
+
+        return $resource;
     }
+
+    abstract protected function resource($id);
 }

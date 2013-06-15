@@ -60,7 +60,7 @@ class ResourceHubTest extends TestCase {
         $hub = $this->getHub();
         $hub->boot();
 
-        $this->assertSame('/mock', $hub->getURI('mock', 'list'));
+        $this->assertSame('/mock', $hub->getURI('mock', 'find'));
         $this->assertSame('/mock/{id}', $hub->getURI('mock', 'get'));
         $this->assertSame('/mock/{id}', $hub->getURI('mock', 'post'));
         $this->assertSame('/mock', $hub->getURI('mock', 'put'));

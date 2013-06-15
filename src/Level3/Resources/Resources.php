@@ -9,18 +9,15 @@
  */
 
 namespace Level3\Resources;
-use Level3\ResourceManager as ResourceManager;
-use Level3\ResourceManager\DeleteInterface;
-use Level3\ResourceManager\GetInterface;
-use Level3\ResourceManager\PostInterface;
-use Level3\ResourceManager\PutInterface;
+use Level3\ResourceManager;
+use Level3\ResourceManager\FindInterface;
 
 /**
  * Available resources at this API
  */
-class Resources extends ResourceManager implements GetInterface
+class Resources extends ResourceManager implements FindInterface
 {
-    public function getOne($id)
+    protected function resource($id)
     {
         $hub = $this->getHub();
         $resourceManager = $hub[$id];
@@ -29,17 +26,14 @@ class Resources extends ResourceManager implements GetInterface
         $data['name'] = get_class($resourceManager);
         $data['description'] = $resourceManager->getDescription();
 
-        $resource = $this->create($id);
-        $resource->setData($data);
-
-        return $resource;
+        return $data;
     }
     
-    public function get()
+    public function find()
     {
         $resources = array();
         foreach($this->getHub()->keys() as $id) {
-            $resources = $this->getOne($id);
+            $resources = $this->create($id);
         }
 
         var_dump($resources);

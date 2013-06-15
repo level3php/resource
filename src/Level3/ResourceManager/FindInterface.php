@@ -10,7 +10,7 @@
 
 namespace Level3\ResourceManager;
 
-interface GetInterface
+interface FindInterface
 {
-    public function get($id);
+    public function find();
 }

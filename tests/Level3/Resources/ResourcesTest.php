@@ -21,7 +21,7 @@ class ResourcesTest extends TestCase {
 
         $hub->boot();
 
-        $r = $hub['resources']->getOne('resources');
+        $r = $hub['resources']->find();
         var_dump((string)$r);
     }
 }

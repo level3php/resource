@@ -21,7 +21,7 @@ class Silex implements MapperInterface
         $this->app = $app;
     }
 
-    public function mapList($uri, $alias)
+    public function mapFind($uri, $alias)
     {
         $this->app->get($uri, 'controller.resourcehub:get')->bind($alias);
     }

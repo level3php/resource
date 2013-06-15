@@ -15,7 +15,7 @@ class Mapper implements MapperInterface
 {
     private $routes = array();
 
-    public function mapList($uri, $alias)
+    public function mapFind($uri, $alias)
     {
         $this->routes[$alias] = $uri;
     }
