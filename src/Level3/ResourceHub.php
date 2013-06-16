@@ -19,7 +19,8 @@ use Level3\ResourceManager\PostInterface;
 use Level3\ResourceManager\PutInterface;
 
 
-class ResourceHub extends Pimple {
+class ResourceHub extends Pimple
+{
     private $mapper;
     private $baseURI = '/';
 

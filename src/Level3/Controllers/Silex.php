@@ -16,7 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Level3\ResourceAccesor;
 use Level3\Response as Level3Response;
 
-class Silex {
+class Silex
+{
     private $app;
     private $accesor;
 

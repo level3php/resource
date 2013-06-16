@@ -11,7 +11,8 @@
 namespace Level3;
 use Hal\Resource;
 
-abstract class ResourceManager {
+abstract class ResourceManager
+{
     private $hub;
     private $key;
 
