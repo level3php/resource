@@ -11,7 +11,7 @@
 namespace Level3\Tests;
 use Level3\ResourceHub;
 use Level3\Mocks\Mapper;
-use Level3\Mocks\ResourceManager;
+use Level3\Mocks\Resource;
 
 use Teapot\StatusCode;
 
@@ -24,7 +24,7 @@ class ResourceHubTest extends TestCase {
         $hub->setMapper($mapper);
 
         $hub['mock'] = $hub->share(function ($c) {
-            return new ResourceManager();
+            return new Resource();
         });
 
         return $hub; 

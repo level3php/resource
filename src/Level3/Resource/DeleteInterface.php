@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\ResourceManager;
+namespace Level3\Resource;
 
-interface FindInterface
+interface DeleteInterface
 {
-    public function find();
+    public function delete($id);
 }

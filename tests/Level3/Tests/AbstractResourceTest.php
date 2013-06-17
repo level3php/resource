@@ -11,14 +11,14 @@
 namespace Level3\Tests;
 use Level3\ResourceHub;
 use Level3\Mocks\Mapper;
-use Level3\Mocks\ResourceManager;
+use Level3\Mocks\Resource;
 
 use Teapot\StatusCode;
 
-class ResourceManagerTest extends TestCase {
+class AbstractResourceTest extends TestCase {
     public function testSetKeyAndGetKey()
     {
-        $manager = new ResourceManager();
+        $manager = new Resource();
 
         $manager->setKey('foo');
         $this->assertSame('foo', $manager->getKey()); 
@@ -26,7 +26,7 @@ class ResourceManagerTest extends TestCase {
 
     public function testSetHubAndGetHub()
     {
-        $manager = new ResourceManager();
+        $manager = new Resource();
         $hub = $this->getHub();
 
         $manager->setHub($hub);
@@ -35,7 +35,7 @@ class ResourceManagerTest extends TestCase {
 
     public function testGetDescription()
     {
-        $manager = new ResourceManager();
+        $manager = new Resource();
         $this->assertSame('Foo', $manager->getDescription()); 
     }
 
@@ -43,7 +43,7 @@ class ResourceManagerTest extends TestCase {
     {
         $hub = $this->getHub();
         $hub['mock'] = $hub->share(function ($c) {
-            return new ResourceManager();
+            return new Resource();
         });
 
         $hub->boot();
@@ -60,7 +60,7 @@ class ResourceManagerTest extends TestCase {
      */
     public function testCreateWithoutHub()
     {
-        $manager = new ResourceManager();
+        $manager = new Resource();
         $manager->create(1);
     }
 }

@@ -9,9 +9,10 @@
  */
 
 namespace Level3\Tests;
-use Level3\Resources\Resources;
+use Level3\Resources;
 
-class ResourcesTest extends TestCase {
+class ResourcesTest extends TestCase
+{
     public function testSetMapper()
     {
         $hub = $this->getHub();

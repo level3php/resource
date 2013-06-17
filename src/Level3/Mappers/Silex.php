@@ -23,7 +23,7 @@ class Silex implements MapperInterface
 
     public function mapFind($uri, $alias)
     {
-        $this->app->get($uri, 'controller.resourcehub:get')->bind($alias);
+        $this->app->get($uri, 'controller.resourcehub:find')->bind($alias);
     }
 
     public function mapGet($uri, $alias)
@@ -45,6 +45,8 @@ class Silex implements MapperInterface
     {
         $this->app->delete($uri, 'controller.resourcehub:delete')->bind($alias);
     }
+
+    
 
     public function getURI($alias, array $parameters = null)
     {

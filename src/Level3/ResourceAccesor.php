@@ -19,16 +19,26 @@ class ResourceAccesor
         $this->hub = $hub;
     }
 
-    public function get($key, $id = null)
+    public function find($key)
     {
         $resource = $this->hub[$key];
-        if ( $id ) $result = $resource->getOne($id);
-        else $result = $resource->get();
+        $result = $resource->find();
 
         if ( $result === false ) $status = StatusCode::NOT_FOUND;
         else if ( $result === null ) $status = StatusCode::NO_CONTENT;
         else $status = StatusCode::OK;
 
+        return new Response($result, $status);
+    }
+
+    public function get($key, $id)
+    {
+        $resource = $this->hub[$key];
+        $result = $resource->get($id);
+
+        if ( $result === false ) $status = StatusCode::NOT_FOUND;
+        else if ( $result === null ) $status = StatusCode::NO_CONTENT;
+        else $status = StatusCode::OK;
 
         return new Response($result, $status);
     }

@@ -8,14 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Resources;
-use Level3\ResourceManager;
-use Level3\ResourceManager\FindInterface;
+namespace Level3;
+use Level3\Resource\FindInterface;
 
 /**
  * Available resources at this API
  */
-class Resources extends ResourceManager implements FindInterface
+class Resources extends AbstractResource implements FindInterface
 {
     protected function resource($id)
     {

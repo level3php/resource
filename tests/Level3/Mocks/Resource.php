@@ -9,18 +9,18 @@
  */
 
 namespace Level3\Mocks;
-use Level3\ResourceManager as Level3ResourceManager;
-use Level3\ResourceManager\DeleteInterface;
-use Level3\ResourceManager\FindInterface;
-use Level3\ResourceManager\GetInterface;
-use Level3\ResourceManager\PostInterface;
-use Level3\ResourceManager\PutInterface;
+use Level3\AbstractResource;
+use Level3\Resource\DeleteInterface;
+use Level3\Resource\GetInterface;
+use Level3\Resource\FindInterface;
+use Level3\Resource\PostInterface;
+use Level3\Resource\PutInterface;
 
 /**
 * Foo
 */
-class ResourceManager 
-    extends Level3ResourceManager 
+class Resource
+    extends AbstractResource 
     implements FindInterface, GetInterface, PostInterface, PutInterface, DeleteInterface
 {
     public function get($id)

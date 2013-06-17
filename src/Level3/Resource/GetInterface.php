@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\ResourceManager;
+namespace Level3\Resource;
 
-interface PutInterface
+interface GetInterface
 {
-    public function put($data);
+    public function get($id);
 }

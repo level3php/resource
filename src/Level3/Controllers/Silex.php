@@ -27,6 +27,14 @@ class Silex
         $this->accesor = $accesor;
     }
 
+    public function find(Request $request)
+    {
+        $key = $this->getResourceKey($request);
+        $result = $this->accesor->find($key);
+
+        return $this->getResponse($result);
+    }
+
     public function get(Request $request, $id = null)
     {
         $key = $this->getResourceKey($request);
@@ -38,7 +46,7 @@ class Silex
     public function post(Request $request, $id)
     {
         $key = $this->getResourceKey($request);
-        $result = $this->accesor->get($key, $id, $request->request->all());
+        $result = $this->accesor->post($key, $id, $request->request->all());
 
         return $this->getResponse($result);
     }

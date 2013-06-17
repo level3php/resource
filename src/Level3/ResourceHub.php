@@ -11,12 +11,12 @@
 namespace Level3;
 
 use Pimple;
-use Level3\ResourceManager;
-use Level3\ResourceManager\DeleteInterface;
-use Level3\ResourceManager\GetInterface;
-use Level3\ResourceManager\FindInterface;
-use Level3\ResourceManager\PostInterface;
-use Level3\ResourceManager\PutInterface;
+use Level3\AbstractResource;
+use Level3\Resource\DeleteInterface;
+use Level3\Resource\GetInterface;
+use Level3\Resource\FindInterface;
+use Level3\Resource\PostInterface;
+use Level3\Resource\PutInterface;
 
 
 class ResourceHub extends Pimple
@@ -61,7 +61,7 @@ class ResourceHub extends Pimple
     private function validate($key)
     {
         $rm = $this[$key];
-        if ( !is_object($rm) || !$rm instanceOf ResourceManager ) {
+        if ( !is_object($rm) || !$rm instanceOf AbstractResource ) {
             throw new \UnexpectedValueException(
                 sprintf('The resource "%s" must return a ResourceManager instance', $key)
             );
@@ -77,7 +77,7 @@ class ResourceHub extends Pimple
         $generalURI = $this->baseURI . $key;
         $particularURI = $this->baseURI . $key . '/{id}';
 
-        if ($rm instanceOf GetInterface) {
+        if ($rm instanceOf FindInterface) {
             $this->mapper->mapFind($generalURI, sprintf('%s:find', $key));
         }
 
