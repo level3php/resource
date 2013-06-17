@@ -20,8 +20,18 @@ class ResourcesTest extends TestCase {
         });
 
         $hub->boot();
-
         $r = $hub['resources']->find();
-        var_dump((string)$r);
+ 
+        $this->assertTrue(is_array($r));
+        $this->assertSame(1, count($r));
+
+        $resource = $r[0];
+        $this->assertInstanceOf('Hal\Resource', $resource);
+
+        $data = $resource->toArray();
+        $this->assertSame('Resources', $data['name']);
+        $this->assertSame('Available resources at this API', $data['description']);
+
+        $this->assertFalse($resource->getSelf()->getHref());
     }
 }

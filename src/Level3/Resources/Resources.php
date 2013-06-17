@@ -22,8 +22,10 @@ class Resources extends ResourceManager implements FindInterface
         $hub = $this->getHub();
         $resourceManager = $hub[$id];
 
+        $class = explode('\\', get_class($resourceManager));
+
         $data = array();
-        $data['name'] = get_class($resourceManager);
+        $data['name'] = end($class);
         $data['description'] = $resourceManager->getDescription();
 
         return $data;
@@ -31,11 +33,11 @@ class Resources extends ResourceManager implements FindInterface
     
     public function find()
     {
-        $resources = array();
+        $result = array();
         foreach($this->getHub()->keys() as $id) {
-            $resources = $this->create($id);
+            $result[] = $this->create($id);
         }
 
-        var_dump($resources);
+        return $result;
     }
 }
