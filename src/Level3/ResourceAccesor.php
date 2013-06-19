@@ -30,7 +30,7 @@ class ResourceAccesor
             return $this->findResource($key);
         } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
@@ -48,9 +48,9 @@ class ResourceAccesor
     {
         try {
             return $this->getResource($key, $id);
-        } catch (BaseExcption $e) {
+        } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
@@ -68,20 +68,20 @@ class ResourceAccesor
     {
         try {
             return $this->postDataForResourceWithKeyAndId($data, $key, $id);
-        } catch (BaseExcption $e) {
+        } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
-        $this->createErrorResponse($status);
+        return $this->createErrorResponse($status);
     }
 
     private function postDataForResourceWithKeyAndId(Array $data, $key, $id)
     {
         $resource = $this->hub[$key];
         $resource->post($id, $data);
-        $value = $resource->getOne($id);
+        $value = $resource->get($id);
         return $this->createOKResponse($value);
     }
 
@@ -89,20 +89,20 @@ class ResourceAccesor
     {
         try {
             return $this->createResourceWithKey($key, $data);
-        } catch (BaseExcption $e) {
+        } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
-        return $this->craeteErrorResponseWithStatusCode($status);
+        return $this->createErrorResponse($status);
     }
 
     private function createResourceWithKey($key, Array $data)
     {
         $resource = $this->hub[$key];
         $result = $resource->put($data);
-        $value = $resource->getOne($result);
+        $value = $resource->get($result);
         return $this->responseFactory->createResponse($value, StatusCode::CREATED);
     }
 
@@ -110,9 +110,9 @@ class ResourceAccesor
     {
         try {
             return $this->deleteResourceWithKeyAndId($key, $id);
-        } catch (BaseExcption $e) {
+        } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
@@ -123,7 +123,7 @@ class ResourceAccesor
     {
         $resource = $this->hub[$key];
         $resource->delete($id);
-        return $this->createOKResponse($resource);
+        return $this->createOKResponse(null);
     }
 
     private function createErrorResponse($status)

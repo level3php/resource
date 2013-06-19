@@ -10,7 +10,7 @@
 
 namespace Level3\ResourceRepository;
 
-interface DeleteInterface
+interface Deleter
 {
     public function delete($id);
 }

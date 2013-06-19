@@ -52,7 +52,6 @@ abstract class ResourceRepository
         }
 
         $uri = $this->hub->getURI($this->key, 'get', array('id' => $id));
-        
 
         $resource = new Resource($uri);
         $resource->setData($this->resource($id));

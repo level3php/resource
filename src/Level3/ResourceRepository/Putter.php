@@ -10,7 +10,7 @@
 
 namespace Level3\ResourceRepository;
 
-interface PutInterface
+interface Putter
 {
     public function put($data);
 }

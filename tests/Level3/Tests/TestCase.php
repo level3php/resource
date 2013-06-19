@@ -9,7 +9,6 @@
  */
 
 namespace Level3\Tests;
-use Level3\Mocks\DummyResourceRepository;
 use Level3\ResourceHub;
 use Level3\Mocks\Mapper;
 use Level3\Mocks\ResourceManager;
@@ -25,7 +24,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     //Make sure this method is really necessary
     protected function getHub()
     {
-        $mapper = new Mapper;
+        $mapper = new Mapper();
 
         $hub = new ResourceHub();
         $hub->setMapper($mapper);

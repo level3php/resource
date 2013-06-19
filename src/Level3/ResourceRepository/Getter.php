@@ -10,7 +10,7 @@
 
 namespace Level3\ResourceRepository;
 
-interface GetInterface
+interface Getter
 {
     public function get($id);
 }

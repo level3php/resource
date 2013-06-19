@@ -10,7 +10,6 @@
 
 namespace Level3\Tests;
 use Level3\ResourceHub;
-use Level3\Mocks\Mapper;
 use Level3\Mocks\DummyResourceRepository;
 
 use Teapot\StatusCode;

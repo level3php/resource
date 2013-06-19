@@ -10,7 +10,7 @@
 
 namespace Level3\ResourceRepository;
 
-interface PostInterface
+interface Finder
 {
-    public function post($id, $data);
+    public function find();
 }
