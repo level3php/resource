@@ -11,18 +11,20 @@
 namespace Level3;
 
 use Pimple;
-use Level3\AbstractResource;
-use Level3\Resource\DeleteInterface;
-use Level3\Resource\GetInterface;
-use Level3\Resource\FindInterface;
-use Level3\Resource\PostInterface;
-use Level3\Resource\PutInterface;
+use Level3\ResourceRepository;
+use Level3\ResourceRepository\Deleter;
+use Level3\ResourceRepository\Getter;
+use Level3\ResourceRepository\Finder;
+use Level3\ResourceRepository\Poster;
+use Level3\ResourceRepository\Putter;
 
 
 class ResourceHub extends Pimple
 {
+    const SLASH_CHARACTER = '/';
+
     private $mapper;
-    private $baseURI = '/';
+    private $baseURI = self::SLASH_CHARACTER;
 
     public function setMapper(MapperInterface $mapper)
     {
@@ -36,7 +38,10 @@ class ResourceHub extends Pimple
 
     public function setBaseURI($uri)
     {
-        if ( $uri[strlen($uri)-1] != '/' ) $uri .= '/';
+        if ($this->doesNotEndInSlash($uri)) {
+            $uri = $this->addSlashToUri($uri);
+        }
+
         $this->baseURI = $uri;
     }
 
@@ -61,7 +66,7 @@ class ResourceHub extends Pimple
     private function validate($key)
     {
         $rm = $this[$key];
-        if ( !is_object($rm) || !$rm instanceOf AbstractResource ) {
+        if ( !is_object($rm) || !$rm instanceOf ResourceRepository ) {
             throw new \UnexpectedValueException(
                 sprintf('The resource "%s" must return a ResourceManager instance', $key)
             );
@@ -77,24 +82,34 @@ class ResourceHub extends Pimple
         $generalURI = $this->baseURI . $key;
         $particularURI = $this->baseURI . $key . '/{id}';
 
-        if ($rm instanceOf FindInterface) {
+        if ($rm instanceOf Finder) {
             $this->mapper->mapFind($generalURI, sprintf('%s:find', $key));
         }
 
-        if ($rm instanceOf GetInterface) {
+        if ($rm instanceOf Getter) {
             $this->mapper->mapGet($particularURI, sprintf('%s:get', $key));
         }
 
-        if ($rm instanceOf PostInterface) {
+        if ($rm instanceOf Poster) {
             $this->mapper->mapPost($particularURI, sprintf('%s:post', $key));
         }
 
-        if ($rm instanceOf PutInterface) {
+        if ($rm instanceOf Putter) {
             $this->mapper->mapPut($generalURI, sprintf('%s:put', $key));
         }
 
-        if ($rm instanceOf DeleteInterface) {
+        if ($rm instanceOf Deleter) {
             $this->mapper->mapDelete($particularURI, sprintf('%s:delete', $key));
         }
+    }
+
+    public function doesNotEndInSlash($uri)
+    {
+        return $uri[strlen($uri) - 1] != self::SLASH_CHARACTER;
+    }
+
+    private function addSlashToUri($uri)
+    {
+        return $uri . self::SLASH_CHARACTER;
     }
 }

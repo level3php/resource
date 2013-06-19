@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Resource;
+namespace Level3\ResourceRepository;
 
-interface DeleteInterface
+interface Getter
 {
-    public function delete($id);
+    public function get($id);
 }

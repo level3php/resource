@@ -10,15 +10,14 @@
 
 namespace Level3\Tests;
 use Level3\ResourceHub;
-use Level3\Mocks\Mapper;
-use Level3\Mocks\Resource;
+use Level3\Mocks\DummyResourceRepository;
 
 use Teapot\StatusCode;
 
 class AbstractResourceTest extends TestCase {
     public function testSetKeyAndGetKey()
     {
-        $manager = new Resource();
+        $manager = new DummyResourceRepository();
 
         $manager->setKey('foo');
         $this->assertSame('foo', $manager->getKey()); 
@@ -26,7 +25,7 @@ class AbstractResourceTest extends TestCase {
 
     public function testSetHubAndGetHub()
     {
-        $manager = new Resource();
+        $manager = new DummyResourceRepository();
         $hub = $this->getHub();
 
         $manager->setHub($hub);
@@ -35,7 +34,7 @@ class AbstractResourceTest extends TestCase {
 
     public function testGetDescription()
     {
-        $manager = new Resource();
+        $manager = new DummyResourceRepository();
         $this->assertSame('Foo', $manager->getDescription()); 
     }
 
@@ -43,7 +42,7 @@ class AbstractResourceTest extends TestCase {
     {
         $hub = $this->getHub();
         $hub['mock'] = $hub->share(function ($c) {
-            return new Resource();
+            return new DummyResourceRepository();
         });
 
         $hub->boot();
@@ -60,7 +59,7 @@ class AbstractResourceTest extends TestCase {
      */
     public function testCreateWithoutHub()
     {
-        $manager = new Resource();
+        $manager = new DummyResourceRepository();
         $manager->create(1);
     }
 }

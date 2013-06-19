@@ -12,18 +12,35 @@ namespace Level3\Tests;
 use Level3\ResourceHub;
 use Level3\Mocks\Mapper;
 use Level3\Mocks\ResourceManager;
-
-use Teapot\StatusCode;
+use Hal\Resource;
+use Mockery as m;
 
 class TestCase extends \PHPUnit_Framework_TestCase
-{   
+{
+    const IRRELEVANT_HREF = 'XX';
+
+    protected $resourceHubMock;
+
+    //Make sure this method is really necessary
     protected function getHub()
     {
-        $mapper = new Mapper;
+        $mapper = new Mapper();
 
         $hub = new ResourceHub();
         $hub->setMapper($mapper);
 
         return $hub;
+    }
+    //
+
+    protected function resourceHubShouldHavePair($key, $value)
+    {
+        $this->resourceHubKeyShouldExist($key);
+        $this->resourceHubMock->shouldReceive('offsetGet')->with($key)->once()->andReturn($value);
+    }
+
+    protected function resourceHubKeyShouldExist($key)
+    {
+        $this->resourceHubMock->shouldReceive('offsetExists')->with($key)->andReturn(true);
     }
 }

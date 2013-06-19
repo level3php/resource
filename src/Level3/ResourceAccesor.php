@@ -10,73 +10,129 @@
 
 namespace Level3;
 
+use Level3\ResourceRepository\Exception\BaseException;
+use Teapot\StatusCode;
+
 class ResourceAccesor
 {
     private $hub;
+    private $responseFactory;
 
-    public function __construct(ResourceHub $hub)
+    public function __construct(ResourceHub $hub, ResponseFactory $responseFactory)
     {
         $this->hub = $hub;
+        $this->responseFactory = $responseFactory;
     }
 
     public function find($key)
     {
-        $resource = $this->hub[$key];
-        $result = $resource->find();
+        try {
+            return $this->findResource($key);
+        } catch (BaseException $e) {
+            $status = $e->getCode();
+        } catch (\Exception $e) {
+            $status = StatusCode::INTERNAL_SERVER_ERROR;
+        }
 
-        if ( $result === false ) $status = StatusCode::NOT_FOUND;
-        else if ( $result === null ) $status = StatusCode::NO_CONTENT;
-        else $status = StatusCode::OK;
+        return $this->createErrorResponse($status);
+    }
 
-        return new Response($result, $status);
+    private function findResource($key)
+    {
+        $resourceRepository = $this->hub[$key];
+        $result = $resourceRepository->find();
+        return $this->createOKResponse($result);
     }
 
     public function get($key, $id)
     {
+        try {
+            return $this->getResource($key, $id);
+        } catch (BaseException $e) {
+            $status = $e->getCode();
+        } catch (\Exception $e) {
+            $status = StatusCode::INTERNAL_SERVER_ERROR;
+        }
+
+        return $this->createErrorResponse($status);
+    }
+
+    private function getResource($key, $id)
+    {
         $resource = $this->hub[$key];
         $result = $resource->get($id);
-
-        if ( $result === false ) $status = StatusCode::NOT_FOUND;
-        else if ( $result === null ) $status = StatusCode::NO_CONTENT;
-        else $status = StatusCode::OK;
-
-        return new Response($result, $status);
+        return $this->responseFactory->createResponse($result, StatusCode::OK);
     }
 
     public function post($key, $id, Array $data)
     {
+        try {
+            return $this->postDataForResourceWithKeyAndId($data, $key, $id);
+        } catch (BaseException $e) {
+            $status = $e->getCode();
+        } catch (\Exception $e) {
+            $status = StatusCode::INTERNAL_SERVER_ERROR;
+        }
+
+        return $this->createErrorResponse($status);
+    }
+
+    private function postDataForResourceWithKeyAndId(Array $data, $key, $id)
+    {
         $resource = $this->hub[$key];
-        $result = $resource->post($id, $data);
-
-        if ( $result === false ) $status = StatusCode::CONFLICT;
-        else if ( $result === null ) $status = StatusCode::NOT_FOUND;
-        else $status = StatusCode::OK;
-
-        $value = $resource->getOne($id);
-        return new Response($value, $status);
+        $resource->post($id, $data);
+        $value = $resource->get($id);
+        return $this->createOKResponse($value);
     }
 
     public function put($key, Array $data)
     {
+        try {
+            return $this->createResourceWithKey($key, $data);
+        } catch (BaseException $e) {
+            $status = $e->getCode();
+        } catch (\Exception $e) {
+            $status = StatusCode::INTERNAL_SERVER_ERROR;
+        }
+
+        return $this->createErrorResponse($status);
+    }
+
+    private function createResourceWithKey($key, Array $data)
+    {
         $resource = $this->hub[$key];
         $result = $resource->put($data);
-
-        if ( !$result ) $status = StatusCode::BAD_REQUEST;
-        else $status = StatusCode::CREATED;
-
-        $value = $resource->getOne($result);
-        return new Response($value, $status);
+        $value = $resource->get($result);
+        return $this->responseFactory->createResponse($value, StatusCode::CREATED);
     }
 
     public function delete($key, $id)
     {
+        try {
+            return $this->deleteResourceWithKeyAndId($key, $id);
+        } catch (BaseException $e) {
+            $status = $e->getCode();
+        } catch (\Exception $e) {
+            $status = StatusCode::INTERNAL_SERVER_ERROR;
+        }
+
+        return $this->createErrorResponse($status);
+    }
+
+    private function deleteResourceWithKeyAndId($key, $id)
+    {
         $resource = $this->hub[$key];
-        $result = $resource->delete($id);
+        $resource->delete($id);
+        return $this->createOKResponse(null);
+    }
 
-        if ( $result === false ) $status = StatusCode::NOT_FOUND;
-        else if ( $result === null ) $status = StatusCode::NO_CONTENT;
-        else $status = StatusCode::OK;
+    private function createErrorResponse($status)
+    {
+        return $this->responseFactory->createResponse(null, $status);
+    }
 
-        return new Response(null, $status);
+    private function createOKResponse($result)
+    {
+        return $this->responseFactory->createResponse($result, StatusCode::OK);
     }
 }
