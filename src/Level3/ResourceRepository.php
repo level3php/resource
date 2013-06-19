@@ -55,7 +55,6 @@ abstract class ResourceRepository
 
         $resource = new Resource($uri);
         $resource->setData($this->resource($id));
-
         return $resource;
     }
 

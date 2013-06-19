@@ -57,10 +57,17 @@ class ResourceHub extends Pimple
 
     public function boot()
     {
+        $this->registerDefaultsBeforeBoot();
         foreach($this->keys() as $key) {
             $this->validate($key);
             $this->map($key);
         }
+    }
+
+    public function registerDefaultsBeforeBoot()
+    {
+        $this['resources'] = new Resources();
+        $this->mapper->mapRootTo('/resources');
     }
 
     private function validate($key)
@@ -68,7 +75,7 @@ class ResourceHub extends Pimple
         $rm = $this[$key];
         if ( !is_object($rm) || !$rm instanceOf ResourceRepository ) {
             throw new \UnexpectedValueException(
-                sprintf('The resource "%s" must return a ResourceManager instance', $key)
+                sprintf('The resource "%s" must return a ResourceRepository instance', $key)
             );
         }
     }

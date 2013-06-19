@@ -11,6 +11,8 @@
 namespace Level3\Mappers;
 use Silex\Application;
 use Level3\MapperInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class Silex implements MapperInterface
 {
@@ -21,34 +23,45 @@ class Silex implements MapperInterface
         $this->app = $app;
     }
 
+    public function mapRootTo($rootURI) {
+        $app = $this->app;
+
+        $app->get('/',function() use($app, $rootURI){
+            return $app->redirect($rootURI);
+        });
+    }
+
     public function mapFind($uri, $alias)
     {
-        $this->app->get($uri, 'controller.resourcehub:find')->bind($alias);
+        $this->app->get($uri, 'level3.controller:find')->bind($alias);
     }
 
     public function mapGet($uri, $alias)
     {
-        $this->app->get($uri, 'controller.resourcehub:get')->bind($alias);
+        $this->app->get($uri, 'level3.controller:get')->bind($alias);
     }
     
     public function mapPost($uri, $alias)
     {
-        $this->app->post($uri, 'controller.resourcehub:post')->bind($alias);
+        $this->app->post($uri, 'level3.controller:post')->bind($alias);
     }
     
     public function mapPut($uri, $alias)
     {
-        $this->app->put($uri, 'controller.resourcehub:put')->bind($alias);
+        $this->app->put($uri, 'level3.controller:put')->bind($alias);
     }
     
     public function mapDelete($uri, $alias)
     {
-        $this->app->delete($uri, 'controller.resourcehub:delete')->bind($alias);
+        $this->app->delete($uri, 'level3.controller:delete')->bind($alias);
     }
 
     public function getURI($alias, array $parameters = null)
     {
-        $this->app['url_generator']->generate($alias, $parameters);
-
+        try {
+            return $this->app['url_generator']->generate($alias, $parameters);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

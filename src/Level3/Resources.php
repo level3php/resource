@@ -26,6 +26,7 @@ class Resources extends ResourceRepository implements Finder
         $data = array();
         $data['name'] = end($class);
         $data['description'] = $resourceManager->getDescription();
+        $data['uri'] = $hub->getURI($id, 'find');
 
         return $data;
     }
