@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Resource;
+namespace Level3\ResourceRepository;
 
-interface FindInterface
+interface PutInterface
 {
-    public function find();
+    public function put($data);
 }

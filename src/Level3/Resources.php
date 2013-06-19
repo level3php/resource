@@ -9,12 +9,12 @@
  */
 
 namespace Level3;
-use Level3\Resource\FindInterface;
+use Level3\ResourceRepository\FindInterface;
 
 /**
  * Available resources at this API
  */
-class Resources extends AbstractResource implements FindInterface
+class Resources extends ResourceRepository implements FindInterface
 {
     protected function resource($id)
     {

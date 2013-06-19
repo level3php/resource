@@ -11,7 +11,7 @@
 namespace Level3;
 use Hal\Resource;
 
-abstract class AbstractResource
+abstract class ResourceRepository
 {
     private $hub;
     private $key;
@@ -38,9 +38,9 @@ abstract class AbstractResource
 
     public function getDescription()
     {
-        $rc = new \ReflectionClass(get_class($this));
+        $reflectionClass = new \ReflectionClass(get_class($this));
 
-        $description = substr($rc->getDocComment(), 3, -2);
+        $description = substr($reflectionClass->getDocComment(), 3, -2);
         $description = trim(preg_replace('/\s*\*/', '', $description));
         return $description;
     }
@@ -48,7 +48,7 @@ abstract class AbstractResource
     public function create($id)
     {
         if (!$this->hub) {
-            throw new \RuntimeException('Set a ResourceHub before use create method.');
+            throw new \RuntimeException('Set a ResourceHub before using create method.');
         }
 
         $uri = $this->hub->getURI($this->key, 'get', array('id' => $id));

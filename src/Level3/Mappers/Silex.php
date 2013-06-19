@@ -46,11 +46,9 @@ class Silex implements MapperInterface
         $this->app->delete($uri, 'controller.resourcehub:delete')->bind($alias);
     }
 
-    
-
     public function getURI($alias, array $parameters = null)
     {
-        $this->app['url_generator']->generate($route, $parameters);
+        $this->app['url_generator']->generate($alias, $parameters);
 
     }
 }

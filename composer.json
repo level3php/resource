@@ -19,7 +19,8 @@
         "zircote/hal": "0.3.3"
     },
     "require-dev": {
-        "silex/silex": "1.0.*@dev"
+        "silex/silex": "1.0.*@dev",
+        "mockery/mockery": "*"
     },
     "autoload": {
         "psr-0": {
