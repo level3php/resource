@@ -12,6 +12,7 @@ namespace Level3;
 
 interface MapperInterface
 {
+    public function mapRootTo($uri);
     public function mapFind($uri, $alias);
     public function mapGet($uri, $alias);
     public function mapPost($uri, $alias);   

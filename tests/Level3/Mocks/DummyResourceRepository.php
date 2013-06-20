@@ -50,6 +50,6 @@ class DummyResourceRepository
     
     protected function resource($id)
     {
-
+        return array('foo' => 'bar');
     }
 }

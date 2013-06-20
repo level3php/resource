@@ -15,6 +15,11 @@ class Mapper implements MapperInterface
 {
     private $routes = array();
 
+    public function mapRootTo($uri) 
+    {
+        $this->routes['/'] = $uri;
+    }
+
     public function mapFind($uri, $alias)
     {
         $this->routes[$alias] = $uri;

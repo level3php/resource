@@ -2,12 +2,12 @@
 
 namespace Level3;
 
-use Hal\AbstractHal;
+use Hal\Resource;
 
 class ResponseFactory
 {
-    public function createResponse($HalResource, $statusCode)
+    public function createResponse($resource, $statusCode)
     {
-        return new Response($HalResource, $statusCode);
+        return new Response($resource, $statusCode);
     }
 }

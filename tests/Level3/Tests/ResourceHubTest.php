@@ -18,14 +18,13 @@ use Teapot\StatusCode;
 class ResourceHubTest extends TestCase {
     protected function getHub()
     {
-        $mapper = new Mapper;
-
-        $hub = new ResourceHub();
-        $hub->setMapper($mapper);
+        $hub = parent::getHub();
 
         $hub['mock'] = $hub->share(function ($c) {
             return new DummyResourceRepository();
         });
+
+        $hub->boot();
 
         return $hub; 
     }

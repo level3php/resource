@@ -32,8 +32,8 @@ class ResourceAccesor
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
-            var_dump($e);
             $status = StatusCode::INTERNAL_SERVER_ERROR;
+            //print_r($e->getMessage());
         }
 
         return $this->createErrorResponse($status);
@@ -44,9 +44,7 @@ class ResourceAccesor
         $resourceRepository = $this->hub[$key];
         $result = $resourceRepository->find();
 
-        $resource = new Resource(null);
-        foreach($result as $embedded) $resource->setEmbedded($key, $embedded);
-        return $this->createOKResponse($resource);
+        return $this->createOKResponse($result);
     }
 
     public function get($key, $id)

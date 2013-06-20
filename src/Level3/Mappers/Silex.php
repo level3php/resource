@@ -26,7 +26,7 @@ class Silex implements MapperInterface
     public function mapRootTo($rootURI) {
         $app = $this->app;
 
-        $app->get('/',function() use($app, $rootURI){
+        $app->get('/', function() use($app, $rootURI) {
             return $app->redirect($rootURI);
         });
     }
