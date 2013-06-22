@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\ResourceRepository;
+namespace Level3\Repository;
 
-interface Poster
+interface Getter
 {
-    public function post($id, $data);
+    public function get($id);
 }

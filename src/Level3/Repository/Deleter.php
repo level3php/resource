@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\ResourceRepository;
+namespace Level3\Repository;
 
-interface Putter
+interface Deleter
 {
-    public function put($data);
+    public function delete($id);
 }

@@ -9,8 +9,7 @@
  */
 
 namespace Level3;
-use Hal\Resource;
-use Hal\Link;
+use Nocarrier\Hal;
 use Level3\ResourceRepository\Getter;
 
 class ResourceBuilder

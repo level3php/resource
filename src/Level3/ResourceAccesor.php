@@ -64,6 +64,7 @@ class ResourceAccesor
     {
         $resource = $this->hub[$key];
         $result = $resource->get($id);
+
         return $this->responseFactory->createResponse($result, StatusCode::OK);
     }
 
@@ -85,6 +86,7 @@ class ResourceAccesor
         $resource = $this->hub[$key];
         $resource->post($id, $data);
         $value = $resource->get($id);
+
         return $this->createOKResponse($value);
     }
 
@@ -106,6 +108,7 @@ class ResourceAccesor
         $resource = $this->hub[$key];
         $result = $resource->put($data);
         $value = $resource->get($result);
+
         return $this->responseFactory->createResponse($value, StatusCode::CREATED);
     }
 
@@ -126,6 +129,7 @@ class ResourceAccesor
     {
         $resource = $this->hub[$key];
         $resource->delete($id);
+        
         return $this->createOKResponse(null);
     }
 

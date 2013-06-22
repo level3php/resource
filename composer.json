@@ -16,7 +16,7 @@
         "php": ">=5.3.0",
         "shrikeh/teapot": "dev-master",
         "pimple/pimple": "v1.0.2",
-        "zircote/hal": "0.3.3"
+        "nocarrier/hal": "dev-develop"
     },
     "require-dev": {
         "silex/silex": "1.0.*@dev",

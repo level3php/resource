@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\ResourceRepository;
+namespace Level3\Repository;
 
-interface Finder
+interface Putter
 {
-    public function find();
+    public function put($data);
 }
