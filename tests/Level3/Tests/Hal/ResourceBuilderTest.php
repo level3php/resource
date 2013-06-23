@@ -8,39 +8,36 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Tests;
-use Level3\ResourceBuilder;
-use Level3\Mocks\DummyResourceRepository;
+namespace Level3\Tests\Hal;
+use Level3\Tests\TestCase;
+use Level3\Hal\ResourceBuilder;
+use Mockery as m;
 
-use Teapot\StatusCode;
-
-class ResourceBuilderTest extends TestCase {
-    protected function getHub()
+class ResourceBuilderTest extends TestCase
+{
+    public function testWithURI()
     {
-        $hub = parent::getHub();
+        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
 
-        $hub['mock'] = $hub->share(function ($c) {
-            return new DummyResourceRepository();
-        });
+        $expected = 'foo';
+        $this->assertSame($builder, $builder->withURI($expected));
 
-        $hub->boot();
-        return $hub; 
+        $this->assertSame($expected, $builder->build()->getURI()); 
     }
 
-    public function testWithKeyAndId()
+    public function testWithData()
     {
-        $builder = new ResourceBuilder($this->getHub());
+        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
 
-        $this->assertSame($builder, $builder->withKey('mock'));
-        $this->assertSame($builder, $builder->withId(1));
+        $expected = array('foo');
+        $this->assertSame($builder, $builder->withData($expected));
 
-        $links = $builder->build()->getLinks();
-        $this->assertSame('/mock/1', $links['self']->getHref()); 
+        $this->assertSame($expected, $builder->build()->getData()); 
     }
 
-    public function testWithEmbedded()
+    public function WithEmbedded()
     {
-        $builder = new ResourceBuilder($this->getHub());
+        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
 
         $this->assertSame($builder, $builder->withEmbedded('next', 'mock', 2));
         
@@ -49,9 +46,9 @@ class ResourceBuilderTest extends TestCase {
         $this->assertTrue(isset($raw['_embedded']['next'][0]['foo']));
     }
 
-    public function testWithRelation()
+    public function WithRelation()
     {
-        $builder = new ResourceBuilder($this->getHub());
+        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
 
         $this->assertSame($builder, $builder->withRelation('next', 'mock', 2));
 
@@ -60,9 +57,9 @@ class ResourceBuilderTest extends TestCase {
         $this->assertSame('/mock/2', $raw['_links']['next'][0]['href']);
     }
 
-    public function testWithLink()
+    public function WithLink()
     {
-        $builder = new ResourceBuilder($this->getHub());
+        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
 
         $this->assertSame($builder, $builder->withLink('search', 'mock', 'find', array()));
         
@@ -71,4 +68,3 @@ class ResourceBuilderTest extends TestCase {
         $this->assertSame('/mock', $raw['_links']['search'][0]['href']);
     }
 }
-
