@@ -12,27 +12,27 @@ namespace Level3;
 
 abstract class Repository
 {
-    private $hub;
-    private $key;
+    private $repositoryMapper;
+    private $repositoryKey;
 
-    public function setKey($key)
+    public function setKey($repositoryKey)
     {
-        $this->key = $key;
+        $this->repositoryKey = $repositoryKey;
     }
 
     public function getKey()
     {
-        return $this->key;
+        return $this->repositoryKey;
     }
 
-    public function setHub(ResourceHub $hub)
+    public function setRepositoryMapper(RepositoryMapper $repositoryMapper)
     {
-        $this->hub = $hub;
+        $this->repositoryMapper = $repositoryMapper;
     }
 
-    public function getHub()
+    public function getRepositoryMapper()
     {
-        return $this->hub;
+        return $this->repositoryMapper;
     }
 
     public function getDescription()
@@ -44,23 +44,30 @@ abstract class Repository
         return $description;
     }
 
-    public function createLink($id)
+    public function createResourceLink($id)
     {
-        
+
     }
 
     public function createResource($id)
     {
-        if (!$this->hub) {
-            throw new \RuntimeException('Set a ResourceHub before using create method.');
+        if (!$this->repositoryMapper) {
+            throw new \RuntimeException('Set a RepositoryMapper before using createResource method.');
         }
 
-        $uri = $this->hub->getURI($this->key, 'get', array('id' => $id));
+        $uri = $this->getRepositoryGetURI($id);
 
-        $resource = new Resource($uri);
+        $builder = new ResourceBuilder();
+        $builder->withURI($uri);
+        
         $resource->setData($this->resource($id));
         return $resource;
     }
 
-    abstract protected function resource($id);
+    private function getRepositoryGetURI($id)
+    {
+        return $this->repositoryMapper->getURI($this->repositoryKey, 'get', array('id' => $id));
+    }
+
+    abstract protected function buildResource($id);
 }

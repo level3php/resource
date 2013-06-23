@@ -10,9 +10,10 @@
 
 namespace Level3;
 
-use Level3\ResourceRepository\Exception\BaseException;
+use Level3\Repository\Exception\BaseException;
+use Level3\Hal\Resource;
 use Teapot\StatusCode;
-use Hal\Resource;
+use Exception;
 
 class Accesor
 {
@@ -28,22 +29,22 @@ class Accesor
     public function find($key)
     {
         try {
-            return $this->findResource($key);
+            return $this->findResources($key);
         } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
         }
 
         return $this->createErrorResponse($status);
     }
 
-    private function findResource($key)
+    private function findResources($key)
     {
-        $resourceRepository = $this->repositoryHub->get($key);
-        $result = $resourceRepository->find();
+        $repository = $this->repositoryHub->get($key);
+        $resource = $repository->find();
 
-        return $this->createOKResponse($result);
+        return $this->createOKResponse($resource);
     }
 
     public function get($key, $id)
@@ -61,16 +62,16 @@ class Accesor
 
     private function getResource($key, $id)
     {
-        $resource = $this->repositoryHub->get($key);
-        $result = $resource->get($id);
+        $repository = $this->repositoryHub->get($key);
+        $resource = $repository->get($id);
 
-        return $this->responseFactory->createResponse($result, StatusCode::OK);
+        return $this->createOKResponse($resource);
     }
 
-    public function post($key, $id, Array $data)
+    public function post($key, $id, Array $receivedResourceData)
     {
         try {
-            return $this->postDataForResourceWithKeyAndId($data, $key, $id);
+            return $this->modifyResource($key, $id, $receivedResourceData);
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
@@ -80,19 +81,19 @@ class Accesor
         return $this->createErrorResponse($status);
     }
 
-    private function postDataForResourceWithKeyAndId(Array $data, $key, $id)
+    private function modifyResource($key, $id, Array $receivedResourceData)
     {
-        $resource = $this->repositoryHub->get($key);
-        $resource->post($id, $data);
-        $value = $resource->get($id);
+        $repository = $this->repositoryHub->get($key);
+        $repository->post($id, $receivedResourceData);
+        $resource = $repository->get($id);
 
-        return $this->createOKResponse($value);
+        return $this->createOKResponse($resource);
     }
 
-    public function put($key, Array $data)
+    public function put($key, Array $receivedResourceData)
     {
         try {
-            return $this->createResourceWithKey($key, $data);
+            return $this->createResource($key, $receivedResourceData);
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
@@ -102,19 +103,18 @@ class Accesor
         return $this->createErrorResponse($status);
     }
 
-    private function createResourceWithKey($key, Array $data)
+    private function createResource($key, Array $receivedResourceData)
     {
-        $resource = $this->repositoryHub->get($key);
-        $result = $resource->put($data);
-        $value = $resource->get($result);
+        $repository = $this->repositoryHub->get($key);
+        $resource = $repository->put($data);
 
-        return $this->responseFactory->createResponse($value, StatusCode::CREATED);
+        return $this->createCreatedResponse($resource);
     }
 
     public function delete($key, $id)
     {
         try {
-            return $this->deleteResourceWithKeyAndId($key, $id);
+            return $this->deleteResource($key, $id);
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
@@ -124,10 +124,10 @@ class Accesor
         return $this->createErrorResponse($status);
     }
 
-    private function deleteResourceWithKeyAndId($key, $id)
+    private function deleteResource($key, $id)
     {
-        $resource = $this->repositoryHub->get($key);
-        $resource->delete($id);
+        $repository = $this->repositoryHub->get($key);
+        $repository->delete($id);
 
         return $this->createOKResponse(null);
     }
@@ -137,8 +137,13 @@ class Accesor
         return $this->responseFactory->createResponse(null, $status);
     }
 
-    private function createOKResponse($result)
+    private function createOKResponse(Resource $resource)
     {
-        return $this->responseFactory->createResponse($result, StatusCode::OK);
+        return $this->responseFactory->createResponse($resource, StatusCode::OK);
+    }
+
+    private function createCreatedResponse(Resource $resource)
+    {
+        return $this->responseFactory->createResponse($resource, StatusCode::CREATED);
     }
 }

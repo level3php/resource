@@ -1,12 +1,11 @@
 <?php
 
 namespace Level3;
-
-use Hal\Resource;
+use Level3\Hal\Resource;
 
 class ResponseFactory
 {
-    public function createResponse($resource, $statusCode)
+    public function createResponse(Resource $resource, $statusCode)
     {
         return new Response($resource, $statusCode);
     }

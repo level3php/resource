@@ -67,13 +67,13 @@ class Link
         return $this->title;
     }
 
-    public function isTemplated($templated) 
+    public function setTemplated($templated) 
     {
         $this->templated = (boolean)$templated;
         return $this;
     }
 
-    public function getTemplated()
+    public function isTemplated()
     {
         return $this->templated;
     }
