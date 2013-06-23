@@ -22,6 +22,13 @@ class RepositoryMapperTest extends TestCase
         );
     }
 
+    public function testGetReourceHub()
+    {
+        $hub =  m::mock('Level3\RepositoryHub');
+        $mapper = $this->getMapperMock(array($hub));
+        $this->assertInstanceOf('Level3\RepositoryHub', $mapper->getRepositoryHub());
+    }
+
     public function testSetBaseURI()
     {
         $mapper = $this->getMapperMock();

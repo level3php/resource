@@ -22,6 +22,11 @@ abstract class RepositoryMapper
         $this->repositoryHub = $repositoryHub;
     }
 
+    public function getRepositoryHub()
+    {
+        return $this->repositoryHub;
+    }
+
     public function setBaseURI($uri)
     {
         if ($this->doesNotEndInSlash($uri)) {
