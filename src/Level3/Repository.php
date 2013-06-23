@@ -9,9 +9,8 @@
  */
 
 namespace Level3;
-use Hal\Resource;
 
-abstract class ResourceRepository
+abstract class Repository
 {
     private $hub;
     private $key;
@@ -45,7 +44,12 @@ abstract class ResourceRepository
         return $description;
     }
 
-    public function create($id)
+    public function createLink($id)
+    {
+        
+    }
+
+    public function createResource($id)
     {
         if (!$this->hub) {
             throw new \RuntimeException('Set a ResourceHub before using create method.');

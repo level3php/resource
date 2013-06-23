@@ -8,34 +8,26 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3;
-use Nocarrier\Hal;
+namespace Level3\Hal;
 use Level3\ResourceRepository\Getter;
 
-class ResourceBuilder
+class Builder
 {
-    private $hub;
+    private $repositoryHub;
 
-    private $key;
-    private $id;
+    private $uri;
     private $data;
     private $links = array();
     private $embedded = array();
 
-    public function __construct(ResourceHub $hub)
+    public function __construct(RepositoryHub $hub)
     {
-        $this->hub = $hub;
+        $this->repositoryHub = $repositoryHub;
     }
 
-    public function withKey($key)
+    public function withURI($uri)
     {
-        $this->key = $key;
-        return $this;
-    }
-
-    public function withId($id)
-    {
-        $this->id = $id;
+        $this->uri = $uri;
         return $this;
     }
 

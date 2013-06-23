@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3\ResourceRepository\Exception;
+namespace Level3\Repository\Exception;
 
 use Teapot\StatusCode;
 

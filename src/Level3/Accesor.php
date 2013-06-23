@@ -14,14 +14,14 @@ use Level3\ResourceRepository\Exception\BaseException;
 use Teapot\StatusCode;
 use Hal\Resource;
 
-class ResourceAccesor
+class Accesor
 {
-    private $hub;
+    private $repositoryHub;
     private $responseFactory;
 
-    public function __construct(ResourceHub $hub, ResponseFactory $responseFactory)
+    public function __construct(RepositoryHub $repositoryHub, ResponseFactory $responseFactory)
     {
-        $this->hub = $hub;
+        $this->repositoryHub = $repositoryHub;
         $this->responseFactory = $responseFactory;
     }
 
@@ -33,7 +33,6 @@ class ResourceAccesor
             $status = $e->getCode();
         } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
-            //print_r($e->getMessage());
         }
 
         return $this->createErrorResponse($status);
@@ -41,7 +40,7 @@ class ResourceAccesor
 
     private function findResource($key)
     {
-        $resourceRepository = $this->hub[$key];
+        $resourceRepository = $this->repositoryHub->get($key);
         $result = $resourceRepository->find();
 
         return $this->createOKResponse($result);
@@ -62,7 +61,7 @@ class ResourceAccesor
 
     private function getResource($key, $id)
     {
-        $resource = $this->hub[$key];
+        $resource = $this->repositoryHub->get($key);
         $result = $resource->get($id);
 
         return $this->responseFactory->createResponse($result, StatusCode::OK);
@@ -83,7 +82,7 @@ class ResourceAccesor
 
     private function postDataForResourceWithKeyAndId(Array $data, $key, $id)
     {
-        $resource = $this->hub[$key];
+        $resource = $this->repositoryHub->get($key);
         $resource->post($id, $data);
         $value = $resource->get($id);
 
@@ -105,7 +104,7 @@ class ResourceAccesor
 
     private function createResourceWithKey($key, Array $data)
     {
-        $resource = $this->hub[$key];
+        $resource = $this->repositoryHub->get($key);
         $result = $resource->put($data);
         $value = $resource->get($result);
 
@@ -127,9 +126,9 @@ class ResourceAccesor
 
     private function deleteResourceWithKeyAndId($key, $id)
     {
-        $resource = $this->hub[$key];
+        $resource = $this->repositoryHub->get($key);
         $resource->delete($id);
-        
+
         return $this->createOKResponse(null);
     }
 

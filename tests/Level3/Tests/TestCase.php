@@ -33,14 +33,18 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
     //
 
-    protected function resourceHubShouldHavePair($key, $value)
+    protected function repositoryHubShouldHavePair($key, $value)
     {
-        $this->resourceHubKeyShouldExist($key);
-        $this->resourceHubMock->shouldReceive('offsetGet')->with($key)->once()->andReturn($value);
+        $this->repositoryHubKeyShouldExist($key);
+        $this->repositoryHubMock->shouldReceive('offsetGet')->with($key)->once()->andReturn($value);
     }
 
-    protected function resourceHubKeyShouldExist($key)
+    protected function repositoryHubKeyShouldExist($key)
     {
-        $this->resourceHubMock->shouldReceive('offsetExists')->with($key)->andReturn(true);
+        $this->repositoryHubMock->shouldReceive('offsetExists')->with($key)->andReturn(true);
+    }
+
+    public function tearDown() {
+        m::close();
     }
 }
