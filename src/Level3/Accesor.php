@@ -34,6 +34,7 @@ class Accesor
             $status = $e->getCode();
         } catch (Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
+            var_dump($e);
         }
 
         return $this->createErrorResponse($status);

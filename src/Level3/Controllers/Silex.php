@@ -13,7 +13,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Level3\ResourceAccesor;
+use Level3\Accesor;
 use Level3\Response as Level3Response;
 
 class Silex
@@ -21,7 +21,7 @@ class Silex
     private $app;
     private $accesor;
 
-    public function __construct(Application $app, ResourceAccesor $accesor)
+    public function __construct(Application $app, Accesor $accesor)
     {
         $this->app = $app;
         $this->accesor = $accesor;

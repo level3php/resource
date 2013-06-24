@@ -9,6 +9,8 @@
  */
 
 namespace Level3;
+use Level3\Hal\LinkBuilder;
+use Level3\Hal\ResourceBuilder;
 
 abstract class Repository
 {

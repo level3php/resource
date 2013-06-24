@@ -16,6 +16,8 @@ class LinkBuilder
     private $repositoryMapper;
 
     private $href;
+    private $name;
+    private $title;
 
     public function __construct(RepositoryMapper $repositoryMapper)
     {
@@ -29,10 +31,26 @@ class LinkBuilder
         return $this;
     }
 
+    public function withTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function withName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
     public function build()
     {
         $resource = new Link();
         if ($this->href) $resource->setHref($this->href);
+        if ($this->name) $resource->setName($this->name);
+        if ($this->title) $resource->setTitle($this->title);
 
         return $resource;
     }

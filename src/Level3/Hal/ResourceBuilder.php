@@ -34,16 +34,22 @@ class ResourceBuilder
 
     public function withEmbedded($relation, $repositoryKey, $id)
     {
-        $resource = $this->getRepository($repositoryKey)->createResource($id);
+        $resource = $this->getRepository($repositoryKey)->get($id);
+        $this->setSelfLinkToResource($resource, $repositoryKey, $id);
+
         $this->embedded[$relation][] = $resource;
 
         return $this;
     }
 
-    public function withLinkToResource($relation, $repositoryKey, $id)
+    public function withLinkToResource($relation, $repositoryKey, $id, $title = null)
     {
-        $link = $this->getRepository($repositoryKey)->createLink($id);
-        $this->links[$relation][] = $link;
+        $linkBuilder = $this->getRepository($repositoryKey)->createLinkBuilder();
+        $linkBuilder->withResource($repositoryKey, $id);
+        $linkBuilder->withName($id);
+        if ($title) $linkBuilder->withTitle($title);
+
+        $this->links[$relation][] = $linkBuilder->build();
 
         return $this;
     }
@@ -68,20 +74,36 @@ class ResourceBuilder
         $resource = new Resource();
         if ($this->uri) $resource->setURI($this->uri);
         if ($this->data) $resource->setData($this->data);
-        if ($this->links) $resource->setLinks($this->links, false, true);
 
         foreach($this->embedded as $rel => $embeddeds) {
             foreach($embeddeds as $embedded) {
-                $resource->setEmbedded($rel, $embedded);
+                $resource->addResource($rel, $embedded);
             }
         }
 
+        foreach($this->links as $rel => $links) {
+            foreach($links as $link) {
+                $resource->addLink($rel, $link);
+            }
+        }
+        
         return $resource;
+    }
+
+    private function setSelfLinkToResource(Resource $resource, $repositoryKey, $id)
+    {
+        try {
+            $uri = $this->getResouceURI($repositoryKey, $id);
+        } catch (\Exception $e) {
+            $uri = null;
+        }
+
+        $resource->setURI($uri);
     }
 
     private function getRepository($repositoryKey)
     {
-        return $this->repositoryMapper->get($repositoryKey);
+        return $this->repositoryMapper->getRepositoryHub()->get($repositoryKey);
     }
 
     private function getResouceURI($repositoryKey, $id)

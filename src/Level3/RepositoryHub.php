@@ -32,7 +32,8 @@ class RepositoryHub
 
     public function get($key)
     {
-        if (!isset($this->instancedRepositories[$key])) {
+        if (!$this->isDefinitionAlreadyInstanced($key)) {
+            $this->failIfDefinitionNotExists($key);
             $this->instanceDefinition($key);
         }
 
@@ -91,12 +92,6 @@ class RepositoryHub
 
     private function instanceDefinition($key)
     {
-        if (!isset($this->repositoryDefinitions[$key])) {
-            throw new \UnexpectedValueException(
-                sprintf('Unable to find a repository definition called "%s"', $key)
-            );
-        }
-
         $repository = $this->repositoryDefinitions[$key]();
         if (!$repository instanceOf Repository) {
             throw new \RuntimeException(
@@ -104,7 +99,27 @@ class RepositoryHub
             );
         }
 
+        $this->setRegisteredRepositoryKeyToRepository($repository, $key);
         $this->instancedRepositories[$key] = $repository;
+    }
+
+    private function setRegisteredRepositoryKeyToRepository(Repository $repository, $key)
+    {
+        $repository->setKey($key);
+    }
+
+    private function isDefinitionAlreadyInstanced($key)
+    {
+        return isset($this->instancedRepositories[$key]);
+    }
+
+    private function failIfDefinitionNotExists($key)
+    {
+        if (!isset($this->repositoryDefinitions[$key])) {
+            throw new \UnexpectedValueException(
+                sprintf('Unable to find a repository definition called "%s"', $key)
+            );
+        }
     }
 
     private function isValidKey($key)

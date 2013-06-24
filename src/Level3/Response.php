@@ -89,7 +89,7 @@ class Response
             case null:
             case self::AS_JSON:
                 $mime = 'application/hal+json';
-                if ($this->resource) $content = $this->resource->asJson();
+                if ($this->resource) $content = $this->resource->asJson(true);
                 break;
             case self::AS_XML:
                 $mime = 'application/hal+xml';
