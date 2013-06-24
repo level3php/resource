@@ -1,0 +1,26 @@
+{
+    "qux": "bar",
+    "_links": {
+        "self": {
+            "href": "foo"
+        },
+        "quz": {
+            "href": "foo",
+            "name": "name",
+            "lang": "lang",
+            "title": "title"
+        }
+    },
+    "_embedded": {
+        "baz": [
+            {
+                "bar": "qux",
+                "_links": {
+                    "self": {
+                        "href": "foo"
+                    }
+                }
+            }
+        ]
+    }
+}

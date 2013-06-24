@@ -15,7 +15,8 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Level3\Messages\Response as Level3Response;
+use Level3\Accesor;
+use Level3\Response as Level3Response;
 
 class Silex
 {
@@ -23,7 +24,7 @@ class Silex
     private $processor;
     private $requestFactory;
 
-    public function __construct(Application $app, RequestProcessor $processor, RequestFactory $requestFactory)
+    public function __construct(Application $app, Accesor $accesor, RequestFactory $requestFactory)
     {
         $this->app = $app;
         $this->processor = $processor;

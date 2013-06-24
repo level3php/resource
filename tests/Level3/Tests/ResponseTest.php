@@ -9,9 +9,9 @@
  */
 
 namespace Level3\Tests;
+use Level3\Hal\Resource;
 use Level3\Messages\Response;
 use Teapot\StatusCode;
-use Hal\Resource;
 
 class ResponseTest extends TestCase {
     public function testConstructor()

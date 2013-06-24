@@ -9,8 +9,9 @@
  */
 
 namespace Level3\Messages;
+
+use Level3\Hal\Resource;
 use Teapot\StatusCode;
-use Hal\Resource;
 
 class Response
 {
@@ -89,11 +90,11 @@ class Response
             case null:
             case self::AS_JSON:
                 $mime = 'application/hal+json';
-                if ($this->resource) $content = (string)$this->resource;
+                if ($this->resource) $content = $this->resource->asJson(true);
                 break;
             case self::AS_XML:
                 $mime = 'application/hal+xml';
-                if ($this->resource) $content = $this->resource->getXML()->asXML();
+                if ($this->resource) $content = $this->resource->asXML();
                 break;
             default:
                 throw new \InvalidArgumentException(sprintf(
