@@ -17,6 +17,7 @@ class RepositoryHubTest extends TestCase
     public function testRegisterDefinition()
     {
         $repository = m::mock('Level3\Repository');
+        $repository->shouldReceive('setKey')->once()->andReturn(array('foo'));
 
         $hub = new RepositoryHub();
         $hub->registerDefinition('foo', function() use ($repository) {
@@ -68,6 +69,7 @@ class RepositoryHubTest extends TestCase
     public function testIs($interface, $method, $assert)
     {
         $repository = m::mock('Level3\Repository,Level3\Repository\\' . $interface);
+        $repository->shouldReceive('setKey')->once()->andReturn(array('foo'));
 
         $hub = new RepositoryHub();
         $hub->registerDefinition('foo', function() use ($repository) {
