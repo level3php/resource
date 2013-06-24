@@ -44,30 +44,13 @@ abstract class Repository
         return $description;
     }
 
-    public function createResourceLink($id)
+    public function createLinkBuilder()
     {
-
+        return new LinkBuilder($this->repositoryMapper);
     }
 
-    public function createResource($id)
+    public function createResourceBuilder()
     {
-        if (!$this->repositoryMapper) {
-            throw new \RuntimeException('Set a RepositoryMapper before using createResource method.');
-        }
-
-        $uri = $this->getRepositoryGetURI($id);
-
-        $builder = new ResourceBuilder();
-        $builder->withURI($uri);
-        
-        $resource->setData($this->resource($id));
-        return $resource;
+        return new ResourceBuilder($this->repositoryMapper);
     }
-
-    private function getRepositoryGetURI($id)
-    {
-        return $this->repositoryMapper->getURI($this->repositoryKey, 'get', array('id' => $id));
-    }
-
-    abstract protected function buildResource($id);
 }

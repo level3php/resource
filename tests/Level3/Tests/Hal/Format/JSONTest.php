@@ -15,6 +15,6 @@ use Level3\Hal\Format\JSON;
 
 class JSONTest extends Format {
     protected $class = 'Level3\Hal\Format\JSON';
-    protected $nonPretty = 'e08551c0703353afbc692c15851bc8fa';
-    protected $pretty = '119503c82d5442e421d7a18654756070';
+    protected $nonPretty = 'HalFormatJSONNonPretty.json';
+    protected $pretty = 'HalFormatJSONPretty.json';
 }

@@ -62,13 +62,13 @@ class LinkTest extends TestCase {
         $this->assertSame($title, $link->getTitle()); 
     }
 
-    public function testIsTemplatedAndGetTemplated()
+    public function testIsTemplatedAndSetTemplated()
     {
         $templated = true;
 
         $link = new Link();
-        $this->assertSame($link, $link->isTemplated($templated));
-        $this->assertSame($templated, $link->getTemplated()); 
+        $this->assertSame($link, $link->setTemplated($templated));
+        $this->assertSame($templated, $link->isTemplated()); 
     }
 
     public function testGetAttributes()
@@ -84,7 +84,7 @@ class LinkTest extends TestCase {
         $link->setName($expected['name']);
         $link->setLang($expected['lang']);
         $link->setTitle($expected['title']);
-        $link->isTemplated($expected['templated']);
+        $link->setTemplated($expected['templated']);
 
         $this->assertSame($expected, $link->getAttributes());
     }

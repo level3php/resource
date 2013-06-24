@@ -21,18 +21,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected $resourceHubMock;
 
-    //Make sure this method is really necessary
-    protected function getHub()
-    {
-        $mapper = new Mapper();
-
-        $hub = new ResourceHub();
-        $hub->setMapper($mapper);
-
-        return $hub;
-    }
-    //
-
     protected function repositoryHubShouldHavePair($key, $value)
     {
         $this->repositoryHubKeyShouldExist($key);

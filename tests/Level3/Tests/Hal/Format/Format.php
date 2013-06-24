@@ -31,7 +31,19 @@ abstract class Format extends TestCase {
             new Resource('foo', array('bar' => 'qux'))
         );
 
-        $this->assertSame($this->nonPretty, md5($format->to($resource, false)));
-        $this->assertSame($this->pretty, md5($format->to($resource, true)));
+        $this->assertSame(
+            $this->readResource($this->nonPretty), 
+            $format->to($resource, false)
+        );
+
+        $this->assertSame(
+            $this->readResource($this->pretty), 
+            $format->to($resource, true)
+        );
+    }
+
+    public function readResource($filename)
+    {
+        return file_get_contents(__DIR__ . '/../../../Resources/' . $filename);
     }
 }

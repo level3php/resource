@@ -7,7 +7,8 @@ use Level3\Accesor;
 use Teapot\StatusCode;
 use Mockery as m;
 
-class AccessorTest extends TestCase
+
+class AccessorTest
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'Y';
