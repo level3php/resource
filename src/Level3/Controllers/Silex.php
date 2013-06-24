@@ -9,60 +9,63 @@
  */
 
 namespace Level3\Controllers;
+use Level3\Messages\Processors\RequestProcessor;
+use Level3\Messages\RequestFactory;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Level3\ResourceAccesor;
-use Level3\Response as Level3Response;
+use Level3\Messages\Response as Level3Response;
 
 class Silex
 {
     private $app;
-    private $accesor;
+    private $processor;
+    private $requestFactory;
 
-    public function __construct(Application $app, ResourceAccesor $accesor)
+    public function __construct(Application $app, RequestProcessor $processor, RequestFactory $requestFactory)
     {
         $this->app = $app;
-        $this->accesor = $accesor;
+        $this->processor = $processor;
+        $this->requestFactory = $requestFactory;
     }
 
     public function find(Request $request)
     {
-        $key = $this->getResourceKey($request);
-        $result = $this->accesor->find($key);
+        $level3Request = $this->createLevel3Request($request);
+        $result = $this->processor->find($level3Request);
 
         return $this->getResponse($result);
     }
 
     public function get(Request $request, $id = null)
     {
-        $key = $this->getResourceKey($request);
-        $result = $this->accesor->get($key, $id);
+        $level3Request = $this->createLevel3Request($request, $id);
+        $result = $this->processor->get($level3Request);
 
         return $this->getResponse($result);
     }
 
     public function post(Request $request, $id)
     {
-        $key = $this->getResourceKey($request);
-        $result = $this->accesor->post($key, $id, $request->request->all());
+        $level3Request = $this->createLevel3Request($request, $id);
+        $result = $this->processor->post($level3Request);
 
         return $this->getResponse($result);
     }
 
     public function put(Request $request)
     {
-        $key = $this->getResourceKey($request);
-        $result = $this->accesor->put($key, $request->request->all());
+        $level3Request = $this->createLevel3Request($request);
+        $result = $this->processor->put($level3Request);
 
         return $this->getResponse($result);
     }
 
     public function delete(Request $request, $id)
     {
-        $key = $this->getResourceKey($request);
-        $result = $this->accesor->delete($key, $id);
+        $level3Request = $this->createLevel3Request($request, $id);
+        $result = $this->processor->delete($level3Request);
 
         return $this->getResponse($result);
     }
@@ -74,6 +77,22 @@ class Silex
             $response->getStatus(),
             $response->getHeaders()
         );
+    }
+
+    protected function createLevel3Request(Request $request, $id = null)
+    {
+        $key = $this->getResourceKey($request);
+        $requestAttributes = $request->request->all();
+        $content = $request->getContent();
+        $requestHeaders = $request->headers->all();
+        $level3Request = $this->requestFactory->clear()
+            ->withKey($key)
+            ->witId($id)
+            ->withAttributes($requestAttributes)
+            ->withHeaders($requestHeaders)
+            ->withContent($content)
+            ->create();
+        return $level3Request;
     }
 
     protected function getResourceKey(Request $request)

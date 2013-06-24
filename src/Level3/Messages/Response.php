@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3;
+namespace Level3\Messages;
 use Teapot\StatusCode;
 use Hal\Resource;
 

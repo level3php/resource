@@ -13,6 +13,7 @@ namespace Level3;
 use Level3\ResourceRepository\Exception\BaseException;
 use Teapot\StatusCode;
 use Hal\Resource;
+use Level3\Messages\ResponseFactory;
 
 class ResourceAccesor
 {
@@ -33,7 +34,6 @@ class ResourceAccesor
             $status = $e->getCode();
         } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
-            //print_r($e->getMessage());
         }
 
         return $this->createErrorResponse($status);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3;
+namespace Level3\Messages;
 
 use Hal\Resource;
 

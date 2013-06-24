@@ -19,12 +19,11 @@ class ResourceAccessorTest extends TestCase
 
     public function __construct($name = null, $data = array(), $dataName='') {
         parent::__construct($name, $data, $dataName);
-        $this->resourceHubMock = m::mock('Level3\ResourceHub');
     }
 
     public function setUp()
     {
-        $this->responseFactoryMock = m::mock('Level3\ResponseFactory');
+        $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
         $this->resourceHubMock = m::mock('Level3\ResourceHub');
         $this->resourceAccessor = new ResourceAccesor($this->resourceHubMock, $this->responseFactoryMock);
     }

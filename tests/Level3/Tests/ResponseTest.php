@@ -9,7 +9,7 @@
  */
 
 namespace Level3\Tests;
-use Level3\Response;
+use Level3\Messages\Response;
 use Teapot\StatusCode;
 use Hal\Resource;
 
