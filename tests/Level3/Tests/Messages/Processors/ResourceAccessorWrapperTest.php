@@ -66,7 +66,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider exceptionMapping
      */
-    public function getShouldFailWithException($exception, $code)
+    public function findShouldFailWithException($exception, $code)
     {
         $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()
             ->andThrow($exception);
@@ -92,6 +92,23 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
+    /**
+     * @test
+     * @dataProvider exceptionMapping
+     */
+    public function getShouldFailWithException($exception, $code)
+    {
+        $this->accessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
+            ->andThrow($exception);
+        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
+            null, $code, self::IRRELEVANT_RESPONSE
+        );
+
+        $result = $this->accessorWrapper->get($this->dummyRequest);
+
+        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
     public function testPost()
     {
         $this->accessorMock->shouldReceive('post')
@@ -99,6 +116,23 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
             ->andReturn($this->dummyResource);
         $this->responseFactoryCreateResponseShouldReceiveAndReturn(
             $this->dummyResource, StatusCode::OK, self::IRRELEVANT_RESPONSE
+        );
+
+        $result = $this->accessorWrapper->post($this->dummyRequest);
+
+        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    /**
+     * @test
+     * @dataProvider exceptionMapping
+     */
+    public function postShouldFailWithException($exception, $code)
+    {
+        $this->accessorMock->shouldReceive('post')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()
+            ->andThrow($exception);
+        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
+            null, $code, self::IRRELEVANT_RESPONSE
         );
 
         $result = $this->accessorWrapper->post($this->dummyRequest);
@@ -120,11 +154,45 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
+    /**
+     * @test
+     * @dataProvider exceptionMapping
+     */
+    public function putShouldFailWithException($exception, $code)
+    {
+        $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()
+            ->andThrow($exception);
+        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
+            null, $code, self::IRRELEVANT_RESPONSE
+        );
+
+        $result = $this->accessorWrapper->put($this->dummyRequest);
+
+        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
     public function testDelete()
     {
         $this->accessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once();
         $this->responseFactoryCreateResponseShouldReceiveAndReturn(
             null, StatusCode::OK, self::IRRELEVANT_RESPONSE
+        );
+
+        $result = $this->accessorWrapper->delete($this->dummyRequest);
+
+        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    /**
+     * @test
+     * @dataProvider exceptionMapping
+     */
+    public function deleteShouldFailWithException($exception, $code)
+    {
+        $this->accessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
+            ->andThrow($exception);
+        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
+            null, $code, self::IRRELEVANT_RESPONSE
         );
 
         $result = $this->accessorWrapper->delete($this->dummyRequest);

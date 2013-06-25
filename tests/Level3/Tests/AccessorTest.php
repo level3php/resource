@@ -4,7 +4,7 @@ namespace Level3\Tests;
 
 use Hal\Resource;
 use Level3\Accessor;
-use Teapot\StatusCode;
+use Level3\Repository\Exception\BaseException;
 use Mockery as m;
 
 
@@ -76,11 +76,6 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository\Poster, Level3\Repository\Getter');
     }
 
-    private function createPosterMock()
-    {
-        return m::mock('Level3\Repository\Poster');
-    }
-
     public function testPut()
     {
         $putterMock = $this->createPutterMock();
@@ -111,22 +106,6 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
     private function createDeleterMock()
     {
         return m::mock('Level3\Repository\Deleter');
-    }
-
-    public function repositoryFindShouldThrow($exception)
-    {
-        $this->RepositoryMock->shouldReceive('find')->withNoArgs()->once()->andThrow($exception);
-    }
-
-    public function exceptionMapping()
-    {
-        return array(
-            array('Level3\Repository\Exception\Conflict', StatusCode::CONFLICT),
-            array('Level3\Repository\Exception\DataError', StatusCode::BAD_REQUEST),
-            array('Level3\Repository\Exception\NoContent', StatusCode::NO_CONTENT),
-            array('Level3\Repository\Exception\NotFound', StatusCode::NOT_FOUND),
-            array('\Exception', StatusCode::INTERNAL_SERVER_ERROR)
-        );
     }
 
     private function repositoryHubShouldHavePair($key, $value)
