@@ -32,12 +32,12 @@ abstract class Format extends TestCase {
         );
 
         $this->assertSame(
-            $this->readResource($this->nonPretty), 
+            $this->readResource($this->nonPretty),
             $format->to($resource, false)
         );
 
         $this->assertSame(
-            $this->readResource($this->pretty), 
+            $this->readResource($this->pretty),
             $format->to($resource, true)
         );
     }

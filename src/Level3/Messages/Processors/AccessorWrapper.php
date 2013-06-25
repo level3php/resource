@@ -1,40 +1,41 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
-namespace Level3;
+namespace Level3\Messages\Processors;
 
+use Level3\Accessor;
+use Level3\Messages\Parser\ParserFactory;
+use Level3\Messages\Request;
+use Teapot\StatusCode;
 use Level3\Repository\Exception\BaseException;
 use Level3\Hal\Resource;
-use Teapot\StatusCode;
+use Level3\Messages\ResponseFactory;
 use Exception;
 
-class Accesor
+class AccessorWrapper implements RequestProcessor
 {
-    private $repositoryHub;
-    private $responseFactory;
+    const HEADER_CONTENT_TYPE = 'Content-Type';
 
-    public function __construct(RepositoryHub $repositoryHub, ResponseFactory $responseFactory)
+    protected $accessor;
+    protected $responseFactory;
+    protected $parserFactory;
+
+    public function __construct(Accessor $resourceAccessor, ResponseFactory $responseFactory, ParserFactory $parserFactory)
     {
-        $this->repositoryHub = $repositoryHub;
+        $this->accessor = $resourceAccessor;
         $this->responseFactory = $responseFactory;
+        $this->parserFactory = $parserFactory;
     }
 
-    public function find($key)
+    public function find(Request $request)
     {
+        $key = $request->getKey();
+
         try {
             return $this->findResources($key);
         } catch (BaseException $e) {
             $status = $e->getCode();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $status = StatusCode::INTERNAL_SERVER_ERROR;
-            var_dump($e);
         }
 
         return $this->createErrorResponse($status);
@@ -42,14 +43,15 @@ class Accesor
 
     private function findResources($key)
     {
-        $repository = $this->repositoryHub->get($key);
-        $resource = $repository->find();
-
+        $resource = $this->accessor->find($key);
         return $this->createOKResponse($resource);
     }
 
-    public function get($key, $id)
+    public function get(Request $request)
     {
+        $key = $request->getKey();
+        $id = $request->getId();
+
         try {
             return $this->getResource($key, $id);
         } catch (BaseException $e) {
@@ -63,16 +65,18 @@ class Accesor
 
     private function getResource($key, $id)
     {
-        $repository = $this->repositoryHub->get($key);
-        $resource = $repository->get($id);
-
+        $resource = $this->accessor->get($key, $id);
         return $this->createOKResponse($resource);
     }
 
-    public function post($key, $id, Array $receivedResourceData)
+    public function post(Request $request)
     {
+        $key = $request->getKey();
+        $id = $request->getId();
+        $content = $this->getRequestContentAsArray($request);
+
         try {
-            return $this->modifyResource($key, $id, $receivedResourceData);
+            return $this->modifyResource($key, $id, $content);
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
@@ -82,19 +86,19 @@ class Accesor
         return $this->createErrorResponse($status);
     }
 
-    private function modifyResource($key, $id, Array $receivedResourceData)
+    private function modifyResource($key, $id, $content)
     {
-        $repository = $this->repositoryHub->get($key);
-        $repository->post($id, $receivedResourceData);
-        $resource = $repository->get($id);
-
+        $resource = $this->accessor->post($key, $id, $content);
         return $this->createOKResponse($resource);
     }
 
-    public function put($key, Array $receivedResourceData)
+    public function put(Request $request)
     {
+        $key = $request->getKey();
+        $content = $this->getRequestContentAsArray($request);
+
         try {
-            return $this->createResource($key, $receivedResourceData);
+            return $this->createResource($key, $content);
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
@@ -104,16 +108,25 @@ class Accesor
         return $this->createErrorResponse($status);
     }
 
-    private function createResource($key, Array $receivedResourceData)
+    private function createResource($key, $content)
     {
-        $repository = $this->repositoryHub->get($key);
-        $resource = $repository->put($data);
-
+        $resource = $this->accessor->put($key, $content);
         return $this->createCreatedResponse($resource);
     }
 
-    public function delete($key, $id)
+    protected function getRequestContentAsArray(Request $request)
     {
+        $contentType = $request->getHeader(self::HEADER_CONTENT_TYPE);
+        $parser = $this->parserFactory->createParser($request->getHeader($contentType));
+
+        return $parser->parse($request->getContent());
+    }
+
+    public function delete(Request $request)
+    {
+        $key = $request->getKey();
+        $id = $request->getId();
+
         try {
             return $this->deleteResource($key, $id);
         } catch (BaseException $e) {
@@ -127,9 +140,7 @@ class Accesor
 
     private function deleteResource($key, $id)
     {
-        $repository = $this->repositoryHub->get($key);
-        $repository->delete($id);
-
+        $this->accessor->delete($key, $id);
         return $this->createOKResponse(null);
     }
 
@@ -138,7 +149,7 @@ class Accesor
         return $this->responseFactory->createResponse(null, $status);
     }
 
-    private function createOKResponse(Resource $resource)
+    private function createOKResponse(Resource $resource = null)
     {
         return $this->responseFactory->createResponse($resource, StatusCode::OK);
     }

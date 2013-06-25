@@ -9,8 +9,8 @@
  */
 
 namespace Level3\Tests;
-use Level3\Response;
 use Level3\Hal\Resource;
+use Level3\Messages\Response;
 use Teapot\StatusCode;
 
 class ResponseTest extends TestCase {

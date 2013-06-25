@@ -1,6 +1,7 @@
 <?php
 
-namespace Level3;
+namespace Level3\Messages;
+
 use Level3\Hal\Resource;
 use Teapot\StatusCode;
 
