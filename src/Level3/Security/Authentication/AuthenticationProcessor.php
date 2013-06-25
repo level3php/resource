@@ -15,6 +15,10 @@ class AuthenticationProcessor implements RequestProcessor
     const API_KEY_HEADER = 'X-Yunait-APIKey';
     const SIGNATURE_HEADER = 'X-Yunait-Signature';
     const HASH_ALGORITHM = 'sha256';
+    const AUTHORIZATION_HEADER = 'Authorization';
+    const TOKEN = 'Token';
+    const TOKEN_SEPARATOR = ' ';
+    const AUTHORIZATION_FIELDS_SEPARATOR = ':';
 
     private $processor;
     private $userRepository;
@@ -99,11 +103,8 @@ class AuthenticationProcessor implements RequestProcessor
 
     protected function authenticateRequest(Request $request)
     {
-        if (!$this->hasApiKeyHeader($request)) {
+        if (!$this->hasAuthorizationHeader($request)) {
             throw new MissingApiKey();
-        }
-        if (!$this->hasSignatureHeader($request)) {
-            throw new InvalidSignature();
         }
 
         $apiKey = $this->getApiKeyFromRequest($request);
@@ -115,7 +116,7 @@ class AuthenticationProcessor implements RequestProcessor
         return $request;
     }
 
-    protected function hasApiKeyHeader(Request $request)
+    protected function hasAuthorizationHeader(Request $request)
     {
         return $request->hasHeader(self::API_KEY_HEADER);
     }
@@ -127,7 +128,8 @@ class AuthenticationProcessor implements RequestProcessor
 
     protected function getApiKeyFromRequest(Request $request)
     {
-        return $request->getHeader(self::API_KEY_HEADER);
+        $authContent = $this->extractAuthContent($request);
+        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent)[0];
     }
 
     protected function createForbiddenResponse()
@@ -139,10 +141,23 @@ class AuthenticationProcessor implements RequestProcessor
     {
         $originalContent = $request->getContent();
         $calculatedSignature = hash_hmac(self::HASH_ALGORITHM, $originalContent, $privateKey);
-        $signature = $request->getHeader(self::SIGNATURE_HEADER);
+
+        $authContent = $this->extractAuthContent($request);
+        $signature = $authContent[1];
 
         if ($calculatedSignature !== $signature) {
             throw new InvalidSignature();
         }
+    }
+
+    protected function extractAuthContent(Request $request)
+    {
+        $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
+
+        if (explode(self::TOKEN_SEPARATOR, $authHeader)[0] !== self::TOKEN) {
+            throw new MissingApiKey();
+        }
+
+        return explode(self::TOKEN_SEPARATOR, $authHeader)[1];
     }
 }
