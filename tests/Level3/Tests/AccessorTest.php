@@ -27,10 +27,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         $this->accessor = new Accessor($this->repositoryHubMock);
     }
 
-    /**
-     * @test
-     */
-    public function shouldFind()
+    public function testFind()
     {
         $finder = $this->createFinderMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $finder);
@@ -46,10 +43,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository\Finder');
     }
 
-    /**
-     * @test
-     */
-    public function shouldGet()
+    public function testGet()
     {
         $getterMock = $this->createGetterMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $getterMock);
@@ -65,10 +59,7 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository\Getter');
     }
 
-    /**
-     * @test
-     */
-    public function shouldPost()
+    public function testPost()
     {
         $posterMock = $this->createPosterAndGetterMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $posterMock);
@@ -90,12 +81,9 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository\Poster');
     }
 
-    /**
-     * @test
-     */
-    public function shouldPut()
+    public function testPut()
     {
-        $putterMock = $this->createPutterAndGetterMock();
+        $putterMock = $this->createPutterMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $putterMock);
         $putterMock->shouldReceive('put')->with(array())->once()->andReturn(self::IRRELEVANT_RESOURCE);
 
@@ -104,20 +92,12 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
-    private function createPutterAndGetterMock()
-    {
-        return m::mock('Level3\Repository\Putter, Level3\Repository\Getter');
-    }
-
     private function createPutterMock()
     {
         return m::mock('Level3\Repository\Putter');
     }
 
-    /**
-     * @test
-     */
-    public function shouldDelete()
+    public function testDelete()
     {
         $deleterMock = $this->createDeleterMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $deleterMock);
