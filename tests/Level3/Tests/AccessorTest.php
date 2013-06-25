@@ -3,7 +3,7 @@
 namespace Level3\Tests;
 
 use Hal\Resource;
-use Level3\Accesor;
+use Level3\Accessor;
 use Teapot\StatusCode;
 use Mockery as m;
 
@@ -26,7 +26,7 @@ class AccessorTest
     {
         $this->responseFactoryMock = m::mock('Level3\ResponseFactory');
         $this->resourceHubMock = m::mock('Level3\ResourceHub');
-        $this->resourceAccessor = new Accesor($this->resourceHubMock, $this->responseFactoryMock);
+        $this->resourceAccessor = new Accessor($this->resourceHubMock, $this->responseFactoryMock);
     }
 
     /**

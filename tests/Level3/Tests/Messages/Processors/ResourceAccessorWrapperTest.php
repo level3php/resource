@@ -3,21 +3,21 @@
 namespace Level3\Tests\Messages\Processors;
 
 use Level3\Messages\RequestFactory;
-use Level3\Messages\Processors\ResourceAccessorWrapper;
+use Level3\Messages\Processors\AccessorWrapper;
 use Mockery as m;
 
-class ResourceAccessorWrapperTest extends \PHPUnit_Framework_TestCase
+class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'XX';
     const IRRELEVANT_RESOURCE = 'Y';
 
-    private $resourceAccessorMock;
+    private $accessorMock;
     private $requestFactory;
     private $dummyRequest;
     private $dummyContent = array();
 
-    private $resourceAccessorWrapper;
+    private $accessorWrapper;
 
     public function __construct($name = null, $data = array(), $dataName='') {
         parent::__construct($name, $data, $dataName);
@@ -25,61 +25,61 @@ class ResourceAccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->resourceAccessorMock = m::mock('Level3\ResourceAccesor');
+        $this->accessorMock = m::mock('Level3\Accessor');
         $this->requestFactory = new RequestFactory();
         $this->dummyRequest = $this->createDummyRequest();
-        $this->resourceAccessorWrapper = new ResourceAccessorWrapper($this->resourceAccessorMock);
+        $this->accessorWrapper = new AccessorWrapper($this->accessorMock);
     }
 
 
     public function testFind()
     {
-        $this->resourceAccessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()
+        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()
             ->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $result = $this->resourceAccessorWrapper->find($this->dummyRequest);
+        $result = $this->accessorWrapper->find($this->dummyRequest);
 
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     public function testGet()
     {
-        $this->resourceAccessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
+        $this->accessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
             ->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $result = $this->resourceAccessorWrapper->get($this->dummyRequest);
+        $result = $this->accessorWrapper->get($this->dummyRequest);
 
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     public function testPost()
     {
-        $this->resourceAccessorMock->shouldReceive('post')
+        $this->accessorMock->shouldReceive('post')
             ->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, $this->dummyContent)->once()
             ->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $result = $this->resourceAccessorWrapper->post($this->dummyRequest);
+        $result = $this->accessorWrapper->post($this->dummyRequest);
 
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     public function testPut()
     {
-        $this->resourceAccessorMock->shouldReceive('put')
+        $this->accessorMock->shouldReceive('put')
             ->with(self::IRRELEVANT_KEY, $this->dummyContent)->once()
             ->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $result = $this->resourceAccessorWrapper->put($this->dummyRequest);
+        $result = $this->accessorWrapper->put($this->dummyRequest);
 
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     public function testDelete()
     {
-        $this->resourceAccessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
+        $this->accessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
             ->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $result = $this->resourceAccessorWrapper->delete($this->dummyRequest);
+        $result = $this->accessorWrapper->delete($this->dummyRequest);
 
         $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }

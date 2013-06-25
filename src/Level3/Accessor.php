@@ -16,7 +16,7 @@ use Teapot\StatusCode;
 use Level3\Messages\ResponseFactory;
 use Exception;
 
-class Accesor
+class Accessor
 {
     private $repositoryHub;
     private $responseFactory;

@@ -2,14 +2,14 @@
 
 namespace Level3\Messages\Processors;
 
-use Level3\ResourceAccesor;
+use Level3\Accessor;
 use Level3\Messages\Request;
 
-class ResourceAccessorWrapper implements RequestProcessor
+class AccessorWrapper implements RequestProcessor
 {
     protected $resourceAccessor;
 
-    public function __construct(ResourceAccesor $resourceAccessor)
+    public function __construct(Accessor $resourceAccessor)
     {
         $this->resourceAccessor = $resourceAccessor;
     }
