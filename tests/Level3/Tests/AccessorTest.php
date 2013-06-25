@@ -8,15 +8,14 @@ use Teapot\StatusCode;
 use Mockery as m;
 
 
-class AccessorTest
+class AccessorTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'Y';
-    const IRRELEVANT_RESPONSE = 'XX';
     const IRRELEVANT_RESOURCE = '2X';
 
-    private $responseFactoryMock;
-    private $resourceAccessor;
+    private $accessor;
+    private $repositoryHubMock;
 
     public function __construct($name = null, $data = array(), $dataName='') {
         parent::__construct($name, $data, $dataName);
@@ -24,9 +23,8 @@ class AccessorTest
 
     public function setUp()
     {
-        $this->responseFactoryMock = m::mock('Level3\ResponseFactory');
-        $this->resourceHubMock = m::mock('Level3\ResourceHub');
-        $this->resourceAccessor = new Accessor($this->resourceHubMock, $this->responseFactoryMock);
+        $this->repositoryHubMock = m::mock('Level3\RepositoryHub');
+        $this->accessor = new Accessor($this->repositoryHubMock);
     }
 
     /**
@@ -34,30 +32,13 @@ class AccessorTest
      */
     public function shouldFind()
     {
-        $Deleter = $this->createFinderMock();
-        $Deleter->shouldReceive('find')->withNoArgs()->once()->andReturn(array());
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $Deleter);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(array(), StatusCode::OK, self::IRRELEVANT_RESPONSE);
+        $finder = $this->createFinderMock();
+        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $finder);
+        $finder->shouldReceive('find')->withNoArgs()->once()->andReturn(array());
 
-        $response = $this->resourceAccessor->find(self::IRRELEVANT_KEY);
+        $response = $this->accessor->find(self::IRRELEVANT_KEY);
 
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function findShouldFailWithException($exception, $code)
-    {
-        $finderMock = $this->createFinderMock();
-        $finderMock->shouldReceive('find')->andThrow($exception);
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $finderMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(null, $code, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->resourceAccessor->find(self::IRRELEVANT_KEY);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo(array()));
     }
 
     private function createFinderMock()
@@ -71,29 +52,12 @@ class AccessorTest
     public function shouldGet()
     {
         $getterMock = $this->createGetterMock();
-        $getterMock->shouldReceive('get')->with(self::IRRELEVANT_ID)->once()->andReturn(self::IRRELEVANT_RESOURCE);
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $getterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(self::IRRELEVANT_RESOURCE, StatusCode::OK, self::IRRELEVANT_RESPONSE);
+        $getterMock->shouldReceive('get')->with(self::IRRELEVANT_ID)->once()->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $response = $this->resourceAccessor->get(self::IRRELEVANT_KEY, self::IRRELEVANT_ID);
+        $response = $this->accessor->get(self::IRRELEVANT_KEY, self::IRRELEVANT_ID);
 
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function getShouldFailWithException($exception, $code)
-    {
-        $finderMock = $this->createGetterMock();
-        $finderMock->shouldReceive('get')->andThrow($exception);
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $finderMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(null, $code, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->resourceAccessor->get(self::IRRELEVANT_KEY, self::IRRELEVANT_ID);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     private function createGetterMock()
@@ -107,35 +71,18 @@ class AccessorTest
     public function shouldPost()
     {
         $posterMock = $this->createPosterAndGetterMock();
+        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $posterMock);
         $posterMock->shouldReceive('post')->with(self::IRRELEVANT_ID, array())->once();
         $posterMock->shouldReceive('get')->with(self::IRRELEVANT_ID)->once()->andReturn(self::IRRELEVANT_RESOURCE);
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $posterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(self::IRRELEVANT_RESOURCE, StatusCode::OK, self::IRRELEVANT_RESPONSE);
 
-        $response = $this->resourceAccessor->post(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array());
+        $response = $this->accessor->post(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array());
 
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     private function createPosterAndGetterMock()
     {
         return m::mock('Level3\Repository\Poster, Level3\Repository\Getter');
-    }
-
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function postShouldFailWithException($exception, $code)
-    {
-        $posterMock = $this->createPosterMock();
-        $posterMock->shouldReceive('post')->with(self::IRRELEVANT_ID, array())->once()->andThrow($exception);
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $posterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(null, $code, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->resourceAccessor->post(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array());
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
     private function createPosterMock()
@@ -149,35 +96,17 @@ class AccessorTest
     public function shouldPut()
     {
         $putterMock = $this->createPutterAndGetterMock();
-        $putterMock->shouldReceive('put')->with(array())->once()->andReturn(self::IRRELEVANT_ID);
-        $putterMock->shouldReceive('get')->with(self::IRRELEVANT_ID)->once()->andReturn(self::IRRELEVANT_RESOURCE);
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $putterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(self::IRRELEVANT_RESOURCE, StatusCode::CREATED, self::IRRELEVANT_RESPONSE);
+        $putterMock->shouldReceive('put')->with(array())->once()->andReturn(self::IRRELEVANT_RESOURCE);
 
-        $response = $this->resourceAccessor->put(self::IRRELEVANT_KEY, array());
+        $response = $this->accessor->put(self::IRRELEVANT_KEY, array());
 
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
     private function createPutterAndGetterMock()
     {
         return m::mock('Level3\Repository\Putter, Level3\Repository\Getter');
-    }
-
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function putShouldFailWithException($exception, $code)
-    {
-        $putterMock = $this->createPutterMock();
-        $putterMock->shouldReceive('put')->with(array())->once()->andThrow($exception);
-        $this->RepositoryHubShouldHavePair(self::IRRELEVANT_KEY, $putterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(null, $code, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->resourceAccessor->put(self::IRRELEVANT_KEY, array());
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
     private function createPutterMock()
@@ -191,39 +120,17 @@ class AccessorTest
     public function shouldDelete()
     {
         $deleterMock = $this->createDeleterMock();
+        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $deleterMock);
         $deleterMock->shouldReceive('delete')->with(self::IRRELEVANT_ID)->once();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $deleterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(null, StatusCode::OK, self::IRRELEVANT_RESPONSE);
 
-        $response = $this->resourceAccessor->delete(self::IRRELEVANT_KEY, self::IRRELEVANT_ID);
+        $response = $this->accessor->delete(self::IRRELEVANT_KEY, self::IRRELEVANT_ID);
 
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function deleteShouldFailWithException($exception, $code)
-    {
-        $deleterMock = $this->createDeleterMock();
-        $deleterMock->shouldReceive('delete')->with(self::IRRELEVANT_ID)->once()->andThrow($exception);
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $deleterMock);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(null, $code, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->resourceAccessor->delete(self::IRRELEVANT_KEY, self::IRRELEVANT_ID);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo(null));
     }
 
     private function createDeleterMock()
     {
         return m::mock('Level3\Repository\Deleter');
-    }
-
-    private function responseFactoryCreateResponseShouldReceiveAndReturn($value, $statusCode, $return)
-    {
-        $this->responseFactoryMock->shouldReceive('createResponse')->with($value, $statusCode)->once()->andReturn($return);
     }
 
     public function repositoryFindShouldThrow($exception)
@@ -240,5 +147,10 @@ class AccessorTest
             array('Level3\Repository\Exception\NotFound', StatusCode::NOT_FOUND),
             array('\Exception', StatusCode::INTERNAL_SERVER_ERROR)
         );
+    }
+
+    private function repositoryHubShouldHavePair($key, $value)
+    {
+        $this->repositoryHubMock->shouldReceive('get')->with($key)->once()->andReturn($value);
     }
 }
