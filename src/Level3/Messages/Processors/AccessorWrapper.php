@@ -117,7 +117,7 @@ class AccessorWrapper implements RequestProcessor
     protected function getRequestContentAsArray(Request $request)
     {
         $contentType = $request->getHeader(self::HEADER_CONTENT_TYPE);
-        $parser = $this->parserFactory->createParser($request->getHeader($contentType));
+        $parser = $this->parserFactory->createParser($contentType);
 
         return $parser->parse($request->getContent());
     }

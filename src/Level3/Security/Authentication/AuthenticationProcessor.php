@@ -12,8 +12,6 @@ use Teapot\StatusCode;
 
 class AuthenticationProcessor implements RequestProcessor
 {
-    const API_KEY_HEADER = 'X-Yunait-APIKey';
-    const SIGNATURE_HEADER = 'X-Yunait-Signature';
     const HASH_ALGORITHM = 'sha256';
     const AUTHORIZATION_HEADER = 'Authorization';
     const TOKEN = 'Token';

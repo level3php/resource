@@ -8,7 +8,7 @@ use Level3\Messages\Processors\AccessorWrapper;
 use Mockery as m;
 use Teapot\StatusCode;
 
-class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
+class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'XX';
@@ -117,6 +117,7 @@ class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
         $this->accessorMock->shouldReceive('post')
             ->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()
             ->andReturn($this->dummyResource);
+        $this->setupParser();
         $this->responseFactoryCreateResponseShouldReceiveAndReturn(
             $this->dummyResource, StatusCode::OK, self::IRRELEVANT_RESPONSE
         );
@@ -134,6 +135,7 @@ class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
     {
         $this->accessorMock->shouldReceive('post')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()
             ->andThrow($exception);
+        $this->setupParser();
         $this->responseFactoryCreateResponseShouldReceiveAndReturn(
             null, $code, self::IRRELEVANT_RESPONSE
         );
@@ -148,6 +150,7 @@ class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
         $this->accessorMock->shouldReceive('put')
             ->with(self::IRRELEVANT_KEY, array())->once()
             ->andReturn($this->dummyResource);
+        $this->setupParser();
         $this->responseFactoryCreateResponseShouldReceiveAndReturn(
             $this->dummyResource, StatusCode::CREATED, self::IRRELEVANT_RESPONSE
         );
@@ -165,6 +168,7 @@ class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
     {
         $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()
             ->andThrow($exception);
+        $this->setupParser();
         $this->responseFactoryCreateResponseShouldReceiveAndReturn(
             null, $code, self::IRRELEVANT_RESPONSE
         );
@@ -231,5 +235,13 @@ class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
             array('Level3\Repository\Exception\NotFound', StatusCode::NOT_FOUND),
             array('\Exception', StatusCode::INTERNAL_SERVER_ERROR)
         );
+    }
+
+    private function setupParser()
+    {
+        $parser = m::mock('Level3\Messages\Parser\Parser');
+        $parser->shouldReceive('parse')->with(self::IRRELEVANT_CONTENT)->once()->andReturn(array());
+        $this->parserFactoryMock->shouldReceive('createParser')->with(self::IRRELEVANT_CONTENT_TYPE)->once()
+            ->andReturn($parser);
     }
 }
