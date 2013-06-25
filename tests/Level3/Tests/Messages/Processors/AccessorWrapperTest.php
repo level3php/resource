@@ -8,12 +8,13 @@ use Level3\Messages\Processors\AccessorWrapper;
 use Mockery as m;
 use Teapot\StatusCode;
 
-class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
+class AccessorWrapperTest //extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'XX';
     const IRRELEVANT_CONTENT = 'Y';
     const IRRELEVANT_RESPONSE = 'YY';
+    const IRRELEVANT_CONTENT_TYPE = 'YYY';
 
     private $accessorMock;
     private $requestFactory;
@@ -204,10 +205,15 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     private function createDummyRequest()
     {
+        $headers = array(
+            'Content-Type' => self::IRRELEVANT_CONTENT_TYPE
+        );
+
         return $this->requestFactory->clear()
             ->withId(self::IRRELEVANT_ID)
             ->withKey(self::IRRELEVANT_KEY)
-            ->withContent(array())
+            ->withContent(self::IRRELEVANT_CONTENT)
+            ->withHeaders($headers)
             ->create();
     }
 

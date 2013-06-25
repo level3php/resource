@@ -10,7 +10,7 @@ use Mockery as m;
 class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_SIGNATURE = 'X';
-    const IRRELEVANT_RESPONSE = 'XXX';
+    const IRRELEVANT_RESPONSE = 'XX';
 
     private $requestProcessorMock;
     private $userRepositoryMock;
@@ -43,8 +43,13 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     private function createHeaders()
     {
         return array(
-            AuthenticationProcessor::SIGNATURE_HEADER => $this->createSignatureForNullContent(),
-            AuthenticationProcessor::API_KEY_HEADER => AuthenticatedUserBuilder::IRRELEVANT_API_KEY
+            'Authorization' => sprintf('%s%s%s%s%s',
+                'Token',
+                ' ',
+                AuthenticatedUserBuilder::IRRELEVANT_API_KEY,
+                ':',
+                $this->createSignatureForNullContent()
+            )
         );
     }
 
@@ -58,18 +63,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testAuthenticateRequestShouldThrowMissingApiKey()
     {
-        $this->headerShouldBeMissing(AuthenticationProcessor::API_KEY_HEADER);
-
-        $method = $this->getAccessibleMethod('authenticateRequest');
-        $method->invokeArgs($this->authenticationProcessor, array($this->request));
-    }
-
-    /**
-     * @expectedException Level3\Security\Authentication\Exceptions\InvalidSignature
-     */
-    public function testAuthenticateRequestShouldThrowInvalidSignature()
-    {
-        $this->headerShouldBeMissing(AuthenticationProcessor::SIGNATURE_HEADER);
+        $this->headerShouldBeMissing(AuthenticationProcessor::AUTHORIZATION_HEADER);
 
         $method = $this->getAccessibleMethod('authenticateRequest');
         $method->invokeArgs($this->authenticationProcessor, array($this->request));
@@ -122,7 +116,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindWhenAuthenticateRequestThrowsMissingApiKey($methodName)
     {
-        $this->headerShouldBeMissing(AuthenticationProcessor::API_KEY_HEADER);
+        $this->headerShouldBeMissing(AuthenticationProcessor::AUTHORIZATION_HEADER);
         $this->requestProcessorMock->shouldreceive($methodName)->with($this->request)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
 
@@ -136,7 +130,14 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testFindWhenAuthenticateRequestThrowsInvalidSignature($methodName)
     {
-        $this->headerShouldBeMissing(AuthenticationProcessor::SIGNATURE_HEADER);
+        $this->shouldAuthenticateRequest();
+        $this->headerShouldBePresent('Authorization', sprintf('%s%s%s%s%s',
+            'Token',
+            ' ',
+            AuthenticatedUserBuilder::IRRELEVANT_API_KEY,
+            ':',
+            ''
+        ));
         $this->requestFactoryShouldCreateForbiddenResponse();
 
         $response = $this->authenticationProcessor->$methodName($this->request);
@@ -158,6 +159,12 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     private function headerShouldBeMissing($headerName)
     {
         unset($this->headers[$headerName]);
+        $this->initRequest();
+    }
+
+    private function headerShouldBePresent($headerName, $headerValue)
+    {
+        $this->headers[$headerName] = $headerValue;
         $this->initRequest();
     }
 

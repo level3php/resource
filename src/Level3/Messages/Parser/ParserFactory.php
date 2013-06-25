@@ -13,8 +13,9 @@ class ParserFactory
             case self::HEADER_APPLICATION_XML:
                 return new XmlParser();
             case self::HEADER_APPLICATION_JSON:
-            default:
                 return new JsonParser();
+            default:
+                return new ArrayParser();
         }
     }
 }

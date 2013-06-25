@@ -118,7 +118,7 @@ class AuthenticationProcessor implements RequestProcessor
 
     protected function hasAuthorizationHeader(Request $request)
     {
-        return $request->hasHeader(self::API_KEY_HEADER);
+        return $request->hasHeader(self::AUTHORIZATION_HEADER);
     }
 
     protected function hasSignatureHeader(Request $request)
@@ -142,7 +142,8 @@ class AuthenticationProcessor implements RequestProcessor
         $originalContent = $request->getContent();
         $calculatedSignature = hash_hmac(self::HASH_ALGORITHM, $originalContent, $privateKey);
 
-        $authContent = $this->extractAuthContent($request);
+        $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
+
         $signature = $authContent[1];
 
         if ($calculatedSignature !== $signature) {
