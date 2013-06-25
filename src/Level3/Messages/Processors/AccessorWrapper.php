@@ -3,6 +3,7 @@
 namespace Level3\Messages\Processors;
 
 use Level3\Accessor;
+use Level3\Messages\Parser\ParserFactory;
 use Level3\Messages\Request;
 use Teapot\StatusCode;
 use Level3\Repository\Exception\BaseException;
@@ -12,13 +13,17 @@ use Exception;
 
 class AccessorWrapper implements RequestProcessor
 {
+    const HEADER_CONTENT_TYPE = 'Content-Type';
+
     protected $accessor;
     protected $responseFactory;
+    protected $parserFactory;
 
-    public function __construct(Accessor $resourceAccessor, ResponseFactory $responseFactory)
+    public function __construct(Accessor $resourceAccessor, ResponseFactory $responseFactory, ParserFactory $parserFactory)
     {
         $this->accessor = $resourceAccessor;
         $this->responseFactory = $responseFactory;
+        $this->parserFactory = $parserFactory;
     }
 
     public function find(Request $request)
@@ -41,8 +46,6 @@ class AccessorWrapper implements RequestProcessor
         $resource = $this->accessor->find($key);
         return $this->createOKResponse($resource);
     }
-
-
 
     public function get(Request $request)
     {
@@ -70,7 +73,7 @@ class AccessorWrapper implements RequestProcessor
     {
         $key = $request->getKey();
         $id = $request->getId();
-        $content = $request->getContent();
+        $content = $this->getRequestContentAsArray($request);
 
         try {
             return $this->modifyResource($key, $id, $content);
@@ -92,7 +95,7 @@ class AccessorWrapper implements RequestProcessor
     public function put(Request $request)
     {
         $key = $request->getKey();
-        $content = $request->getContent();
+        $content = $this->getRequestContentAsArray($request);
 
         try {
             return $this->createResource($key, $content);
@@ -109,6 +112,14 @@ class AccessorWrapper implements RequestProcessor
     {
         $resource = $this->accessor->put($key, $content);
         return $this->createCreatedResponse($resource);
+    }
+
+    protected function getRequestContentAsArray(Request $request)
+    {
+        $contentType = $request->getHeader(self::HEADER_CONTENT_TYPE);
+        $parser = $this->parserFactory->createParser($request->getHeader($contentType));
+
+        return $parser->parse($request->getContent());
     }
 
     public function delete(Request $request)

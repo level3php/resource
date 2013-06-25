@@ -20,6 +20,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     private $dummyRequest;
     private $responseFactoryMock;
     private $dummyResource;
+    private $parserFactoryMock;
 
     private $accessorWrapper;
 
@@ -33,8 +34,9 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->accessorMock = m::mock('Level3\Accessor');
         $this->requestFactory = new RequestFactory();
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
+        $this->parserFactoryMock = m::mock('Level3\Messages\Parser\ParserFactory');
         $this->dummyRequest = $this->createDummyRequest();
-        $this->accessorWrapper = new AccessorWrapper($this->accessorMock, $this->responseFactoryMock);
+        $this->accessorWrapper = new AccessorWrapper($this->accessorMock, $this->responseFactoryMock, $this->parserFactoryMock);
         $this->dummyResource = new Resource();
     }
 
