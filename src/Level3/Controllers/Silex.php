@@ -84,8 +84,9 @@ class Silex
         $requestAttributes = $request->request->all();
         $content = $request->getContent();
         $requestHeaders = $request->headers->all();
+        $pathInfo = $request->getPathInfo();
         $level3Request = $this->requestFactory->clear()
-            ->withPathInfo($request->getPathInfo())
+            ->withPathInfo($pathInfo)
             ->withKey($key)
             ->witId($id)
             ->withAttributes($requestAttributes)
