@@ -27,7 +27,6 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     public function __construct($name = null, $data = array(), $dataName='') {
         parent::__construct($name, $data, $dataName);
-        $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
     }
 
     public function setUp()

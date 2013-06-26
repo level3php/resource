@@ -12,6 +12,7 @@ class RequestFactory
     private $attributes = array();
     private $headers = array();
     private $content;
+    private $pathInfo;
 
     public function withKey($key)
     {
@@ -49,9 +50,15 @@ class RequestFactory
         return $this;
     }
 
+    public function withPathInfo($pathInfo)
+    {
+        $this->pathInfo = $pathInfo;
+        return $this;
+    }
+
     public function create()
     {
-        $request = new Request($this->key, $this->headers, $this->attributes, $this->content);
+        $request = new Request($this->pathInfo, $this->key, $this->headers, $this->attributes, $this->content);
 
         if ($this->id !== null) {
             $request->setId($this->id);
@@ -72,6 +79,7 @@ class RequestFactory
         $this->attributes = array();
         $this->headers = array();
         $this->content = null;
+        $this->pathInfo = null;
         return $this;
     }
 }

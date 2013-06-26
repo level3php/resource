@@ -9,14 +9,16 @@ use Level3\Security\Authentication\User;
 class Request
 {
     private $user;
+    private $pathInfo;
     private $id;
     private $key;
     private $attributes;
     private $headers;
     private $content;
 
-    public function __construct($key, array $headers, array $attributes, $content)
+    public function __construct($pathInfo, $key, array $headers, array $attributes, $content)
     {
+        $this->pathInfo = $pathInfo;
         $this->key = $key;
         $this->user = new User();
         $this->headers = $headers;
@@ -91,5 +93,10 @@ class Request
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function getPathInfo()
+    {
+        return $this->pathInfo;
     }
 }

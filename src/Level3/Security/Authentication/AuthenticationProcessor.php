@@ -140,13 +140,16 @@ class AuthenticationProcessor implements RequestProcessor
         $originalContent = $request->getContent();
         $calculatedSignature = hash_hmac(self::HASH_ALGORITHM, $originalContent, $privateKey);
 
-        $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
-
-        $signature = $authContent[1];
+        $signature = $this->extractSignatureFromRequest($request);
 
         if ($calculatedSignature !== $signature) {
             throw new InvalidSignature();
         }
+    }
+
+    protected function extractSignatureFromRequest(Request $request)
+    {
+        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request))[1];
     }
 
     protected function extractAuthContent(Request $request)

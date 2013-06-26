@@ -52,4 +52,9 @@ class AuthenticatedUser extends User
     {
         return $this->secretKey;
     }
+
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
 }
