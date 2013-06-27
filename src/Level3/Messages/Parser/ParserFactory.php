@@ -7,7 +7,7 @@ class ParserFactory
     const HEADER_APPLICATION_JSON = 'application/json';
     const HEADER_APPLICATION_XML = 'application/xml';
 
-    public function createParser($format)
+    public function create($format)
     {
         switch($format) {
             case self::HEADER_APPLICATION_XML:

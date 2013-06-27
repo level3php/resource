@@ -43,7 +43,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     private function createHeaders()
     {
         return array(
-            'Authorization' => sprintf('%s%s%s%s%s',
+            'authorization' => sprintf('%s%s%s%s%s',
                 'Token',
                 ' ',
                 AuthenticatedUserBuilder::IRRELEVANT_API_KEY,
@@ -131,7 +131,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     public function testFindWhenAuthenticateRequestThrowsInvalidSignature($methodName)
     {
         $this->shouldAuthenticateRequest();
-        $this->headerShouldBePresent('Authorization', sprintf('%s%s%s%s%s',
+        $this->headerShouldBePresent('authorization', sprintf('%s%s%s%s%s',
             'Token',
             ' ',
             AuthenticatedUserBuilder::IRRELEVANT_API_KEY,

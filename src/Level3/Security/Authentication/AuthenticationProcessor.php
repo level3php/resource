@@ -13,7 +13,7 @@ use Teapot\StatusCode;
 class AuthenticationProcessor implements RequestProcessor
 {
     const HASH_ALGORITHM = 'sha256';
-    const AUTHORIZATION_HEADER = 'Authorization';
+    const AUTHORIZATION_HEADER = 'authorization';
     const TOKEN = 'Token';
     const TOKEN_SEPARATOR = ' ';
     const AUTHORIZATION_FIELDS_SEPARATOR = ':';
@@ -127,7 +127,8 @@ class AuthenticationProcessor implements RequestProcessor
     protected function getApiKeyFromRequest(Request $request)
     {
         $authContent = $this->extractAuthContent($request);
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent)[0];
+        $result =  explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent);
+        return $result[0];
     }
 
     protected function createForbiddenResponse()
@@ -149,17 +150,20 @@ class AuthenticationProcessor implements RequestProcessor
 
     protected function extractSignatureFromRequest(Request $request)
     {
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request))[1];
+        $result = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
+        return $result[1];
     }
 
     protected function extractAuthContent(Request $request)
     {
         $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
 
-        if (explode(self::TOKEN_SEPARATOR, $authHeader)[0] !== self::TOKEN) {
+        $exploded = explode(self::TOKEN_SEPARATOR, $authHeader);
+        if ($exploded[0] !== self::TOKEN) {
             throw new MissingApiKey();
         }
 
-        return explode(self::TOKEN_SEPARATOR, $authHeader)[1];
+        $result = explode(self::TOKEN_SEPARATOR, $authHeader);
+        return $result[1];
     }
 }

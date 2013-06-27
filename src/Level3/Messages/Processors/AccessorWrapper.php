@@ -2,160 +2,133 @@
 
 namespace Level3\Messages\Processors;
 
+use Exception;
 use Level3\Accessor;
+use Level3\Messages\MessageProcessor;
 use Level3\Messages\Parser\ParserFactory;
 use Level3\Messages\Request;
-use Teapot\StatusCode;
 use Level3\Repository\Exception\BaseException;
-use Level3\Hal\Resource;
-use Level3\Messages\ResponseFactory;
-use Exception;
+use Teapot\StatusCode;
 
 class AccessorWrapper implements RequestProcessor
 {
-    const HEADER_CONTENT_TYPE = 'Content-Type';
 
-    protected $accessor;
-    protected $responseFactory;
-    protected $parserFactory;
+    const HEADER_ACCEPT = 'Accept';
+    const HEADER_RANGE = 'Range';
 
-    public function __construct(Accessor $resourceAccessor, ResponseFactory $responseFactory, ParserFactory $parserFactory)
+    const ACCEPT_DELIMITER = ';';
+
+    private $accessor;
+    private $messageProcessor;
+
+    public function __construct(Accessor $resourceAccessor, MessageProcessor $messageProcessor)
     {
         $this->accessor = $resourceAccessor;
-        $this->responseFactory = $responseFactory;
-        $this->parserFactory = $parserFactory;
+        $this->messageProcessor = $messageProcessor;
     }
 
     public function find(Request $request)
     {
-        $key = $request->getKey();
-
         try {
-            return $this->findResources($key);
+            $response = $this->findResources($request);
         } catch (BaseException $e) {
-            $status = $e->getCode();
+            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $status = StatusCode::INTERNAL_SERVER_ERROR;
+            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return $this->createErrorResponse($status);
+        return $response;
     }
 
-    private function findResources($key)
+    private function findResources(Request $request)
     {
+        $key = $request->getKey();
         $resource = $this->accessor->find($key);
-        return $this->createOKResponse($resource);
+        return $this->messageProcessor->createOKResponse($request, $resource);
     }
 
     public function get(Request $request)
     {
-        $key = $request->getKey();
-        $id = $request->getId();
-
         try {
-            return $this->getResource($key, $id);
+            $response = $this->getResource($request);
         } catch (BaseException $e) {
-            $status = $e->getCode();
+            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $status = StatusCode::INTERNAL_SERVER_ERROR;
+            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return $this->createErrorResponse($status);
+        return $response;
     }
 
-    private function getResource($key, $id)
+    private function getResource(Request $request)
     {
+        $key = $request->getKey();
+        $id = $request->getId();
         $resource = $this->accessor->get($key, $id);
-        return $this->createOKResponse($resource);
+        return $this->messageProcessor->createOKResponse($request, $resource);
     }
 
     public function post(Request $request)
     {
-        $key = $request->getKey();
-        $id = $request->getId();
-        $content = $this->getRequestContentAsArray($request);
-
         try {
-            return $this->modifyResource($key, $id, $content);
+            $response = $this->modifyResource($request);
         } catch (BaseException $e) {
-            $status = $e->getCode();
+            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $status = StatusCode::INTERNAL_SERVER_ERROR;
+            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return $this->createErrorResponse($status);
+        return $response;
     }
 
-    private function modifyResource($key, $id, $content)
+    private function modifyResource(Request $request)
     {
+        $key = $request->getKey();
+        $id = $request->getId();
+        $content = $this->messageProcessor->getRequestContentAsArray($request);
         $resource = $this->accessor->post($key, $id, $content);
-        return $this->createOKResponse($resource);
+        return $this->messageProcessor->createOKResponse($request, $resource);
     }
 
     public function put(Request $request)
     {
-        $key = $request->getKey();
-        $content = $this->getRequestContentAsArray($request);
-
         try {
-            return $this->createResource($key, $content);
+            $response = $this->createResource($request);
         } catch (BaseException $e) {
-            $status = $e->getCode();
+            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $status = StatusCode::INTERNAL_SERVER_ERROR;
+            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return $this->createErrorResponse($status);
+        return $response;
     }
 
-    private function createResource($key, $content)
+    private function createResource(Request $request)
     {
+        $key = $request->getKey();
+        $content = $this->messageProcessor->getRequestContentAsArray($request);
         $resource = $this->accessor->put($key, $content);
-        return $this->createCreatedResponse($resource);
-    }
-
-    protected function getRequestContentAsArray(Request $request)
-    {
-        $contentType = $request->getHeader(self::HEADER_CONTENT_TYPE);
-        $parser = $this->parserFactory->createParser($contentType);
-
-        return $parser->parse($request->getContent());
+        return $this->messageProcessor->createOKResponse($request, $resource);
     }
 
     public function delete(Request $request)
     {
-        $key = $request->getKey();
-        $id = $request->getId();
-
         try {
-            return $this->deleteResource($key, $id);
+            $response = $this->deleteResource($request);
         } catch (BaseException $e) {
-            $status = $e->getCode();
+            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $status = StatusCode::INTERNAL_SERVER_ERROR;
+            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
         }
 
-        return $this->createErrorResponse($status);
+        return $response;
     }
 
-    private function deleteResource($key, $id)
+    private function deleteResource(Request $request)
     {
+        $key = $request->getKey();
+        $id = $request->getId();
         $this->accessor->delete($key, $id);
-        return $this->createOKResponse(null);
-    }
-
-    private function createErrorResponse($status)
-    {
-        return $this->responseFactory->createResponse(null, $status);
-    }
-
-    private function createOKResponse(Resource $resource = null)
-    {
-        return $this->responseFactory->createResponse($resource, StatusCode::OK);
-    }
-
-    private function createCreatedResponse(Resource $resource)
-    {
-        return $this->responseFactory->createResponse($resource, StatusCode::CREATED);
+        return $this->messageProcessor->createOKResponse($request);
     }
 }

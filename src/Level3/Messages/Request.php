@@ -3,6 +3,7 @@
 namespace Level3\Messages;
 
 use Level3\Messages\Exceptions\AttributeNotFound;
+use Level3\Messages\Exceptions\HeaderNotFound;
 use Level3\Security\Authentication\AuthenticatedUser;
 use Level3\Security\Authentication\User;
 
@@ -58,6 +59,9 @@ class Request
 
     public function getHeader($headerName)
     {
+        if (!isset($this->headers[$headerName])) {
+            throw new HeaderNotFound($headerName);
+        }
         return $this->headers[$headerName];
     }
 

@@ -2,7 +2,7 @@
 
 namespace Level3\Messages\Exceptions;
 
-class AttributeNotFound extends \RuntimeException
+class AttributeNotFound extends MessageParsingError
 {
     public function __construct($key)
     {

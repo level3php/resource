@@ -7,7 +7,7 @@ use Teapot\StatusCode;
 
 class ResponseFactory
 {
-    public function createResponse(Resource $resource = null, $statusCode = StatusCode::OK)
+    public function create(Resource $resource = null, $statusCode = StatusCode::OK)
     {
         return new Response($resource, $statusCode);
     }

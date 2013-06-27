@@ -83,7 +83,7 @@ class Silex
         $key = $this->getResourceKey($request);
         $requestAttributes = $request->request->all();
         $content = $request->getContent();
-        $requestHeaders = $request->headers->all();
+        $requestHeaders = $this->getRequestHeaders($request);
         $pathInfo = $request->getPathInfo();
         $level3Request = $this->requestFactory->clear()
             ->withPathInfo($pathInfo)
@@ -94,6 +94,16 @@ class Silex
             ->withContent($content)
             ->create();
         return $level3Request;
+    }
+
+    protected function getRequestHeaders(Request $request)
+    {
+        $headers = $request->headers;
+        $headerNames = $headers->keys();
+        $result = array();
+        foreach ($headerNames as $headerName) {
+            $result[strtolower($headerName)] = $headers->get($headerName);
+        }
     }
 
     protected function getResourceKey(Request $request)
