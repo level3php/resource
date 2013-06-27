@@ -13,7 +13,7 @@ use Teapot\StatusCode;
 class AuthenticationProcessor implements RequestProcessor
 {
     const HASH_ALGORITHM = 'sha256';
-    const AUTHORIZATION_HEADER = 'Authorization';
+    const AUTHORIZATION_HEADER = 'authorization';
     const TOKEN = 'Token';
     const TOKEN_SEPARATOR = ' ';
     const AUTHORIZATION_FIELDS_SEPARATOR = ':';
@@ -35,7 +35,7 @@ class AuthenticationProcessor implements RequestProcessor
         } catch (UserNotFound $e) {
             return $this->createForbiddenResponse();
         } catch (MissingApiKey $e) {
-            return $this->processor->find($request);
+            return $this->createForbiddenResponse();
         } catch (InvalidSignature $e) {
             return $this->createForbiddenResponse();
         }
@@ -49,7 +49,7 @@ class AuthenticationProcessor implements RequestProcessor
         } catch (UserNotFound $e) {
             return $this->createForbiddenResponse();
         } catch (MissingApiKey $e) {
-            return $this->processor->get($request);
+            return $this->createForbiddenResponse();
         } catch (InvalidSignature $e) {
             return $this->createForbiddenResponse();
         }
@@ -63,7 +63,7 @@ class AuthenticationProcessor implements RequestProcessor
         } catch (UserNotFound $e) {
             return $this->createForbiddenResponse();
         } catch (MissingApiKey $e) {
-            return $this->processor->post($request);
+            return $this->createForbiddenResponse();
         } catch (InvalidSignature $e) {
             return $this->createForbiddenResponse();
         }
@@ -77,7 +77,7 @@ class AuthenticationProcessor implements RequestProcessor
         } catch (UserNotFound $e) {
             return $this->createForbiddenResponse();
         } catch (MissingApiKey $e) {
-            return $this->processor->put($request);
+            return $this->createForbiddenResponse();
         } catch (InvalidSignature $e) {
             return $this->createForbiddenResponse();
         }
@@ -91,7 +91,7 @@ class AuthenticationProcessor implements RequestProcessor
         } catch (UserNotFound $e) {
             return $this->createForbiddenResponse();
         } catch (MissingApiKey $e) {
-            return $this->processor->delete($request);
+            return $this->createForbiddenResponse();
         } catch (InvalidSignature $e) {
             return $this->createForbiddenResponse();
         }
@@ -127,12 +127,13 @@ class AuthenticationProcessor implements RequestProcessor
     protected function getApiKeyFromRequest(Request $request)
     {
         $authContent = $this->extractAuthContent($request);
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent)[0];
+        $result =  explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent);
+        return $result[0];
     }
 
     protected function createForbiddenResponse()
     {
-        return $this->responseFactory->create(null, StatusCode::FORBIDDEN);
+        return $this->responseFactory->createResponse(null, StatusCode::FORBIDDEN);
     }
 
     protected function verifySignature(Request $request, $privateKey)
@@ -153,10 +154,11 @@ class AuthenticationProcessor implements RequestProcessor
     {
         $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
 
-        if (explode(self::TOKEN_SEPARATOR, $authHeader)[0] !== self::TOKEN) {
+        if (explode(self::TOKEN_SEPARATOR, $authHeader[0])[0] !== self::TOKEN) {
             throw new MissingApiKey();
         }
 
-        return explode(self::TOKEN_SEPARATOR, $authHeader)[1];
+
+        return explode(self::TOKEN_SEPARATOR, $authHeader[0])[1];
     }
 }

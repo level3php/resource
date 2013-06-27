@@ -14,6 +14,9 @@ use Exception;
 class AccessorWrapper implements RequestProcessor
 {
     const HEADER_CONTENT_TYPE = 'Content-Type';
+    const HEADER_RANGE = 'range';
+    const HEADER_RANGE_UNIT_SEPARATOR = '=';
+    const HEADER_RANGE_SEPARATOR = '-';
 
     protected $accessor;
     protected $responseFactory;
@@ -29,9 +32,10 @@ class AccessorWrapper implements RequestProcessor
     public function find(Request $request)
     {
         $key = $request->getKey();
+        $range = $this->getRange($request);
 
         try {
-            return $this->findResources($key);
+            return $this->findResources($key, $range[0], $range[1]);
         } catch (BaseException $e) {
             $status = $e->getCode();
         } catch (\Exception $e) {
@@ -41,10 +45,25 @@ class AccessorWrapper implements RequestProcessor
         return $this->createErrorResponse($status);
     }
 
-    private function findResources($key)
+    private function findResources($key, $lowerBound, $upperBound)
     {
-        $resource = $this->accessor->find($key);
+        $resource = $this->accessor->find($key, $lowerBound, $upperBound);
         return $this->createOKResponse($resource);
+    }
+
+    protected function getRange(Request $request)
+    {
+        if (!$request->hasHeader(self::HEADER_RANGE)) {
+            return array(0,0);
+        }
+
+        $range = $request->getHeader(self::HEADER_RANGE);
+        $range = $range[0];
+
+        $range = explode(self::HEADER_RANGE_UNIT_SEPARATOR, $range);
+        $range = $range[1];
+
+        return explode(self::HEADER_RANGE_UNIT_SEPARATOR, $range);
     }
 
     public function get(Request $request)
