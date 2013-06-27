@@ -127,7 +127,8 @@ class AuthenticationProcessor implements RequestProcessor
     protected function getApiKeyFromRequest(Request $request)
     {
         $authContent = $this->extractAuthContent($request);
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent)[0];
+        $result =  explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent);
+        return $result[0];
     }
 
     protected function createForbiddenResponse()
