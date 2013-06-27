@@ -63,7 +63,7 @@ class AccessorWrapper implements RequestProcessor
         $range = explode(self::HEADER_RANGE_UNIT_SEPARATOR, $range);
         $range = $range[1];
 
-        return explode(self::HEADER_RANGE_UNIT_SEPARATOR, $range);
+        return explode(self::HEADER_RANGE_SEPARATOR, $range);
     }
 
     public function get(Request $request)
