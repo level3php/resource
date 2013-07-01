@@ -47,7 +47,8 @@ class HMAC implements Method
     protected function getApiKeyFromRequest(Request $request)
     {
         $authContent = $this->extractAuthContent($request);
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent)[0];
+        $authFields = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent);
+        return $authFields[0];
     }
 
     protected function verifySignature(Request $request, $privateKey)
