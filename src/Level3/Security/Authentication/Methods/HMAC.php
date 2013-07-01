@@ -65,7 +65,8 @@ class HMAC implements Method
 
     protected function extractSignatureFromRequest(Request $request)
     {
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request))[1];
+        $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
+        return $authContent[1];
     }
 
     protected function extractAuthContent(Request $request)
