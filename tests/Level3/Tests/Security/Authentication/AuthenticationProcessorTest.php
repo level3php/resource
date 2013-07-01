@@ -29,87 +29,24 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
-        $this->userRepositoryMock = m::mock('Level3\Security\Authentication\UserRepository');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
-        $this->requestFactory = new RequestFactory();
-        $this->headers = $this->createHeaders();
-        $this->authenticatedUser = AuthenticatedUserBuilder::anAuthenticatedUser()->build();
+        $this->methodMock = m::mock('Level3\Security\Authentication\Method');
+        $this->requestMock = m::mock('Level3\Messages\Request');
 
         $this->authenticationProcessor = new AuthenticationProcessor(
-            $this->requestProcessorMock, $this->userRepositoryMock, $this->responseFactoryMock
+            $this->requestProcessorMock, $this->methodMock, $this->responseFactoryMock
         );
-    }
-
-    private function createHeaders()
-    {
-        return array(
-            'Authorization' => sprintf('%s%s%s%s%s',
-                'Token',
-                ' ',
-                AuthenticatedUserBuilder::IRRELEVANT_API_KEY,
-                ':',
-                $this->createSignatureForNullContent()
-            )
-        );
-    }
-
-    private function createSignatureForNullContent()
-    {
-        return hash_hmac(AuthenticationProcessor::HASH_ALGORITHM, null, AuthenticatedUserBuilder::IRRELEVANT_SECRET_KEY);
-    }
-
-    /**
-     *
-     */
-    public function testAuthenticateRequestShouldThrowMissingApiKey()
-    {
-        return;
-        $this->headerShouldBeMissing(AuthenticationProcessor::AUTHORIZATION_HEADER);
-
-        $method = $this->getAccessibleMethod('authenticateRequest');
-        $method->invokeArgs($this->authenticationProcessor, array($this->request));
-    }
-
-    /**
-     *
-     */
-    public function testAuthenticateRequestShouldThrowUserNotFound()
-    {
-        return;
-        $this->authenticateRequestShouldThrowUserNotFound();
-
-        $method = $this->getAccessibleMethod('authenticateRequest');
-        $method->invokeArgs($this->authenticationProcessor, array($this->request));
-    }
-
-    public function testAuthenticateRequest()
-    {
-        return;
-        $this->shouldAuthenticateRequest();
-
-        $method = $this->getAccessibleMethod('authenticateRequest');
-        $request = $method->invokeArgs($this->authenticationProcessor, array($this->request));
-
-        $this->assertThat($request->getUser(), $this->equalTo($this->authenticatedUser));
-    }
-
-    private function getAccessibleMethod($methodName)
-    {
-        $class = new \ReflectionClass('Level3\Security\Authentication\AuthenticationProcessor');
-        $method = $class->getMethod($methodName);
-        $method->setAccessible(true);
-        return $method;
     }
 
     /**
      * @dataProvider methodsToAuthenticate
      */
-    public function testFindWhenAuthenticateRequestThrowsUserNotFound($methodName)
+    public function testFindWhenAuthenticateRequestThrowsBadCredentials($methodName)
     {
-        $this->authenticateRequestShouldThrowUserNotFound();
+        $this->methodAuthenticateRequestshouldThrowBadCredentials();
         $this->requestFactoryShouldCreateForbiddenResponse();
 
-        $response = $this->authenticationProcessor->$methodName($this->request);
+        $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
@@ -117,14 +54,12 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider methodsToAuthenticate
      */
-    public function testFindWhenAuthenticateRequestThrowsMissingApiKey($methodName)
+    public function testFindWhenAuthenticateRequestThrowsMissingCredentials($methodName)
     {
-        return;
-        $this->headerShouldBeMissing(AuthenticationProcessor::AUTHORIZATION_HEADER);
-        $this->requestProcessorMock->shouldreceive($methodName)->with($this->request)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
+        $this->methodAuthenticateRequestshouldThrowMissingCredentials();
+        $this->requestProcessorMockShouldReceiveCallTo($methodName);
 
-        $response = $this->authenticationProcessor->$methodName($this->request);
+        $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
@@ -132,19 +67,12 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider methodsToAuthenticate
      */
-    public function testFindWhenAuthenticateRequestThrowsInvalidSignature($methodName)
+    public function testFindWhenAuthenticateRequestThrowsInvalidCredentials($methodName)
     {
-        $this->shouldAuthenticateRequest();
-        $this->headerShouldBePresent('Authorization', sprintf('%s%s%s%s%s',
-            'Token',
-            ' ',
-            AuthenticatedUserBuilder::IRRELEVANT_API_KEY,
-            ':',
-            ''
-        ));
+        $this->methodAuthenticateRequestshouldThrowInvalidCredentials();
         $this->requestFactoryShouldCreateForbiddenResponse();
 
-        $response = $this->authenticationProcessor->$methodName($this->request);
+        $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
@@ -160,41 +88,42 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function headerShouldBeMissing($headerName)
+    private function methodAuthenticateRequestShouldThrowBadCredentials()
     {
-        unset($this->headers[$headerName]);
-        $this->initRequest();
+        $this->methodMock
+            ->shouldReceive('authenticateRequest')
+            ->with($this->requestMock)->once()
+            ->andThrow('Level3\Security\Authentication\Exceptions\BadCredentials');
     }
 
-    private function headerShouldBePresent($headerName, $headerValue)
+    private function methodAuthenticateRequestShouldThrowMissingCredentials()
     {
-        $this->headers[$headerName] = $headerValue;
-        $this->initRequest();
+        $this->methodMock
+            ->shouldReceive('authenticateRequest')
+            ->with($this->requestMock)->once()
+            ->andThrow('Level3\Security\Authentication\Exceptions\MissingCredentials');
     }
 
-    private function shouldAuthenticateRequest()
+    private function methodAuthenticateRequestShouldThrowInvalidCredentials()
     {
-        $this->initRequest();
-        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedUserBuilder::IRRELEVANT_API_KEY)->once()
-            ->andReturn($this->authenticatedUser);
-    }
-
-    private function initRequest(){
-        $this->request = $this->requestFactory->clear()
-            ->withHeaders($this->headers)
-            ->create();
-    }
-
-    private function authenticateRequestShouldThrowUserNotFound()
-    {
-        $this->initRequest();
-        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedUserBuilder::IRRELEVANT_API_KEY)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\UserNotFound');
+        $this->methodMock
+            ->shouldReceive('authenticateRequest')
+            ->with($this->requestMock)->once()
+            ->andThrow('Level3\Security\Authentication\Exceptions\InvalidCredentials');
     }
 
     private function requestFactoryShouldCreateForbiddenResponse()
     {
-        $this->responseFactoryMock->shouldReceive('createResponse')->once()->with(null, StatusCode::FORBIDDEN)
+        $this->responseFactoryMock
+            ->shouldReceive('create')->once()->with(null, StatusCode::FORBIDDEN)
+            ->andReturn(self::IRRELEVANT_RESPONSE);
+    }
+
+    private function requestProcessorMockShouldReceiveCallTo($method)
+    {
+        $this->requestProcessorMock
+            ->shouldReceive($method)->once()
+            ->with($this->requestMock)
             ->andReturn(self::IRRELEVANT_RESPONSE);
     }
 }
