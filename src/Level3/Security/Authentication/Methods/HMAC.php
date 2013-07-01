@@ -72,11 +72,13 @@ class HMAC implements Method
     protected function extractAuthContent(Request $request)
     {
         $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
+        $authHeaderFirst = explode(self::TOKEN_SEPARATOR, $authHeader);
 
-        if (explode(self::TOKEN_SEPARATOR, $authHeader)[0] !== self::TOKEN) {
+        if ($authHeaderFirst[0] !== self::TOKEN) {
             throw new InvalidCredentials();
         }
 
-        return explode(self::TOKEN_SEPARATOR, $authHeader)[1];
+        $authHeaderSecond = explode(self::TOKEN_SEPARATOR, $authHeader);
+        return $authHeaderSecond[1];
     }
 }
