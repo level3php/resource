@@ -3,221 +3,70 @@
 namespace Level3\Tests\Messages;
 
 use Level3\Messages\MessageProcessor;
-use Level3\Messages\Request;
-use Level3\Repository\Exception\Conflict;
-use Level3\Repository\Exception\DataError;
-use Level3\Repository\Exception\NoContent;
-use Level3\Repository\Exception\NotFound;
 use Mockery as m;
 
-class MessageProcessorTest extends \PHPUnit_Framework_TestCase
+class MessageProcessorTest  extends \PHPUnit_Framework_TestCase
 {
-    const EXCEPTION_CODE = 23;
-    const IRRELEVANT_EXCEPTION_MESSAGE = 'X';
-    const IRRELEVANT_RESPONSE = 'XX';
-    const IRRELEVANT_PATH_INFO = 'Y';
-    const IRRELEVANT_KEY = 'YY';
-    const IRRELEVANT_CONTENT = 'XY';
-    const IRRELEVANT_CONTENT_TYPE = '3X';
+    const IRRELEVANT_RESPONSE = 'X';
 
-    private $responseFactoryMock;
-    private $parserFactoryMock;
-    private $formatterFactoryMock;
-    private $resourceFactoryMock;
-    private $resourceMock;
-    private $request;
-    private $formatterMock;
-
+    private $requestParserMock;
+    private $responseGeneratorMock;
     private $messageProcessor;
 
     public function setUp()
     {
-        $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
-        $this->parserFactoryMock = m::mock('Level3\Messages\Parser\ParserFactory');
-        $this->formatterFactoryMock = m::mock('Level3\Hal\Formatter\FormatterFactory');
-        $this->resourceFactoryMock = m::mock('Level3\Hal\ResourceFactory');
-        $this->resourceMock = m::mock('Level3\Hal\Resource');
-        $this->formatterMock = m::mock('Level3\Hal\Formatter\Formatter');
+        $this->requestParserMock = m::mock('Level3\Messages\RequestParser');
+        $this->responseGeneratorMock = m::mock('Level3\Messages\ResponseGenerator');
 
-        $this->messageProcessor = new MessageProcessor(
-            $this->responseFactoryMock,
-            $this->parserFactoryMock,
-            $this->formatterFactoryMock,
-            $this->resourceFactoryMock
-        );
+        $this->messageProcessor = new MessageProcessor($this->requestParserMock, $this->responseGeneratorMock);
     }
 
-    public function tearDown()
+    public function testGenerateErrorResponse()
     {
-        $this->responseFactoryMock = null;
-        $this->parserFactoryMock = null;
-        $this->formatterFactoryMock = null;
-        $this->resourceFactoryMock = null;
-        $this->resourceMock = null;
-        $this->formatterMock = null;
-        $this->messageProcessor = null;
-    }
-
-    public function testIsDebugEnabledShouldBeFalse()
-    {
-        $debugEnabled = $this->messageProcessor->isDebugEnabled();
-
-        $this->assertThat($debugEnabled, $this->isFalse());
-    }
-
-    public function testEnableDebug()
-    {
-        $this->messageProcessor->enableDebug();
-        $debugEnabled = $this->messageProcessor->isDebugEnabled();
-
-        $this->assertThat($debugEnabled, $this->isTrue());
-    }
-
-    public function testDisableDebug()
-    {
-        $this->testEnableDebug();
-
-        $this->messageProcessor->disableDebug();
-        $debugEnabled = $this->messageProcessor->isDebugEnabled();
-
-        $this->assertThat($debugEnabled, $this->isFalse());
-    }
-
-    /**
-     * @dataProvider baseExceptions
-     */
-    public function testGenerateErrorResponseWithBaseException($exception, $code)
-    {
-        $this->resourceFactoryMock->shouldReceive('create')->with(null, array())->once()->andReturn($this->resourceMock);
-        $formatterMock = m::mock('Level3\Hal\Formatter\Formatter');
-        $this->formatterFactoryMock->shouldReceive('create')->with('application/hal+json')->once()->andReturn($formatterMock);
-        $this->resourceMock->shouldReceive('setFormatter')->with($formatterMock);
-        $this->responseFactoryMock->shouldReceive('create')->with($this->resourceMock, $code)->once()->andReturn(self::IRRELEVANT_RESPONSE);
+        $exception = new \Exception();
+        $this->responseGeneratorMock->shouldReceive('generateErrorResponse')->with($exception)->once()
+            ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->messageProcessor->generateErrorResponse($exception);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    public function baseExceptions()
+    public function testGenerateOKResponse()
     {
-        return array(
-            array(new Conflict(), 409),
-            array(new DataError(), 400),
-            array(new NoContent(), 204),
-            array(new NotFound(), 404)
-        );
-    }
+        $requestMock = $this->createRequestMock();
+        $resourceMock = m::mock('Level3\Hal\Resource');
+        $this->responseGeneratorMock->shouldReceive('generateOKResponse')->with($requestMock, $resourceMock)->once()
+            ->andReturn(self::IRRELEVANT_RESPONSE);
 
-    /**
-     * @dataProvider debugAndExceptionData
-     */
-    public function testGenerateErrorResponseWithExceptionWith($debugEnabled, $exceptionData, $exception)
-    {
-        $this->resourceFactoryMock->shouldReceive('create')->with(null, m::subset($exceptionData))
-            ->once()->andReturn($this->resourceMock);
-        $formatterMock = m::mock('Level3\Hal\Formatter\Formatter');
-        $this->formatterFactoryMock->shouldReceive('create')->with('application/hal+json')->once()->andReturn($formatterMock);
-        $this->resourceMock->shouldReceive('setFormatter')->with($formatterMock);
-        $this->responseFactoryMock->shouldReceive('create')->with($this->resourceMock, 500)->once()->andReturn(self::IRRELEVANT_RESPONSE);
-
-        if ($debugEnabled) $this->messageProcessor->enableDebug();
-        $response = $this->messageProcessor->generateErrorResponse($exception);
+        $response = $this->messageProcessor->generateOKResponse($requestMock, $resourceMock);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    public function debugAndExceptionData()
+    public function testGenerateDeletedResponse()
     {
-        return array(
-            array(
-                false,
-                array(
-                    'code' => 500,
-                ),
-                new \Exception()
-            ),
-            array(
-                true,
-                array(
-                    'code' => 500,
-                    'message' => self::IRRELEVANT_EXCEPTION_MESSAGE,
-                ),
-                new \Exception(self::IRRELEVANT_EXCEPTION_MESSAGE)
-            )
-        );
-    }
+        $this->responseGeneratorMock->shouldReceive('generateDeletedResponse')->withNoArgs()->once()
+            ->andReturn(self::IRRELEVANT_RESPONSE);
 
-    /**
-     * @dataProvider validAcceptHeaders
-     */
-    public function testGenerateOKResponse($acceptHeader)
-    {
-        $this->shouldGenerateResponseWithRequestForResourceWith($acceptHeader, $this->resourceMock, 200, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->messageProcessor->generateOkResponse($this->request, $this->resourceMock);
+        $response = $this->messageProcessor->generateDeletedResponse();
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function validAcceptHeaders()
-    {
-        return array(
-            array('application/hal+json'),
-            array('application/hal+xml')
-        );
-    }
-
-    public function testGenerateOKResponseWithHeaderNotFound()
-    {
-        $this->request = new Request(self::IRRELEVANT_PATH_INFO, self::IRRELEVANT_KEY, array(), array(), self::IRRELEVANT_CONTENT );
-        $this->formatterFactoryMock->shouldReceive('create')->with('application/hal+json')->once()->andReturn($this->formatterMock);
-        $this->resourceMock->shouldReceive('setFormatter')->with($this->formatterMock);
-        $this->responseFactoryMock->shouldReceive('create')->with($this->resourceMock, 200)->once()->andReturn(self::IRRELEVANT_RESPONSE);
-
-        $response = $this->messageProcessor->generateOkResponse($this->request, $this->resourceMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function testGenerateOKResponseWithNotAcceptable()
-    {
-        $this->shouldGenerateResponseWithRequestForResourceWith('not-acceptable', null, 406, self::IRRELEVANT_RESPONSE);
-
-        $response = $this->messageProcessor->generateOkResponse($this->request, $this->resourceMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    private function shouldGenerateResponseWithRequestForResourceWith($format, $resource, $statusCode, $response)
-    {
-        $this->shouldGetFormatterForRequest($format, $this->formatterMock);
-        $this->resourceMock->shouldReceive('setFormatter')->with($this->formatterMock);
-        $this->responseFactoryMock->shouldReceive('create')->with($resource, $statusCode)->once()->andReturn($response);
-    }
-
-    private function shouldGetFormatterForRequest($format, $formatter)
-    {
-        $headers = array('accept' => $format);
-        $this->createRequestWithHeaders($headers);
-        $this->formatterFactoryMock->shouldReceive('create')->with($format)->once()->andReturn($formatter);
     }
 
     public function testGetRequestContentAsArray()
     {
-        $headers = array('content-type' => self::IRRELEVANT_CONTENT_TYPE);
-        $this->createRequestWithHeaders($headers);
-        $parser = m::mock('Level3\Messages\Parser\Parser');
-        $this->parserFactoryMock->shouldReceive('create')->with(self::IRRELEVANT_CONTENT_TYPE)->once()->andReturn($parser);
-        $parser->shouldreceive('parse')->with(self::IRRELEVANT_CONTENT)->once()->andreturn(array());
+        $requestMock = $this->createRequestMock();
+        $this->requestParserMock->shouldReceive('getRequestContentAsArray')->with($requestMock)->once()
+            ->andReturn(self::IRRELEVANT_RESPONSE);
 
-        $arrayContent = $this->messageProcessor->getRequestContentAsArray($this->request);
+        $response = $this->messageProcessor->getRequestContentAsArray($requestMock);
 
-        $this->assertThat($arrayContent, $this->equalTo(array()));
+        $this->assertThat($response,$this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    private function createRequestWithHeaders($headers)
+    private function createRequestMock()
     {
-        $this->request = new Request(self::IRRELEVANT_PATH_INFO, self::IRRELEVANT_KEY, $headers, array(), self::IRRELEVANT_CONTENT);
+        return m::mock('Level3\Messages\Request');
     }
 }

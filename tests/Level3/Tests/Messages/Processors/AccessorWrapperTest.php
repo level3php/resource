@@ -161,8 +161,8 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     public function testDelete()
     {
         $this->accessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once();
-        $this->messageProcessorMock->shouldReceive('createOKResponse')
-            ->with($this->dummyRequest)->once()
+        $this->messageProcessorMock->shouldReceive('generateDeletedResponse')
+            ->withNoArgs()->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->accessorWrapper->delete($this->dummyRequest);

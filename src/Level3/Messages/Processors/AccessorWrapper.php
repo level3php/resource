@@ -7,8 +7,6 @@ use Level3\Accessor;
 use Level3\Messages\MessageProcessor;
 use Level3\Messages\Parser\ParserFactory;
 use Level3\Messages\Request;
-use Level3\Repository\Exception\BaseException;
-use Teapot\StatusCode;
 
 class AccessorWrapper implements RequestProcessor
 {
@@ -113,6 +111,6 @@ class AccessorWrapper implements RequestProcessor
         $key = $request->getKey();
         $id = $request->getId();
         $this->accessor->delete($key, $id);
-        return $this->messageProcessor->createOKResponse($request);
+        return $this->messageProcessor->generateDeletedResponse();
     }
 }
