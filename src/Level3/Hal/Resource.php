@@ -9,8 +9,8 @@
  */
 
 namespace Level3\Hal;
-use Level3\Hal\Format\XML;
-use Level3\Hal\Format\JSON;
+
+use Level3\Hal\Formatter\Formatter;
 
 class Resource
 {
@@ -18,6 +18,7 @@ class Resource
     protected $data;
     protected $resources;
     protected $links;
+    protected $formatter;
 
     public function __construct($uri = null, array $data = array())
     {
@@ -71,15 +72,23 @@ class Resource
         return $this->uri;
     }
 
-    public function asJson($pretty = false)
+    public function setFormatter(Formatter $formatter)
     {
-        $renderer = new JSON();
-        return $renderer->to($this, $pretty);
+        $this->formatter = $formatter;
     }
 
-    public function asXml($pretty = false)
+    public function format()
     {
-        $renderer = new XML();
-        return $renderer->to($this, $pretty);
+        return $this->formatter->format($this);
+    }
+
+    public function formatPretty()
+    {
+        return $this->formatter->formatPretty($this);
+    }
+
+    public function __toString()
+    {
+        return $this->format();
     }
 }

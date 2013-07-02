@@ -31,8 +31,4 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $this->repositoryHubMock->shouldReceive('offsetExists')->with($key)->andReturn(true);
     }
-
-    public function tearDown() {
-        m::close();
-    }
 }

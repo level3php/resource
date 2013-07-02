@@ -66,26 +66,12 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @dataProvider baseExceptions
-     */
-    public function testFindShouldFailWithBaseException($exception)
+    public function testFindShouldFailWithException()
     {
+        $exception = new \Exception();
         $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()->andThrow($exception);
         $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with($exception->getCode(), $exception->getMessage())->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-
-        $response = $this->accessorWrapper->find($this->dummyRequest);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function testFindShouldFailWithAnyException()
-    {
-        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()->andThrow('\Exception');
-        $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with(500)->once()
+            ->with($exception)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->accessorWrapper->find($this->dummyRequest);
@@ -105,26 +91,12 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @dataProvider baseExceptions
-     */
-    public function testGetShouldFailWithBaseException($exception)
+    public function testGetShouldFailWithException()
     {
+        $exception = new \Exception();
         $this->accessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()->andThrow($exception);
         $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with($exception->getCode(), $exception->getMessage())->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-
-        $response = $this->accessorWrapper->get($this->dummyRequest);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function testGetShouldFailWithAnyException()
-    {
-        $this->accessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()->andThrow('\Exception');
-        $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with(500)->once()
+            ->with($exception)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->accessorWrapper->get($this->dummyRequest);
@@ -145,29 +117,14 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @dataProvider baseExceptions
-     */
-    public function testPostShouldFailWithBaseException($exception)
+    public function testPostShouldFailWithException()
     {
+        $exception = new \Exception();
         $this->accessorMock->shouldReceive('post')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()->andThrow($exception);
         $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with($exception->getCode(), $exception->getMessage())->once()
+            ->with($exception)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
         $this->messageProcessorMock->shouldReceive('getRequestContentAsArray')->with($this->dummyRequest)->once()->andReturn(array());
-
-        $response = $this->accessorWrapper->post($this->dummyRequest);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function testPostShouldFailWithAnyException()
-    {
-        $this->accessorMock->shouldReceive('post')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()->andThrow('\Exception');
-        $this->messageProcessorMock->shouldReceive('getRequestContentAsArray')->with($this->dummyRequest)->once()->andReturn(array());
-        $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with(500)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->accessorWrapper->post($this->dummyRequest);
 
@@ -187,28 +144,13 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @dataProvider baseExceptions
-     */
-    public function testPutShouldFailWithBaseException($exception)
+    public function testPutShouldFailWithException()
     {
+        $exception = new \Exception();
         $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()->andThrow($exception);
         $this->messageProcessorMock->shouldReceive('getRequestContentAsArray')->with($this->dummyRequest)->once()->andReturn(array());
         $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with($exception->getCode(), $exception->getMessage())->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-
-        $response = $this->accessorWrapper->put($this->dummyRequest);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function testPutShouldFailWithAnyException()
-    {
-        $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()->andThrow('\Exception');
-        $this->messageProcessorMock->shouldReceive('getRequestContentAsArray')->with($this->dummyRequest)->once()->andReturn(array());
-        $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with(500)->once()
+            ->with($exception)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->accessorWrapper->put($this->dummyRequest);
@@ -228,42 +170,17 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @dataProvider baseExceptions
-     */
-    public function testDeleteShouldFailWithBaseException($exception)
+    public function testDeleteShouldFailWithException()
     {
+        $exception = new \Exception();
         $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()->andThrow($exception);
         $this->messageProcessorMock->shouldReceive('getRequestContentAsArray')->with($this->dummyRequest)->once()->andReturn(array());
         $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with($exception->getCode(), $exception->getMessage())->once()
+            ->with($exception)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
 
         $response = $this->accessorWrapper->put($this->dummyRequest);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function testDeleteShouldFailWithAnyException()
-    {
-        $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()->andThrow('\Exception');
-        $this->messageProcessorMock->shouldReceive('getRequestContentAsArray')->with($this->dummyRequest)->once()->andReturn(array());
-        $this->messageProcessorMock->shouldReceive('createErrorResponse')
-            ->with(500)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-
-        $response = $this->accessorWrapper->put($this->dummyRequest);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    public function baseExceptions()
-    {
-        return array(
-            array(new Conflict()),
-            array(new DataError()),
-            array(new NoContent()),
-            array(new NotFound())
-        );
     }
 }

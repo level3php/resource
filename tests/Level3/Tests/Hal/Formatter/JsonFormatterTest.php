@@ -8,13 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Tests\Hal\Format;
-use Level3\Hal\Resource;
-use Level3\Hal\Link;
-use Level3\Hal\Format\JSON;
+namespace Level3\Tests\Hal\Formatter;
 
-class JSONTest extends Format {
-    protected $class = 'Level3\Hal\Format\JSON';
+class JsonFormatterTest extends FormatterTest {
+    protected $class = 'Level3\Hal\Formatter\JsonFormatter';
     protected $nonPretty = 'HalFormatJSONNonPretty.json';
     protected $pretty = 'HalFormatJSONPretty.json';
 }

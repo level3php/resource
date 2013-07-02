@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Hal\Format;
+namespace Level3\Hal\Formatter;
 use Level3\Hal\Resource;
 
-class JSON implements Format
+class JsonFormatter extends Formatter
 {
-    public function to(Resource $resource, $pretty)
+    protected function formatResource(Resource $resource, $pretty)
     {
         $options = 0;
         if (version_compare(PHP_VERSION, '5.4.0') >= 0 and $pretty) {

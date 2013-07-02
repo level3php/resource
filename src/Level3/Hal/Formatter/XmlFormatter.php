@@ -9,13 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Hal\Format;
+namespace Level3\Hal\Formatter;
+
 use Level3\Hal\Resource;
 use SimpleXMLElement;
 
-class XML implements Format
+class XmlFormatter extends Formatter
 {
-    public function to(Resource $resource, $pretty)
+    public function formatResource(Resource $resource, $pretty)
     {
         $doc = new SimpleXMLElement('<resource></resource>');
         if (!is_null($resource->getUri())) {

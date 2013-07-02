@@ -11,8 +11,11 @@
 namespace Level3\Tests;
 use Level3\Hal\Resource;
 use Level3\Hal\Link;
+use Mockery as m;
 
-class AResourceTest extends TestCase {
+class ResourceTest extends TestCase {
+    const IRRELEVANT_FORMATTED_RESOURCE = 'X';
+
     public function testHal()
     {
         $uri = '/test';
@@ -70,15 +73,27 @@ class AResourceTest extends TestCase {
         $this->assertSame($expected, $resource->getURI());
     }
 
-    public function testResourceAsJson()
+    public function testFormat()
     {
         $resource = new Resource();
-        $this->assertEquals('[]', $resource->asJson());
+        $formatterMock = m::mock('Level3\Hal\Formatter\Formatter');
+        $formatterMock->shouldReceive('format')->with($resource)->once()->andReturn(self::IRRELEVANT_FORMATTED_RESOURCE);
+        $resource->setFormatter($formatterMock);
+
+        $result = $resource->format();
+
+        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_FORMATTED_RESOURCE));
     }
 
-    public function testResourceAsXML()
+    public function testFormatPretty()
     {
         $resource = new Resource();
-        $this->assertEquals("<?xml version=\"1.0\"?>\n<resource/>\n", $resource->asXml());
+        $formatterMock = m::mock('Level3\Hal\Formatter\Formatter');
+        $formatterMock->shouldReceive('formatPretty')->with($resource)->once()->andReturn(self::IRRELEVANT_FORMATTED_RESOURCE);
+        $resource->setFormatter($formatterMock);
+
+        $result = $resource->formatPretty();
+
+        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_FORMATTED_RESOURCE));
     }
 }

@@ -12,12 +12,6 @@ use Teapot\StatusCode;
 
 class AccessorWrapper implements RequestProcessor
 {
-
-    const HEADER_ACCEPT = 'Accept';
-    const HEADER_RANGE = 'Range';
-
-    const ACCEPT_DELIMITER = ';';
-
     private $accessor;
     private $messageProcessor;
 
@@ -31,10 +25,8 @@ class AccessorWrapper implements RequestProcessor
     {
         try {
             $response = $this->findResources($request);
-        } catch (BaseException $e) {
-            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
+            $response = $this->messageProcessor->createErrorResponse($e);
         }
 
         return $response;
@@ -51,10 +43,8 @@ class AccessorWrapper implements RequestProcessor
     {
         try {
             $response = $this->getResource($request);
-        } catch (BaseException $e) {
-            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
+            $response = $this->messageProcessor->createErrorResponse($e);
         }
 
         return $response;
@@ -72,10 +62,8 @@ class AccessorWrapper implements RequestProcessor
     {
         try {
             $response = $this->modifyResource($request);
-        } catch (BaseException $e) {
-            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
+            $response = $this->messageProcessor->createErrorResponse($e);
         }
 
         return $response;
@@ -94,10 +82,8 @@ class AccessorWrapper implements RequestProcessor
     {
         try {
             $response = $this->createResource($request);
-        } catch (BaseException $e) {
-            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
+            $response = $this->messageProcessor->createErrorResponse($e);
         }
 
         return $response;
@@ -115,10 +101,8 @@ class AccessorWrapper implements RequestProcessor
     {
         try {
             $response = $this->deleteResource($request);
-        } catch (BaseException $e) {
-            $response = $this->messageProcessor->createErrorResponse($e->getCode(), $e->getMessage());
         } catch (\Exception $e) {
-            $response = $this->messageProcessor->createErrorResponse(StatusCode::INTERNAL_SERVER_ERROR);
+            $response = $this->messageProcessor->createErrorResponse($e);
         }
 
         return $response;

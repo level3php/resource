@@ -8,13 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Tests\Hal\Format;
-use Level3\Hal\Resource;
-use Level3\Hal\Link;
-use Level3\Hal\Format\XML;
+namespace Level3\Tests\Hal\Formatter;
 
-class XMLTest extends Format {
-    protected $class = 'Level3\Hal\Format\XML';
+class XmlFormatterTest extends FormatterTest {
+    protected $class = 'Level3\Hal\Formatter\XmlFormatter';
     protected $nonPretty = 'HalFormatXMLNonPretty.xml';
     protected $pretty = 'HalFormatXMLPretty.xml';
 }

@@ -50,37 +50,4 @@ class ResponseTest extends TestCase {
         $response->addHeader('foo', 'bar');
         $this->assertSame(array('foo' => 'bar'), $response->getHeaders()); 
     }
-
-    public function testSetFormatJSON()
-    {
-        $resource = new Resource('/test');
-        $response = new Response($resource);
-        $response->setFormat(Response::AS_JSON);
-        $this->assertSame(Response::AS_JSON, $response->getFormat());
-
-        $headers = $response->getHeaders();
-        $this->assertSame('application/hal+json', $headers['Content-Type']);
-        $this->assertSame('{', substr($response->getContent(), 0, 1));
-    }
-
-    public function testSetFormatXML()
-    {
-        $resource = new Resource('/test');
-        $response = new Response($resource);
-        $response->setFormat(Response::AS_XML);
-        $this->assertSame(Response::AS_XML, $response->getFormat());
-
-        $headers = $response->getHeaders();
-        $this->assertSame('application/hal+xml', $headers['Content-Type']); 
-        $this->assertSame('<?xml', substr($response->getContent(), 0, 5));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testSetFormatInvalid()
-    {
-        $response = new Response();
-        $response->setFormat('foo');
-    }
 }
