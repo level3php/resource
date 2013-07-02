@@ -33,7 +33,7 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
     public function testGetRequestContentAsArray()
     {
         $headers = array('content-type' => self::IRRELEVANT_CONTENT_TYPE);
-        $this->createRequestWithHeaders($headers);
+        $this->setupRequestWithHeaders($headers);
         $parser = m::mock('Level3\Messages\Parser\Parser');
         $this->parserFactoryMock->shouldReceive('create')->with(self::IRRELEVANT_CONTENT_TYPE)->once()->andReturn($parser);
         $parser->shouldreceive('parse')->with(self::IRRELEVANT_CONTENT)->once()->andreturn(array());
@@ -43,7 +43,65 @@ class RequestParserTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($arrayContent, $this->equalTo(array()));
     }
 
-    private function createRequestWithHeaders($headers)
+    public function testGetRequestRangeWithoutHeader()
+    {
+        $headers = array();
+        $this->setupRequestWithHeaders($headers);
+
+        $range = $this->requestParser->getRequestRange($this->request);
+
+        $this->assertThat($range, $this->equalTo(array(0,0)));
+    }
+
+    public function testGetRequestRangeWithoutLowerBound()
+    {
+        $headers = array(
+            'range'=> array('entity=-99')
+        );
+        $this->setupRequestWithHeaders($headers);
+
+        $range = $this->requestParser->getRequestRange($this->request);
+
+        $this->assertThat($range, $this->equalTo(array(0,99)));
+    }
+
+    public function testGetRequestRangeWithoutUpperBound()
+    {
+        $headers = array(
+            'range'=> array('entity=5-')
+        );
+        $this->setupRequestWithHeaders($headers);
+
+        $range = $this->requestParser->getRequestRange($this->request);
+
+        $this->assertThat($range, $this->equalTo(array(5,0)));
+    }
+
+    public function testGetRequestRangeWithoutBounds()
+    {
+        $headers = array(
+            'range'=> array('entity=-')
+        );
+        $this->setupRequestWithHeaders($headers);
+
+        $range = $this->requestParser->getRequestRange($this->request);
+
+        $this->assertThat($range, $this->equalTo(array(0,0)));
+    }
+
+    public function testGetRequestRange()
+    {
+        $headers = array(
+            'range'=> array('entity=0-99')
+        );
+        $this->setupRequestWithHeaders($headers);
+
+        $range = $this->requestParser->getRequestRange($this->request);
+
+        $this->assertThat($range, $this->equalTo(array(0,99)));
+    }
+
+    private function setupRequestWithHeaders($headers)
     {
         $this->request = new Request(self::IRRELEVANT_PATH_INFO, self::IRRELEVANT_KEY, $headers, array(), self::IRRELEVANT_CONTENT);
     }

@@ -18,6 +18,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_ID = 'XX';
     const IRRELEVANT_CONTENT = 'Y';
     const IRRELEVANT_RESPONSE = 'YY';
+    const IRRELEVANT_RANGE = 'YYY';
 
     private $accessorMock;
     private $messageProcessorMock;
@@ -56,7 +57,8 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     public function testFind()
     {
-        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()->andReturn($this->dummyResource);
+        $this->requestRangeShouldBeExtracted();
+        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE)->once()->andReturn($this->dummyResource);
         $this->messageProcessorMock->shouldReceive('createOKResponse')
             ->with($this->dummyRequest, $this->dummyResource)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
@@ -68,8 +70,11 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     public function testFindShouldFailWithException()
     {
+        $this->requestRangeShouldBeExtracted();
         $exception = new \Exception();
-        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()->andThrow($exception);
+        $this->accessorMock->shouldReceive('find')
+            ->with(self::IRRELEVANT_KEY, self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE)->once()
+            ->andThrow($exception);
         $this->messageProcessorMock->shouldReceive('createErrorResponse')
             ->with($exception)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
@@ -77,6 +82,12 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $response = $this->accessorWrapper->find($this->dummyRequest);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    private function requestRangeShouldBeExtracted()
+    {
+        $this->messageProcessorMock->shouldReceive('getRequestRange')->with($this->dummyRequest)->once()
+            ->andReturn(array(self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE));
     }
 
     public function testGet()

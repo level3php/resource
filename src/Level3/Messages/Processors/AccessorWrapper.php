@@ -33,7 +33,8 @@ class AccessorWrapper implements RequestProcessor
     private function findResources(Request $request)
     {
         $key = $request->getKey();
-        $resource = $this->accessor->find($key);
+        $range = $this->messageProcessor->getRequestRange($request);
+        $resource = $this->accessor->find($key, $range[0], $range[1]);
         return $this->messageProcessor->createOKResponse($request, $resource);
     }
 

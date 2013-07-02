@@ -8,6 +8,7 @@ use Mockery as m;
 class MessageProcessorTest  extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_RESPONSE = 'X';
+    const IRRELEVANT_RANGE = 'XX';
 
     private $requestParserMock;
     private $responseGeneratorMock;
@@ -63,6 +64,19 @@ class MessageProcessorTest  extends \PHPUnit_Framework_TestCase
         $response = $this->messageProcessor->getRequestContentAsArray($requestMock);
 
         $this->assertThat($response,$this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    public function testGetRequestRange()
+    {
+        $requestMock = $this->createRequestMock();
+        $this->requestParserMock->shouldReceive('getRequestRange')->with($requestMock)->once()
+            ->andReturn(array(self::IRRELEVANT_RANGE,self::IRRELEVANT_RANGE));
+
+        $range = $this->messageProcessor->getRequestRange($requestMock);
+
+        $this->assertThat($range, $this->equalTo(
+            array(self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE))
+        );
     }
 
     private function createRequestMock()

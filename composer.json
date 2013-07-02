@@ -10,6 +10,11 @@
             "name": "Máximo Cuadros",
             "email": "maximo@yunait.com",
             "homepage": "http://yunait.com"
+        },
+        {
+            "name": "Alex Martín",
+            "email": "alex@yunait.com",
+            "homepage": "http://yunait.com"
         }
     ],
     "require": {
@@ -17,7 +22,8 @@
         "shrikeh/teapot": "dev-master",
         "pimple/pimple": "v1.0.2",
         "nocarrier/hal": "dev-develop",
-        "psr/log": "dev-master"
+        "psr/log": "dev-master",
+        "symfony/http-foundation": ">=2.3,<2.4-dev"
     },
     "require-dev": {
         "silex/silex": "1.0.*@dev",

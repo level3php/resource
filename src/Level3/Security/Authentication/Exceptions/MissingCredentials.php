@@ -2,4 +2,4 @@
 
 namespace Level3\Security\Authentication\Exceptions;
 
-class MissingApiKey extends \RuntimeException {}
+class MissingCredentials extends \RuntimeException {}

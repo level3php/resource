@@ -2,4 +2,4 @@
 
 namespace Level3\Security\Authentication\Exceptions;
 
-class InvalidSignature extends \RuntimeException {}
+class InvalidCredentials extends \RuntimeException {}

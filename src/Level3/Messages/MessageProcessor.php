@@ -36,4 +36,9 @@ class MessageProcessor
     {
         return $this->requestParser->getRequestContentAsArray($request);
     }
+
+    public function getRequestRange(Request $request)
+    {
+        return $this->requestParser->getRequestRange($request);
+    }
 }
