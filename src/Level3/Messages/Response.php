@@ -12,17 +12,16 @@ namespace Level3\Messages;
 
 use Level3\Hal\Resource;
 use Teapot\StatusCode;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class Response
+class Response extends SymfonyResponse
 {
     protected $resource;
-    protected $status;
-    protected $headers = array();
 
-    public function __construct(Resource $resource = null, $status = StatusCode::OK)
+    public function __construct(Resource $resource = null, $status = StatusCode::OK, $headers = array())
     {
-        $this->setStatus($status);
-        if ($resource) $this->setResource($resource);
+        parent::__construct('', $status, $headers);
+        $this->resource = $resource;
     }
 
     public function setResource(Resource $resource)
@@ -35,29 +34,9 @@ class Response
         return $this->resource;
     }
 
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
     public function addHeader($header, $value)
     {   
-        $this->headers[$header] = $value;
-    }
-
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    public function getFormat()
-    {
-        return $this->format;
+        $this->headers->set($header, $value);
     }
 
     public function getContent()

@@ -3,7 +3,7 @@
 namespace Level3\Security\Authentication\Methods;
 
 use Level3\Messages\Request;
-use Level3\Security\Authentication\UserRepository;
+use Level3\Security\Authentication\CredentialsRepository;
 use Level3\Security\Authentication\Exceptions\InvalidCredentials;
 use Level3\Security\Authentication\Exceptions\MissingCredentials;
 use Level3\Security\Authentication\Exceptions\BadCredentials;
@@ -17,11 +17,11 @@ class HMAC implements AuthenticationMethod
     const TOKEN_SEPARATOR = ' ';
     const AUTHORIZATION_FIELDS_SEPARATOR = ':';
 
-    private $userRepository;
+    private $credentialsRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(CredentialsRepository $credentialsRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->credentialsRepository = $credentialsRepository;
     }
 
     public function authenticateRequest(Request $request)
@@ -32,16 +32,16 @@ class HMAC implements AuthenticationMethod
 
         $apiKey = $this->getApiKeyFromRequest($request);
 
-        $user = $this->userRepository->findByApiKey($apiKey);
-        $this->verifySignature($request, $user->getSecretKey());
-        $request->setUser($user);
+        $credentials = $this->credentialsRepository->findByApiKey($apiKey);
+        $this->verifySignature($request, $credentials->getSecretKey());
+        $request->setCredentials($credentials);
 
         return $request;
     }
 
     protected function hasAuthorizationHeader(Request $request)
     {
-        return $request->hasHeader(self::AUTHORIZATION_HEADER);
+        return $request->headers->has(self::AUTHORIZATION_HEADER);
     }
 
     protected function getApiKeyFromRequest(Request $request)

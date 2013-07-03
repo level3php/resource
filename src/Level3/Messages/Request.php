@@ -4,27 +4,32 @@ namespace Level3\Messages;
 
 use Level3\Messages\Exceptions\AttributeNotFound;
 use Level3\Messages\Exceptions\HeaderNotFound;
-use Level3\Security\Authentication\AuthenticatedUser;
+use Level3\Security\Authentication\AuthenticatedCredentials;
+use Level3\Security\Authentication\Credentials;
 use Level3\Security\Authentication\User;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-class Request
+class Request extends SymfonyRequest
 {
-    private $user;
-    private $pathInfo;
+    const HEADER_RANGE = 'Range';
+    const HEADER_RANGE_UNIT_SEPARATOR = '=';
+    const HEADER_RANGE_SEPARATOR = '-';
+
+    private $credentials;
     private $id;
     private $key;
-    private $attributes;
-    private $headers;
-    private $content;
 
-    public function __construct($pathInfo, $key, array $headers, array $attributes, $content)
+    public function __construct($key, SymfonyRequest $request)
     {
-        $this->pathInfo = $pathInfo;
-        $this->key = $key;
-        $this->user = new User();
-        $this->headers = $headers;
-        $this->attributes = $attributes;
-        $this->content = $content;
+        $query = $request->query->all();
+        $req = $request->request->all();
+        $attributes = $request->attributes->all();
+        $cookies = $request->cookies->all();
+        $files = $request->files->all();
+        $server = $request->server->all();
+
+        $this->initialize($query, $req, $attributes, $cookies, $files, $server);
+        $this->credentials = new Credentials();
     }
 
     public function setId($id)
@@ -32,14 +37,14 @@ class Request
         $this->id = $id;
     }
 
-    public function getUser()
+    public function getCredentials()
     {
-        return $this->user;
+        return $this->credentials;
     }
 
-    public function setUser(AuthenticatedUser $user)
+    public function setCredentials(AuthenticatedCredentials $credentials)
     {
-        $this->user = $user;
+        $this->credentials = $credentials;
     }
 
     public function getId()
@@ -52,55 +57,34 @@ class Request
         return $this->key;
     }
 
-    public function getHeaders()
+    public function getRange()
     {
-        return $this->headers;
-    }
-
-    public function getHeader($headerName)
-    {
-        if (!isset($this->headers[$headerName])) {
-            throw new HeaderNotFound($headerName);
-        }
-        return $this->headers[$headerName];
-    }
-
-    public function hasHeader($headerName)
-    {
-        return isset($this->headers[$headerName]);
-    }
-
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    public function addAttribute($key, $value)
-    {
-        $this->attributes[$key] = $value;
-    }
-
-    public function hasAttribute($key)
-    {
-        return isset($this->attributes[$key]);
-    }
-
-    public function getAttribute($key)
-    {
-        if (!$this->hasAttribute($key)) {
-            throw new AttributeNotFound($key);
+        if (!$this->headers->has(self::HEADER_RANGE)) {
+            return array(0,0);
         }
 
-        return $this->attributes[$key];
+        $range = $this->extractRangeFromHeader();
+
+        if ('' === ($range[0])) {
+            $range[0] = 0;
+        }
+
+        if ('' === $range[1]) {
+            $range[1] = 0;
+        }
+
+        return $range;
     }
 
-    public function getContent()
+    private function extractRangeFromHeader()
     {
-        return $this->content;
-    }
+        $range = $this->headers->get(self::HEADER_RANGE);
+        $range = $range[0];
 
-    public function getPathInfo()
-    {
-        return $this->pathInfo;
+        $range = explode(self::HEADER_RANGE_UNIT_SEPARATOR, $range);
+        $range = $range[1];
+
+        $range = explode(self::HEADER_RANGE_SEPARATOR, $range);
+        return $range;
     }
 }

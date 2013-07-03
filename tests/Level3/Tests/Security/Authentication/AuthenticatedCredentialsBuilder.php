@@ -2,10 +2,10 @@
 
 namespace Level3\Tests\Security\Authentication;
 
-use Level3\Security\Authentication\AuthenticatedUser;
+use Level3\Security\Authentication\AuthenticatedCredentials;
 use Level3\Security\Authorization\Role;
 
-class AuthenticatedUserBuilder
+class AuthenticatedCredentialsBuilder
 {
     const IRRELEVANT_ID = 'X';
     const IRRELEVANT_LOGIN = 'XX';
@@ -32,7 +32,7 @@ class AuthenticatedUserBuilder
 
     public function build()
     {
-        return new AuthenticatedUser($this->id, $this->login, $this->fullName, $this->role, $this->secretKey, $this->apiKey);
+        return new AuthenticatedCredentials($this->id, $this->login, $this->fullName, $this->role, $this->secretKey, $this->apiKey);
     }
 
     public function withId($id)

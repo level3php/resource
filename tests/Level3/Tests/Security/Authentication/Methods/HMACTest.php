@@ -26,7 +26,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
         $this->userRepositoryMock = m::mock('Level3\Security\Authentication\UserRepository');
         $this->requestFactory = new RequestFactory();
         $this->headers = $this->createHeaders();
-        $this->authenticatedUser = AuthenticatedUserBuilder::anAuthenticatedUser()->build();
+        $this->authenticatedUser = AuthenticatedCredentialsBuilder::anAuthenticatedUser()->build();
 
         $this->method = new HMAC($this->userRepositoryMock);
     }
@@ -37,7 +37,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
             'Authorization' => sprintf('%s%s%s%s%s',
                 'Token',
                 ' ',
-                AuthenticatedUserBuilder::IRRELEVANT_API_KEY,
+                AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
                 ':',
                 $this->createSignatureForNullContent()
             )
@@ -46,7 +46,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
 
     private function createSignatureForNullContent()
     {
-        return hash_hmac(HMAC::HASH_ALGORITHM, null, AuthenticatedUserBuilder::IRRELEVANT_SECRET_KEY);
+        return hash_hmac(HMAC::HASH_ALGORITHM, null, AuthenticatedCredentialsBuilder::IRRELEVANT_SECRET_KEY);
     }
 
     /**
@@ -94,7 +94,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     private function shouldAuthenticateRequest()
     {
         $this->initRequest();
-        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedUserBuilder::IRRELEVANT_API_KEY)->once()
+        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY)->once()
             ->andReturn($this->authenticatedUser);
     }
 
@@ -107,7 +107,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     private function authenticateRequestShouldThrowBadCredentials()
     {
         $this->initRequest();
-        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedUserBuilder::IRRELEVANT_API_KEY)->once()
+        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY)->once()
             ->andThrow('Level3\Security\Authentication\Exceptions\BadCredentials');
     }
 

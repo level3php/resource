@@ -2,9 +2,9 @@
 
 namespace Level3\Security\Authentication;
 
-class User 
+class Credentials
 {
-    const ANONYMOUS_USER_NAME = 'Anonymous User';
+    const ANONYMOUS_CREDENTIALS_NAME = 'Anonymous Credentials';
     const ANONYMOUS_API_KEY = 'anonymous';
 
     public function isAuthenticated()
@@ -14,7 +14,7 @@ class User
 
     public function getFullName()
     {
-        return self::ANONYMOUS_USER_NAME;
+        return self::ANONYMOUS_CREDENTIALS_NAME;
     }
 
     public function getApiKey()

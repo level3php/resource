@@ -28,11 +28,11 @@ class AuthenticationProcessor implements RequestProcessor
         try {
             $authenticatedRequest = $this->method->authenticateRequest($request);
         } catch (BadCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createBadCredentialsResponse();
         } catch (MissingCredentials $e) {
             return $this->processor->find($request);
         } catch (InvalidCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createInvalidCredentialsResponse();
         }
 
         return $this->processor->find($authenticatedRequest);
@@ -42,11 +42,11 @@ class AuthenticationProcessor implements RequestProcessor
         try {
             $authenticatedRequest = $this->method->authenticateRequest($request);
         } catch (BadCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createBadCredentialsResponse();
         } catch (MissingCredentials $e) {
             return $this->processor->get($request);
         } catch (InvalidCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createInvalidCredentialsResponse();
         }
 
         return $this->processor->get($authenticatedRequest);
@@ -56,11 +56,11 @@ class AuthenticationProcessor implements RequestProcessor
         try {
             $authenticatedRequest = $this->method->authenticateRequest($request);
         } catch (BadCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createBadCredentialsResponse();
         } catch (MissingCredentials $e) {
             return $this->processor->post($request);
         } catch (InvalidCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createInvalidCredentialsResponse();
         }
 
         return $this->processor->post($authenticatedRequest);
@@ -70,11 +70,11 @@ class AuthenticationProcessor implements RequestProcessor
         try {
             $authenticatedRequest = $this->method->authenticateRequest($request);
         } catch (BadCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createBadCredentialsResponse();
         } catch (MissingCredentials $e) {
             return $this->processor->put($request);
         } catch (InvalidCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createInvalidCredentialsResponse();
         }
 
         return $this->processor->put($authenticatedRequest);
@@ -84,74 +84,33 @@ class AuthenticationProcessor implements RequestProcessor
         try {
             $authenticatedRequest = $this->method->authenticateRequest($request);
         } catch (BadCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createBadCredentialsResponse();
         } catch (MissingCredentials $e) {
             return $this->processor->delete($request);
         } catch (InvalidCredentials $e) {
-            return $this->createForbiddenResponse();
+            return $this->createInvalidCredentialsResponse();
         }
 
         return $this->processor->delete($authenticatedRequest);
     }
 
-    protected function authenticateRequest(Request $request)
+    protected function createBadCredentialsResponse()
     {
-        if (!$this->hasAuthorizationHeader($request)) {
-            throw new MissingApiKey();
-        }
+        $data = array(
+            'code' => StatusCode::FORBIDDEN,
+            'message' => 'Provided credentials are invalid'
+        );
 
-        $apiKey = $this->getApiKeyFromRequest($request);
-
-        $user = $this->userRepository->findByApiKey($apiKey);
-        $this->verifySignature($request, $user->getSecretKey());
-        $request->setUser($user);
-
-        return $request;
+        return $this->responseFactory->createFromDataAndStatusCode($data, StatusCode::FORBIDDEN);
     }
 
-    protected function hasAuthorizationHeader(Request $request)
+    protected function createInvalidCredentialsResponse()
     {
-        return $request->hasHeader(self::AUTHORIZATION_HEADER);
-    }
+        $data = array(
+            'code' => StatusCode::FORBIDDEN,
+            'message' => 'Provided credentials are not correctly formed'
+        );
 
-    protected function hasSignatureHeader(Request $request)
-    {
-        return $request->hasHeader(self::SIGNATURE_HEADER);
-    }
-
-    protected function getApiKeyFromRequest(Request $request)
-    {
-        $authContent = $this->extractAuthContent($request);
-        return explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent)[0];
-    }
-
-    protected function createForbiddenResponse()
-    {
-        return $this->responseFactory->create(null, StatusCode::FORBIDDEN);
-    }
-
-    protected function verifySignature(Request $request, $privateKey)
-    {
-        $originalContent = $request->getContent();
-        $calculatedSignature = hash_hmac(self::HASH_ALGORITHM, $originalContent, $privateKey);
-
-        $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
-
-        $signature = $authContent[1];
-
-        if ($calculatedSignature !== $signature) {
-            throw new InvalidSignature();
-        }
-    }
-
-    protected function extractAuthContent(Request $request)
-    {
-        $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
-
-        if (explode(self::TOKEN_SEPARATOR, $authHeader)[0] !== self::TOKEN) {
-            throw new MissingApiKey();
-        }
-
-        return explode(self::TOKEN_SEPARATOR, $authHeader)[1];
+        return $this->responseFactory->createFromDataAndStatusCode($data, StatusCode::FORBIDDEN);
     }
 }

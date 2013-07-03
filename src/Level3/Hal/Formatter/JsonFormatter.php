@@ -14,6 +14,9 @@ use Level3\Hal\Resource;
 
 class JsonFormatter extends Formatter
 {
+
+    protected $contentType = FormatterFactory::CONTENT_TYPE_APPLICATION_HAL_JSON;
+
     protected function formatResource(Resource $resource, $pretty)
     {
         $options = 0;

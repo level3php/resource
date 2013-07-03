@@ -13,6 +13,8 @@ use Level3\Hal\Resource;
 
 abstract class Formatter
 {
+    protected $contentType;
+
     public function format(Resource $resource)
     {
         return $this->formatResource($resource, false);
@@ -24,4 +26,9 @@ abstract class Formatter
     }
 
     protected abstract function formatResource(Resource $resource, $pretty);
+
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
 }

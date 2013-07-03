@@ -99,8 +99,8 @@ class RequestLogger implements RequestProcessor
     protected function generateLogMessage(Request $request, $method)
     {
         $pathInfo = $request->getPathInfo();
-        $userName = $request->getUser()->getFullName();
-        $apiKey = $request->getUser()->getApiKey();
-        return sprintf('%s %s - %s(%s)', $method, $pathInfo, $userName, $apiKey);
+        $name = $request->getCredentials()->getFullName();
+        $apiKey = $request->getCredentials()->getApiKey();
+        return sprintf('%s %s - %s(%s)', $method, $pathInfo, $name, $apiKey);
     }
 }

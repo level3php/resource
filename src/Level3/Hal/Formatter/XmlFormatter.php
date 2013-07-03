@@ -16,6 +16,8 @@ use SimpleXMLElement;
 
 class XmlFormatter extends Formatter
 {
+    protected $contentType = FormatterFactory::CONTENT_TYPE_APPLICATION_HAL_XML;
+
     public function formatResource(Resource $resource, $pretty)
     {
         $doc = new SimpleXMLElement('<resource></resource>');

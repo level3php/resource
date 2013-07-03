@@ -2,7 +2,7 @@
 
 namespace Level3\Security\Authentication;
 
-interface UserRepository
+interface CredentialsRepository
 {
     public function findByApiKey($apiKey);
 }

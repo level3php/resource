@@ -3,16 +3,14 @@
 namespace Level3\Messages;
 
 use Level3\Security\Authentication\User;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class RequestFactory
 {
     private $key;
     private $id;
     private $user;
-    private $attributes = array();
-    private $headers = array();
-    private $content;
-    private $pathInfo;
+    private $symfonyRequest;
 
     public function withKey($key)
     {
@@ -32,40 +30,22 @@ class RequestFactory
         return $this;
     }
 
-    public function withAttributes(array $attributes)
+    public function withSymfonyRequest(SymfonyRequest $symfonyRequest)
     {
-        $this->attributes = $attributes;
-        return $this;
-    }
-
-    public function withContent($content)
-    {
-        $this->content = $content;
-        return $this;
-    }
-
-    public function withHeaders(array $array)
-    {
-        $this->headers = $array;
-        return $this;
-    }
-
-    public function withPathInfo($pathInfo)
-    {
-        $this->pathInfo = $pathInfo;
+        $this->symfonyRequest = $symfonyRequest;
         return $this;
     }
 
     public function create()
     {
-        $request = new Request($this->pathInfo, $this->key, $this->headers, $this->attributes, $this->content);
+        $request = new Request($this->key, $this->symfonyRequest);
 
         if ($this->id !== null) {
             $request->setId($this->id);
         }
 
         if ($this->user !== null) {
-            $request->setUser($this->user);
+            $request->setCredentials($this->user);
         }
 
         return $request;
@@ -76,10 +56,7 @@ class RequestFactory
         $this->key = null;
         $this->id = null;
         $this->user = null;
-        $this->attributes = array();
-        $this->headers = array();
-        $this->content = null;
-        $this->pathInfo = null;
+        $this->symfonyRequest = null;
         return $this;
     }
 }
