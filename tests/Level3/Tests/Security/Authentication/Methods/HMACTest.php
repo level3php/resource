@@ -132,7 +132,33 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     {
         $this->shouldAuthenticateRequest();
 
+        $this->request->headers->add(
+            array('Authorization' =>
+            sprintf(
+                '%s%s%s%s%s',
+                'Token',
+                ' ',
+                AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
+                ':',
+                strtoupper($this->createSignatureForNullContent())
+            )
+            )
+        );
+
         $request = $this->method->authenticateRequest($this->request);
+
+        $this->assertInstanceOf(
+            'Level3\Security\Authentication\AuthenticatedCredentials',
+            $request->getCredentials()
+        );
+    }
+
+    public function testAuthenticateRequestWithLowercaseSignature()
+    {
+        $this->shouldAuthenticateRequest();
+
+        $request = $this->method->authenticateRequest($this->request);
+
         $this->assertInstanceOf(
             'Level3\Security\Authentication\AuthenticatedCredentials',
             $request->getCredentials()
