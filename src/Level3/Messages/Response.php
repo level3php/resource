@@ -36,7 +36,22 @@ class Response extends SymfonyResponse
 
     public function addHeader($header, $value)
     {   
-        $this->headers->set($header, $value);
+        $this->headers->set($header, $value, false);
+    }
+
+    public function setHeader($header, $value)
+    {
+        $this->headers->set($header, $value, true);
+    }
+
+    public function getHeaders($header)
+    {
+        return $this->headers->get($header, null, false);
+    }
+
+    public function getHeader($header)
+    {
+        return $this->headers->get($header);
     }
 
     public function getContent()

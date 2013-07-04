@@ -4,6 +4,7 @@ namespace Level3\Messages\Processors;
 
 use Exception;
 use Level3\Accessor;
+use Level3\Hal\Formatter\FormatterFactory;
 use Level3\Hal\Resource;
 use Level3\Messages\Exceptions\NotAcceptable;
 use Level3\Messages\MessageProcessor;
@@ -16,7 +17,6 @@ use Teapot\StatusCode;
 class AccessorWrapper implements RequestProcessor
 {
     private $accessor;
-    private $messageProcessor;
     private $responseFactory;
     private $formatterFactory;
     private $parserFactory;
@@ -24,14 +24,12 @@ class AccessorWrapper implements RequestProcessor
 
     public function __construct(
         Accessor $resourceAccessor,
-        MessageProcessor $messageProcessor,
         ResponseFactory $responseFactory,
         FormatterFactory $formatterFactory,
         ParserFactory $parserFactory
     )
     {
         $this->accessor = $resourceAccessor;
-        $this->messageProcessor = $messageProcessor;
         $this->responseFactory = $responseFactory;
         $this->formatterFactory = $formatterFactory;
         $this->parserFactory = $parserFactory;
@@ -137,7 +135,12 @@ class AccessorWrapper implements RequestProcessor
         $key = $request->getKey();
         $id = $request->getId();
         $this->accessor->delete($key, $id);
-        return $this->generateDeletedResponse();
+        return $this->createDeletedResponse();
+    }
+
+    private function createDeletedResponse()
+    {
+        return $this->responseFactory->createFromDataAndStatusCode(array(), StatusCode::OK);
     }
 
     private function createResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
@@ -153,6 +156,7 @@ class AccessorWrapper implements RequestProcessor
 
     private function prepareResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
     {
+
         $this->setResourceFormatter($request, $resource);
         $response = $this->responseFactory->create($resource, $statusCode);
         $response->prepare($request);

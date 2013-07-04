@@ -2,8 +2,6 @@
 
 namespace Level3\Messages;
 
-use Level3\Messages\Exceptions\AttributeNotFound;
-use Level3\Messages\Exceptions\HeaderNotFound;
 use Level3\Security\Authentication\AuthenticatedCredentials;
 use Level3\Security\Authentication\Credentials;
 use Level3\Security\Authentication\User;
@@ -14,13 +12,13 @@ class Request extends SymfonyRequest
     const HEADER_RANGE = 'Range';
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
-
     private $credentials;
     private $id;
     private $key;
 
     public function __construct($key, SymfonyRequest $request)
     {
+        $this->key = $key;
         $query = $request->query->all();
         $req = $request->request->all();
         $attributes = $request->attributes->all();
@@ -30,11 +28,6 @@ class Request extends SymfonyRequest
 
         $this->initialize($query, $req, $attributes, $cookies, $files, $server);
         $this->credentials = new Credentials();
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getCredentials()
@@ -52,6 +45,11 @@ class Request extends SymfonyRequest
         return $this->id;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     public function getKey()
     {
         return $this->key;
@@ -60,7 +58,7 @@ class Request extends SymfonyRequest
     public function getRange()
     {
         if (!$this->headers->has(self::HEADER_RANGE)) {
-            return array(0,0);
+            return array(0, 0);
         }
 
         $range = $this->extractRangeFromHeader();
@@ -79,12 +77,21 @@ class Request extends SymfonyRequest
     private function extractRangeFromHeader()
     {
         $range = $this->headers->get(self::HEADER_RANGE);
-        $range = $range[0];
 
         $range = explode(self::HEADER_RANGE_UNIT_SEPARATOR, $range);
         $range = $range[1];
 
         $range = explode(self::HEADER_RANGE_SEPARATOR, $range);
         return $range;
+    }
+
+    public function isAuthenticated()
+    {
+        return $this->credentials->isAuthenticated();
+    }
+
+    public function getHeader($header)
+    {
+        return $this->headers->get($header);
     }
 }

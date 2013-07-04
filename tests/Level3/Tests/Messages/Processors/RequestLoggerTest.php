@@ -6,10 +6,10 @@ use Level3\Messages\RequestFactory;
 use Mockery as m;
 use Level3\Tests\Messages\Processors\RequestLogger;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\Request;
 
 class RequestLoggerTest extends \PHPUnit_Framework_TestCase
 {
-    const IRRELEVANT_PATH_INFO = 'X';
     const IRRELEVANT_RESPONSE = 'XX';
 
     private $requestProcessorMock;
@@ -30,15 +30,17 @@ class RequestLoggerTest extends \PHPUnit_Framework_TestCase
     private function createDummyRequest()
     {
         $requestFactory = new RequestFactory();
+        $symfonyRequest = new Request();
         return $requestFactory->clear()
-            ->withPathInfo(self::IRRELEVANT_PATH_INFO)
+            ->withSymfonyRequest($symfonyRequest)
             ->create();
+
     }
 
     public function tearDown()
     {
-        $this->loggerMock = null;
-        $this->requestProcessorMock = null;
+        unset($this->loggerMock);
+        unset($this->requestProcessorMock);
     }
 
     public function testGetLogLevel()
@@ -70,7 +72,7 @@ class RequestLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethods($method, $message)
     {
-        $logMessage = sprintf('%s %s - %s(%s)', $message, self::IRRELEVANT_PATH_INFO, 'Anonymous Credentials', 'anonymous');
+        $logMessage = sprintf('%s %s - %s(%s)', $message, '/', 'Anonymous Credentials', 'anonymous');
         $this->loggerMock->shouldReceive('log')->with('info', $logMessage)->once();
         $this->requestProcessorMock->shouldReceive($method)->with($this->dummyRequest)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);

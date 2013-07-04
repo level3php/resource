@@ -38,10 +38,23 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider methodsToAuthenticate
      */
+    public function testMethod($methodName)
+    {
+        $this->shouldAuthenticateRequest();
+        $this->requestProcessorMockShouldReceiveCallTo($methodName);
+
+        $response = $this->authenticationProcessor->$methodName($this->requestMock);
+
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    /**
+     * @dataProvider methodsToAuthenticate
+     */
     public function testFindWhenAuthenticateRequestThrowsBadCredentials($methodName)
     {
         $this->methodAuthenticateRequestshouldThrowBadCredentials();
-        $this->requestFactoryShouldCreateForbiddenResponse();
+        $this->shouldCreateBadCredentialsResponse();
 
         $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
@@ -67,7 +80,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     public function testFindWhenAuthenticateRequestThrowsInvalidCredentials($methodName)
     {
         $this->methodAuthenticateRequestshouldThrowInvalidCredentials();
-        $this->requestFactoryShouldCreateForbiddenResponse();
+        $this->shouldCreateInvalidCredentialsResponse();
 
         $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
@@ -109,10 +122,25 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
             ->andThrow('Level3\Security\Authentication\Exceptions\InvalidCredentials');
     }
 
-    private function requestFactoryShouldCreateForbiddenResponse()
+    private function shouldCreateBadCredentialsResponse()
     {
+        $data = array(
+            'code' => 403,
+            'message' => 'Provided credentials are invalid'
+        );
         $this->responseFactoryMock
-            ->shouldReceive('create')->once()->with(null, StatusCode::FORBIDDEN)
+            ->shouldReceive('createFromDataAndStatusCode')->once()->with($data, 403)
+            ->andReturn(self::IRRELEVANT_RESPONSE);
+    }
+
+    private function shouldCreateInvalidCredentialsResponse()
+    {
+        $data = array(
+            'code' => 403,
+            'message' => 'Provided credentials are not correctly formed'
+        );
+        $this->responseFactoryMock
+            ->shouldReceive('createFromDataAndStatusCode')->once()->with($data, 403)
             ->andReturn(self::IRRELEVANT_RESPONSE);
     }
 
@@ -122,5 +150,11 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive($method)->once()
             ->with($this->requestMock)
             ->andReturn(self::IRRELEVANT_RESPONSE);
+    }
+
+    private function shouldAuthenticateRequest()
+    {
+        $this->authMethodMock->shouldReceive('authenticateRequest')->with($this->requestMock)->once()
+            ->andReturn($this->requestMock);
     }
 }

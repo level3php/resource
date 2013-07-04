@@ -3,11 +3,11 @@
 namespace Level3\Security\Authentication\Methods;
 
 use Level3\Messages\Request;
+use Level3\Security\Authentication\AuthenticationMethod;
 use Level3\Security\Authentication\CredentialsRepository;
+use Level3\Security\Authentication\Exceptions\BadCredentials;
 use Level3\Security\Authentication\Exceptions\InvalidCredentials;
 use Level3\Security\Authentication\Exceptions\MissingCredentials;
-use Level3\Security\Authentication\Exceptions\BadCredentials;
-use Level3\Security\Authentication\AuthenticationMethod;
 
 class HMAC implements AuthenticationMethod
 {
@@ -16,7 +16,6 @@ class HMAC implements AuthenticationMethod
     const TOKEN = 'Token';
     const TOKEN_SEPARATOR = ' ';
     const AUTHORIZATION_FIELDS_SEPARATOR = ':';
-
     private $credentialsRepository;
 
     public function __construct(CredentialsRepository $credentialsRepository)
@@ -51,6 +50,19 @@ class HMAC implements AuthenticationMethod
         return $authFields[0];
     }
 
+    protected function extractAuthContent(Request $request)
+    {
+        $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
+        $authHeaderFirst = explode(self::TOKEN_SEPARATOR, $authHeader);
+
+        if ($authHeaderFirst[0] !== self::TOKEN) {
+            throw new InvalidCredentials();
+        }
+
+        $authHeaderSecond = explode(self::TOKEN_SEPARATOR, $authHeader);
+        return $authHeaderSecond[1];
+    }
+
     protected function verifySignature(Request $request, $privateKey)
     {
         $originalContent = $request->getContent();
@@ -67,18 +79,5 @@ class HMAC implements AuthenticationMethod
     {
         $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
         return $authContent[1];
-    }
-
-    protected function extractAuthContent(Request $request)
-    {
-        $authHeader = $request->getHeader(self::AUTHORIZATION_HEADER);
-        $authHeaderFirst = explode(self::TOKEN_SEPARATOR, $authHeader);
-
-        if ($authHeaderFirst[0] !== self::TOKEN) {
-            throw new InvalidCredentials();
-        }
-
-        $authHeaderSecond = explode(self::TOKEN_SEPARATOR, $authHeader);
-        return $authHeaderSecond[1];
     }
 }

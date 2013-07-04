@@ -4,7 +4,7 @@ namespace Level3\Security\Authentication;
 
 use Level3\Security\Authorization\Role;
 
-class AuthenticatedCredentials extends User
+class AuthenticatedCredentials extends Credentials
 {
     private $id;
     private $login;

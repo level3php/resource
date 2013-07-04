@@ -3,38 +3,38 @@
 namespace Level3\Tests\Security\Authentication;
 
 use Level3\Messages\RequestFactory;
+use Level3\Security\Authentication\Exceptions\InvalidCredentials;
 use Level3\Security\Authentication\Methods\HMAC;
 use Mockery as m;
+use Symfony\Component\HttpFoundation\Request;
 
 class HMACTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_SIGNATURE = 'X';
     const IRRELEVANT_RESPONSE = 'XX';
 
-    private $requestProcessorMock;
-    private $userRepositoryMock;
+    private $credentialsRespositoryMock;
     private $responseFactoryMock;
     private $requestFactory;
     private $headers;
     private $request;
     private $authenticatedUser;
 
-    private $authenticationProcessor;
-
     public function setUp()
     {
-        $this->userRepositoryMock = m::mock('Level3\Security\Authentication\UserRepository');
+        $this->credentialsRespositoryMock = m::mock('Level3\Security\Authentication\CredentialsRepository');
         $this->requestFactory = new RequestFactory();
         $this->headers = $this->createHeaders();
         $this->authenticatedUser = AuthenticatedCredentialsBuilder::anAuthenticatedUser()->build();
 
-        $this->method = new HMAC($this->userRepositoryMock);
+        $this->method = new HMAC($this->credentialsRespositoryMock);
     }
 
     private function createHeaders()
     {
         return array(
-            'Authorization' => sprintf('%s%s%s%s%s',
+            'Authorization' => sprintf(
+                '%s%s%s%s%s',
                 'Token',
                 ' ',
                 AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
@@ -58,15 +58,75 @@ class HMACTest extends \PHPUnit_Framework_TestCase
         $request = $this->method->authenticateRequest($this->request);
     }
 
+    private function headerShouldBeMissing($headerName)
+    {
+        unset($this->headers[$headerName]);
+        $this->initRequest();
+    }
+
+    private function initRequest()
+    {
+        $this->request = $this->requestFactory->clear()
+            ->withSymfonyRequest(new Request())
+            ->create();
+
+        $this->request->headers->add($this->headers);
+    }
+
+    /**
+     * @expectedException Level3\Security\Authentication\Exceptions\InvalidCredentials
+     */
+    public function testAuthenticateRequestShouldThrowInvalidCredentials()
+    {
+        $this->extractAuthContentShouldThrowInvalidCredentials();
+
+        $this->method->authenticateRequest($this->request);
+    }
+
+    private function extractAuthContentShouldThrowInvalidCredentials()
+    {
+        $this->initRequest();
+        $this->request->headers->add(
+            array('Authorization' =>
+                sprintf(
+                    '%s%s%s%s%s',
+                    'XXX',
+                    ' ',
+                    AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
+                    ':',
+                    $this->createSignatureForNullContent()
+                )
+            )
+        );
+    }
+
     /**
      * @expectedException Level3\Security\Authentication\Exceptions\BadCredentials
      */
     public function testAuthenticateRequestShouldThrowBadCredentials()
     {
-        $this->authenticateRequestShouldThrowBadCredentials();
-        $request = $this->method->authenticateRequest($this->request);
+        $this->extractAuthContentShouldThrowBadCredentials();
+
+        $this->method->authenticateRequest($this->request);
     }
-    
+
+    private function extractAuthContentShouldThrowBadCredentials()
+    {
+        $this->initRequest();
+        $this->credentialsRepositoryShouldHaveUser();
+        $this->request->headers->add(
+            array('Authorization' =>
+            sprintf(
+                '%s%s%s%s%s',
+                'Token',
+                ' ',
+                AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
+                ':',
+                'asdfasd'
+            )
+            )
+        );
+    }
 
     public function testAuthenticateRequest()
     {
@@ -74,15 +134,15 @@ class HMACTest extends \PHPUnit_Framework_TestCase
 
         $request = $this->method->authenticateRequest($this->request);
         $this->assertInstanceOf(
-            'Level3\Security\Authentication\AuthenticatedUser',
-            $request->getUser()
+            'Level3\Security\Authentication\AuthenticatedCredentials',
+            $request->getCredentials()
         );
     }
 
-    private function headerShouldBeMissing($headerName)
+    private function shouldAuthenticateRequest()
     {
-        unset($this->headers[$headerName]);
         $this->initRequest();
+        $this->credentialsRepositoryShouldHaveUser();
     }
 
     private function headerShouldBePresent($headerName, $headerValue)
@@ -91,29 +151,17 @@ class HMACTest extends \PHPUnit_Framework_TestCase
         $this->initRequest();
     }
 
-    private function shouldAuthenticateRequest()
-    {
-        $this->initRequest();
-        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY)->once()
-            ->andReturn($this->authenticatedUser);
-    }
-
-    private function initRequest(){
-        $this->request = $this->requestFactory->clear()
-            ->withHeaders($this->headers)
-            ->create();
-    }
-
-    private function authenticateRequestShouldThrowBadCredentials()
-    {
-        $this->initRequest();
-        $this->userRepositoryMock->shouldReceive('findByApiKey')->with(AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\BadCredentials');
-    }
-
     private function requestFactoryShouldCreateForbiddenResponse()
     {
         $this->responseFactoryMock->shouldReceive('createResponse')->once()->with(null, StatusCode::FORBIDDEN)
             ->andReturn(self::IRRELEVANT_RESPONSE);
+    }
+
+    private function credentialsRepositoryShouldHaveUser()
+    {
+        $this->credentialsRespositoryMock->shouldReceive('findByApiKey')->with(
+            AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY
+        )->once()
+            ->andReturn($this->authenticatedUser);
     }
 }
