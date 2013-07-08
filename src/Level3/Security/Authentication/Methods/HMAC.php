@@ -68,7 +68,7 @@ class HMAC implements AuthenticationMethod
         $originalContent = $request->getContent();
         $calculatedSignature = hash_hmac(self::HASH_ALGORITHM, $originalContent, $privateKey);
 
-        $signature = $this->extractSignatureFromRequest($request);
+        $signature = strtolower($this->extractSignatureFromRequest($request));
 
         if ($calculatedSignature !== $signature) {
             throw new BadCredentials();

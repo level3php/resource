@@ -1,0 +1,14 @@
+acl:
+  routes:
+    - path: /deals
+      policies:
+        - method: get
+          apiKey: { '.+': allowed}
+          default: forbidden
+        - method: put
+          apiKey:
+            - 1234: allowed
+            - 4321: forbidden
+          default: forbidden
+
+

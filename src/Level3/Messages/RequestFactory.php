@@ -2,14 +2,14 @@
 
 namespace Level3\Messages;
 
-use Level3\Security\Authentication\User;
+use Level3\Security\Authentication\Credentials;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class RequestFactory
 {
     private $key;
     private $id;
-    private $user;
+    private $credentials;
     private $symfonyRequest;
 
     public function withKey($key)
@@ -24,9 +24,9 @@ class RequestFactory
         return $this;
     }
 
-    public function withUser(User $user)
+    public function withCredentials(Credentials $credentials)
     {
-        $this->user = $user;
+        $this->credentials = $credentials;
         return $this;
     }
 
@@ -44,8 +44,8 @@ class RequestFactory
             $request->setId($this->id);
         }
 
-        if ($this->user !== null) {
-            $request->setCredentials($this->user);
+        if ($this->credentials !== null) {
+            $request->setCredentials($this->credentials);
         }
 
         return $request;
@@ -55,7 +55,7 @@ class RequestFactory
     {
         $this->key = null;
         $this->id = null;
-        $this->user = null;
+        $this->credentials = null;
         $this->symfonyRequest = null;
         return $this;
     }

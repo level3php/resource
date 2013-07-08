@@ -64,7 +64,7 @@ class Silex
         $key = $this->getResourceKey($request);
         $level3Request = $this->requestFactory->clear()
             ->withKey($key)
-            ->witId($id)
+            ->withId($id)
             ->withSymfonyRequest($request)
             ->create();
         return $level3Request;

@@ -22,7 +22,9 @@
         "shrikeh/teapot": "dev-master",
         "pimple/pimple": "v1.0.2",
         "nocarrier/hal": "dev-develop",
-        "psr/log": "dev-master"
+        "symfony/http-foundation": "*",
+        "psr/log": "dev-master",
+        "symfony/yaml": "*"
     },
     "require-dev": {
         "silex/silex": "1.0.*@dev",
