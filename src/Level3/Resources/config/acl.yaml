@@ -1,14 +1,12 @@
 acl:
   routes:
-    - path: /deals
+    - path: /\/.+/(\w+)/
       policies:
-        - method: get
-          apiKey: { '.+': allowed}
-          default: forbidden
-        - method: put
-          apiKey:
-            - 1234: allowed
-            - 4321: forbidden
-          default: forbidden
-
-
+         get:
+           apiKeys:
+             - 123456
+             - 654321
+           matchings:
+             credentialsMethod: getApiKey
+             pathGroupMatch: 1
+         default: false

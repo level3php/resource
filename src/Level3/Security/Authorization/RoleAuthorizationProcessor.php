@@ -36,14 +36,6 @@ class RoleAuthorizationProcessor extends AbstractAuthorizationProcessor
         return false;
     }
 
-    private function matches(Request $request, array $routeConfig)
-    {
-        $pathExpression = $routeConfig['path'];
-        $pathInfo = $request->getPathInfo();
-
-        return preg_match($pathExpression, $pathInfo);
-    }
-
     private function roleHasAccess(Role $role, array $route, $methodName)
     {
         if (!isset($route['policies'][$methodName])) {
@@ -53,11 +45,6 @@ class RoleAuthorizationProcessor extends AbstractAuthorizationProcessor
         $requiredRole = $route['policies'][$methodName]['role'];
         $hasAccess = $this->createHasAccessMethodName($requiredRole);
         return $role->$hasAccess();
-    }
-
-    private function hasDefaultAccess($route)
-    {
-        return $route['policies']['default'];
     }
 
     private function createHasAccessMethodName($requiredRole)

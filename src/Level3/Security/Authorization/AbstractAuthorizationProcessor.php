@@ -58,4 +58,17 @@ abstract class AbstractAuthorizationProcessor implements RequestProcessor
     {
         return $this->responseFactory->createFromDataAndStatusCode(array(), StatusCode::FORBIDDEN);
     }
+
+    protected function matches(Request $request, array $routeConfig)
+    {
+        $pathExpression = $routeConfig['path'];
+        $pathInfo = $request->getPathInfo();
+
+        return preg_match($pathExpression, $pathInfo);
+    }
+
+    protected function hasDefaultAccess($route)
+    {
+        return isset($route['policies']['default']) && $route['policies']['default'];
+    }
 }
