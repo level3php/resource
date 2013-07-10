@@ -375,6 +375,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     private function shouldPrepareResponseWithAndReturn($request, $resource, $response, $status = 200)
     {
+        $response->shouldReceive('setContentType')->once();
         $this->shouldSetresourceFormatterWith($request, $resource);
         $this->responseFactoryMock->shouldReceive('create')->with($resource, $status)->once()->andReturn($response);
         $response->shouldReceive('prepare')->with($request)->once();
@@ -393,6 +394,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $request->shouldReceive('getAcceptableContentTypes')->withNoArgs()->once()
             ->andReturn($contentTypeArray);
         $this->formatterFactorymock->shouldReceive('create')->with($contentTypeArray)->once()->andReturn($formatterMock);
+        $formatterMock->shouldReceive('getContentType')->once();
         $resource->shouldReceive('setFormatter')->with($formatterMock)->once();
     }
 
