@@ -9,6 +9,7 @@ class FormatterFactory
 {
     const CONTENT_TYPE_APPLICATION_HAL_JSON = 'application/hal+json';
     const CONTENT_TYPE_APPLICATION_HAL_XML = 'application/hal+xml';
+    const CONTENT_TYPE_ANY = '*/*';
 
     public function create(array $contentTypes)
     {
@@ -20,6 +21,7 @@ class FormatterFactory
             switch($contentType){
                 case self::CONTENT_TYPE_APPLICATION_HAL_XML:
                     return new XmlFormatter();
+                case self::CONTENT_TYPE_ANY:
                 case self::CONTENT_TYPE_APPLICATION_HAL_JSON:
                     return new JsonFormatter();
             }

@@ -167,16 +167,18 @@ class AccessorWrapper implements RequestProcessor
     private function prepareResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
     {
 
-        $this->setResourceFormatter($request, $resource);
+        $formatter = $this->getResourceFormatter($request);
+        $resource->setFormatter($formatter);
         $response = $this->responseFactory->create($resource, $statusCode);
         $response->prepare($request);
+        $response->setContentType($formatter->getContentType());
         return $response;
     }
 
-    private function setResourceFormatter(Request $request, Resource $resource)
+    private function getResourceFormatter(Request $request)
     {
         $contentTypes = $request->getAcceptableContentTypes();
-        $formatter = $this->formatterFactory->create($contentTypes);
-        $resource->setFormatter($formatter);
+        return $this->formatterFactory->create($contentTypes);
+
     }
 }

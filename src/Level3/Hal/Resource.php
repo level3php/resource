@@ -79,6 +79,10 @@ class Resource
 
     public function format()
     {
+        if (null === $this->formatter) {
+            return '';
+        }
+
         return $this->formatter->format($this);
     }
 

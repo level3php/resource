@@ -62,4 +62,16 @@ class Response extends SymfonyResponse
 
         return $this->resource->format();
     }
+
+    public function sendContent()
+    {
+        echo $this->getContent();
+
+        return $this;
+    }
+
+    public function setContentType($contentType)
+    {
+        $this->setHeader('Content-Type', $contentType);
+    }
 }
