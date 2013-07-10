@@ -35,6 +35,16 @@ class AccessorWrapper implements RequestProcessor
         $this->parserFactory = $parserFactory;
     }
 
+    public function enableDebug()
+    {
+        $this->isDebugEnabled = true;
+    }
+
+    public function disableDebug()
+    {
+        $this->isDebugEnabled = false;
+    }
+
     public function find(Request $request)
     {
         return $this->processRequest($request, 'findResources');
