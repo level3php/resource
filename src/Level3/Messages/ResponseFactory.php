@@ -18,9 +18,9 @@ class ResponseFactory
         $this->formatterFactory = $formatterFactory;
     }
 
-    public function create(Request $request, Resource $resource, $statusCode = StatusCode::OK)
+    public function create(Request $request, Resource $resource, $statusCode = StatusCode::OK, $avoidNotAccptable = false)
     {
-        $formatter = $this->getResourceFormatter($request);
+        $formatter = $this->getResourceFormatter($request, $avoidNotAccptable);
         $resource->setFormatter($formatter);
         $response = new Response($resource, $statusCode);
         $response->prepare($request);
@@ -28,16 +28,16 @@ class ResponseFactory
         return $response;
     }
 
-    private function getResourceFormatter(Request $request)
+    private function getResourceFormatter(Request $request, $avoidNotAcceptable)
     {
         $contentTypes = $request->getAcceptableContentTypes();
-        return $this->formatterFactory->create($contentTypes);
+        return $this->formatterFactory->create($contentTypes, $avoidNotAcceptable);
 
     }
 
-    public function createFromDataAndStatusCode(Request $request, array $data, $statusCode)
+    public function createFromDataAndStatusCode(Request $request, array $data, $statusCode, $avoidNotAcceptable = false)
     {
         $resource = $this->resourceFactory->create(null, $data);
-        return $this->create($request, $resource, $statusCode);
+        return $this->create($request, $resource, $statusCode, $avoidNotAcceptable);
     }
 }

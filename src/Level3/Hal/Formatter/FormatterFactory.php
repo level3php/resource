@@ -11,7 +11,7 @@ class FormatterFactory
     const CONTENT_TYPE_APPLICATION_HAL_XML = 'application/hal+xml';
     const CONTENT_TYPE_ANY = '*/*';
 
-    public function create(array $contentTypes)
+    public function create(array $contentTypes, $avoidNotAcceptable = false)
     {
         if (count($contentTypes) === 0) {
             return new JsonFormatter();
@@ -25,6 +25,10 @@ class FormatterFactory
                 case self::CONTENT_TYPE_APPLICATION_HAL_JSON:
                     return new JsonFormatter();
             }
+        }
+
+        if ($avoidNotAcceptable) {
+            return new JsonFormatter();
         }
 
         throw new NotAcceptable(sprintf('Content-Type not supported: %s', join(', ', $contentTypes)));

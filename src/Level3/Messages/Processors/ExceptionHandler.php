@@ -63,14 +63,15 @@ class ExceptionHandler implements RequestProcessor
     private function logExceptionWithLevel(\Exception $exception, $level)
     {
         if ($this->logger !== null) {
-            $this->logger->log($level, $exception->getMessage(), $exception->getTrace());
+            $message = sprintf('(%s): %s', $exception->getMessage(), $exception->getTraceAsString());
+            $this->logger->log($level, $message);
         }
     }
 
     private function generateExceptionResponse(Request $request, \Exception $exception, $code)
     {
         $data = $this->generateDataForException($exception, $code);
-        return $this->responseFactory->createFromDataAndStatusCode($request, $data, $code);
+        return $this->responseFactory->createFromDataAndStatusCode($request, $data, $code, true);
     }
 
     private function generateDataForException(\Exception $e, $statusCode = 500)
