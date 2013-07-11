@@ -6,7 +6,7 @@ use Level3\Messages\Processors\ExceptionHandler;
 use Level3\Messages\Request;
 use Mockery as m;
 
-class ExceptionHandlerTest extends 
+class ExceptionHandlerTest extends
 {
     const IRRELEVANT_RESPONSE = 'X';
     private $processorMock;
