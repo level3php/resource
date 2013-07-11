@@ -71,7 +71,6 @@ class ExceptionHandler implements RequestProcessor
     {
         $data = $this->generateDataForException($exception, $code);
         return $this->responseFactory->createFromDataAndStatusCode($request, $data, $code);
-        return $response;
     }
 
     private function generateDataForException(\Exception $e, $statusCode = 500)

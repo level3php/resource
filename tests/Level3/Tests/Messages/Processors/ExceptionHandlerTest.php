@@ -2,24 +2,33 @@
 
 namespace Level3\Tests\Messages\Processors;
 
+use Level3\Exceptions\Conflict;
 use Level3\Messages\Processors\ExceptionHandler;
 use Level3\Messages\Request;
 use Mockery as m;
 
-class ExceptionHandlerTest extends
+class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_RESPONSE = 'X';
     private $processorMock;
-    private $resourceFactoryMock;
+    private $responseFactoryMock;
     private $requestMock;
     private $exceptionHandler;
 
     public function __constructor()
     {
         $this->processorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
-        $this->resourceFactoryMock = m::mock('Level3\Hal\ResourceFactory');
+        $this->responseFactoryMock = m::mock('Level3\Hal\ResourceFactory');
         $this->requestMock = m::mock('Level3\Messages\Request');
-        $this->exceptionHandler = new ExceptionHandler($this->processorMock, $this->resourceFactoryMock);
+        $this->exceptionHandler = new ExceptionHandler($this->processorMock, $this->responseFactoryMock);
+    }
+
+    public function setUp()
+    {
+        $this->processorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
+        $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
+        $this->requestMock = m::mock('Level3\Messages\Request');
+        $this->exceptionHandler = new ExceptionHandler($this->processorMock, $this->responseFactoryMock);
     }
 
     /**
@@ -29,9 +38,26 @@ class ExceptionHandlerTest extends
     {
         $this->processorMock->shouldReceive($methodName)->with($this->requestMock)->once()->andReturn(self::IRRELEVANT_RESPONSE);
 
-        $response = $this->exceptionHandler->find($this->requestMock);
+        $response = $this->exceptionHandler->$methodName($this->requestMock);
 
-        $this->assertThat
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    /**
+     * @dataProvider methods
+     */
+    public function testMethodWithBaseExceptionAndDebug($methodName)
+    {
+        $exception = new Conflict();
+        $this->processorMock->shouldReceive($methodName)->with($this->requestMock)->once()->andThrow($exception);
+        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')
+            ->with($this->requestMock, m::subset(array('code'=>409, 'message' => '')), 409)
+            ->once()->andReturn(self::IRRELEVANT_RESPONSE);
+
+        $this->exceptionHandler->enableDebug();
+        $response = $this->exceptionHandler->$methodName($this->requestMock);
+
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
     /**
@@ -39,15 +65,16 @@ class ExceptionHandlerTest extends
      */
     public function testMethodWithExceptionAndDebug($methodName)
     {
+        $exception = new \Exception();
+        $this->processorMock->shouldReceive($methodName)->with($this->requestMock)->once()->andThrow($exception);
+        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')
+            ->with($this->requestMock, m::subset(array('code'=>500, 'message' => '')), 500)
+            ->once()->andReturn(self::IRRELEVANT_RESPONSE);
 
-    }
+        $this->exceptionHandler->enableDebug();
+        $response = $this->exceptionHandler->$methodName($this->requestMock);
 
-    /**
-     * @dataProvider methods
-     */
-    public function testMethodWithLogger($methodName)
-    {
-
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
     public function methods()
