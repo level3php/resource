@@ -6,6 +6,7 @@ use Level3\Exceptions\Forbidden;
 use Level3\Messages\Request;
 use Level3\Security\Authentication\AuthenticationMethod;
 use Level3\Security\Authentication\CredentialsRepository;
+use Level3\Security\Authentication\Exceptions\BadCredentials;
 use Level3\Security\Authentication\Exceptions\MissingCredentials;
 
 class HMAC implements AuthenticationMethod
@@ -30,9 +31,11 @@ class HMAC implements AuthenticationMethod
 
         $apiKey = $this->getApiKeyFromRequest($request);
 
-        $credentials = $this->credentialsRepository->findByApiKey($apiKey);
-        $this->verifySignature($request, $credentials->getSecretKey());
-        $request->setCredentials($credentials);
+        try {
+            $this->setRequestCredentials($request, $apiKey);
+        } catch (BadCredentials $e) {
+            throw new Forbidden('Provided credentials are invalid'  );
+        }
 
         return $request;
     }
@@ -78,5 +81,12 @@ class HMAC implements AuthenticationMethod
     {
         $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
         return $authContent[1];
+    }
+
+    private function setRequestCredentials(Request $request, $apiKey)
+    {
+        $credentials = $this->credentialsRepository->findByApiKey($apiKey);
+        $this->verifySignature($request, $credentials->getSecretKey());
+        $request->setCredentials($credentials);
     }
 }

@@ -51,36 +51,10 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider methodsToAuthenticate
      */
-    public function testFindWhenAuthenticateRequestThrowsBadCredentials($methodName)
-    {
-        $this->methodAuthenticateRequestshouldThrowBadCredentials();
-        $this->shouldCreateBadCredentialsResponse();
-
-        $response = $this->authenticationProcessor->$methodName($this->requestMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @dataProvider methodsToAuthenticate
-     */
     public function testFindWhenAuthenticateRequestThrowsMissingCredentials($methodName)
     {
         $this->methodAuthenticateRequestshouldThrowMissingCredentials();
         $this->requestProcessorMockShouldReceiveCallTo($methodName);
-
-        $response = $this->authenticationProcessor->$methodName($this->requestMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @dataProvider methodsToAuthenticate
-     */
-    public function testFindWhenAuthenticateRequestThrowsInvalidCredentials($methodName)
-    {
-        $this->methodAuthenticateRequestshouldThrowInvalidCredentials();
-        $this->shouldCreateInvalidCredentialsResponse();
 
         $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
@@ -98,50 +72,12 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function methodAuthenticateRequestShouldThrowBadCredentials()
-    {
-        $this->authMethodMock
-            ->shouldReceive('authenticateRequest')
-            ->with($this->requestMock)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\BadCredentials');
-    }
-
     private function methodAuthenticateRequestShouldThrowMissingCredentials()
     {
         $this->authMethodMock
             ->shouldReceive('authenticateRequest')
             ->with($this->requestMock)->once()
             ->andThrow('Level3\Security\Authentication\Exceptions\MissingCredentials');
-    }
-
-    private function methodAuthenticateRequestShouldThrowInvalidCredentials()
-    {
-        $this->authMethodMock
-            ->shouldReceive('authenticateRequest')
-            ->with($this->requestMock)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\InvalidCredentials');
-    }
-
-    private function shouldCreateBadCredentialsResponse()
-    {
-        $data = array(
-            'code' => 403,
-            'message' => 'Provided credentials are invalid'
-        );
-        $this->responseFactoryMock
-            ->shouldReceive('createFromDataAndStatusCode')->once()->with($data, 403)
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-    }
-
-    private function shouldCreateInvalidCredentialsResponse()
-    {
-        $data = array(
-            'code' => 403,
-            'message' => 'Provided credentials are not correctly formed'
-        );
-        $this->responseFactoryMock
-            ->shouldReceive('createFromDataAndStatusCode')->once()->with($data, 403)
-            ->andReturn(self::IRRELEVANT_RESPONSE);
     }
 
     private function requestProcessorMockShouldReceiveCallTo($method)

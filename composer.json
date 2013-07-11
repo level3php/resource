@@ -26,6 +26,9 @@
         "psr/log": "dev-master",
         "symfony/yaml": "*"
     },
+    "require-dev": {
+        "mockery/mockery": "*"
+    },
     "autoload": {
         "psr-0": {
             "Level3": "src/"

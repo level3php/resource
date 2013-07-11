@@ -12,15 +12,13 @@ class AclAuthorizationTest extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_RESPONSE = 'X';
     private $configParser;
     private $requestProcessorMock;
-    private $responseFactoryMock;
     private $aclAuthorizationProcessor;
 
     public function setUp()
     {
         $this->configParser = new YamlConfigParser(__DIR__ . '/../../Resources/acl.yaml');
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
-        $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
-        $this->aclAuthorizationProcessor = new AclAuthorizationProcessor($this->requestProcessorMock, $this->configParser, $this->responseFactoryMock);
+        $this->aclAuthorizationProcessor = new AclAuthorizationProcessor($this->requestProcessorMock, $this->configParser);
     }
 
     public function tearDown()
@@ -43,44 +41,24 @@ class AclAuthorizationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider methods
-     */
-    public function testAthorizeMethodsShouldFailWithNoSpecifiMethodsInConfig($method)
-    {
-        $requestMock = $this->createRequestWithPathAndCredentialsAPIKey('/with-no-specific-methods', '123456');
-        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with(array(), 403)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-
-        $response = $this->aclAuthorizationProcessor->$method($requestMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @dataProvider methods
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testAthorizeMethodsShouldFailDueToInexistingRoute($method)
     {
         $requestMock = $this->createRequestWithPathAndCredentialsAPIKey('/b', '123456');
-        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with(array(), 403)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
 
-        $response = $this->aclAuthorizationProcessor->$method($requestMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->aclAuthorizationProcessor->$method($requestMock);
     }
 
     /**
      * @dataProvider methods
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testAthorizeMethodsShouldFailWithMissingAPIKEY($method)
     {
         $requestMock = $this->createRequestWithPathAndCredentialsAPIKey('/bla/123456', 'aaaa');
-        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with(array(), 403)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
 
-        $response = $this->aclAuthorizationProcessor->$method($requestMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->aclAuthorizationProcessor->$method($requestMock);
     }
 
     /**
@@ -127,7 +105,7 @@ class AclAuthorizationTest extends \PHPUnit_Framework_TestCase
     public function testConstructorShouldFail()
     {
         $configParser = new YamlConfigParser(__DIR__ . '/../../Resources/valid.yaml');
-        new AclAuthorizationProcessor($this->requestProcessorMock, $configParser, $this->responseFactoryMock);
+        new AclAuthorizationProcessor($this->requestProcessorMock, $configParser);
     }
 
     private function createRequestWithPathAndCredentialsAPIKey($path, $apiKey)

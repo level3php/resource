@@ -18,19 +18,16 @@ class AccessorWrapper implements RequestProcessor
 {
     private $accessor;
     private $responseFactory;
-    private $formatterFactory;
     private $parserFactory;
 
     public function __construct(
         Accessor $resourceAccessor,
         ResponseFactory $responseFactory,
-        FormatterFactory $formatterFactory,
         ParserFactory $parserFactory
     )
     {
         $this->accessor = $resourceAccessor;
         $this->responseFactory = $responseFactory;
-        $this->formatterFactory = $formatterFactory;
         $this->parserFactory = $parserFactory;
     }
 
@@ -72,7 +69,7 @@ class AccessorWrapper implements RequestProcessor
         $key = $request->getKey();
         $id = $request->getId();
         $this->accessor->delete($key, $id);
-        return $this->createDeletedResponse();
+        return $this->responseFactory->createFromDataAndStatusCode($request, array(), StatusCode::OK);
     }
 
     private function getRequestContentAsArray(Request $request)
@@ -83,30 +80,8 @@ class AccessorWrapper implements RequestProcessor
         return $content;
     }
 
-    private function createDeletedResponse()
-    {
-        return $this->responseFactory->createFromDataAndStatusCode(array(), StatusCode::OK);
-    }
-
     private function createResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
     {
-        return $this->prepareResponse($request, $resource, $statusCode);
-    }
-
-    private function prepareResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
-    {
-        $formatter = $this->getResourceFormatter($request);
-        $resource->setFormatter($formatter);
-        $response = $this->responseFactory->create($resource, $statusCode);
-        $response->prepare($request);
-        $response->setContentType($formatter->getContentType());
-        return $response;
-    }
-
-    private function getResourceFormatter(Request $request)
-    {
-        $contentTypes = $request->getAcceptableContentTypes();
-        return $this->formatterFactory->create($contentTypes);
-
+        return $this->responseFactory->create($request, $resource, $statusCode);
     }
 }

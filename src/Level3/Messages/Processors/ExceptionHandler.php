@@ -3,30 +3,25 @@
 namespace Level3\Messages\Processors;
 
 use Level3\Exceptions\BaseException;
-use Level3\Hal\Formatter\FormatterFactory;
-use Level3\Hal\ResourceFactory;
 use Level3\Messages\Request;
 use Level3\Messages\ResponseFactory;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Response;
 use Teapot\StatusCode;
 
 class ExceptionHandler implements RequestProcessor
 {
     private $requestProcessor;
-    private $formatterFactory;
-    private $resourceFactory;
     private $responseFactory;
     private $isDebugEnabled = false;
+    private $logger;
 
     public function __construct(
         RequestProcessor $processor,
-        FormatterFactory $formatterFactory,
-        ResourceFactory $resourceFactory,
         ResponseFactory $responseFactory
     ) {
         $this->requestProcessor = $processor;
-        $this->formatterFactory = $formatterFactory;
-        $this->resourceFactory = $resourceFactory;
         $this->responseFactory = $responseFactory;
     }
 
@@ -40,32 +35,42 @@ class ExceptionHandler implements RequestProcessor
         $this->isDebugEnabled = false;
     }
 
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function find(Request $request)
     {
-        $this->processRequest($request, 'find');
+        return $this->processRequest($request, 'find');
     }
 
     private function processRequest(Request $request, $method)
     {
         try {
-            $response = $this->$method($request);
+            $response = $this->requestProcessor->$method($request);
         } catch (BaseException $e) {
+            $this->logExceptionWithLevel($e, LogLevel::INFO);
             $response = $this->generateExceptionResponse($request, $e, $e->getCode());
         } catch (\Exception $e) {
+            $this->logExceptionWithLevel($e, LogLevel::ALERT);
             $response = $this->generateExceptionResponse($request, $e, StatusCode::INTERNAL_SERVER_ERROR);
         }
 
         return $response;
     }
 
+    private function logExceptionWithLevel(\Exception $exception, $level)
+    {
+        if ($this->logger !== null) {
+            $this->logger->log($level, $exception->getMessage(), $exception->getTrace());
+        }
+    }
+
     private function generateExceptionResponse(Request $request, \Exception $exception, $code)
     {
         $data = $this->generateDataForException($exception, $code);
-        $resource = $this->resourceFactory->create(null, $data);
-        $formatter = $this->formatterFactory->create($request->getContentType());
-        $resource->setFormatter($formatter);
-        $response = $this->responseFactory->create($resource, $code);
-        $response->setContentType($formatter->getContentType());
+        return $this->responseFactory->createFromDataAndStatusCode($request, $data, $code);
         return $response;
     }
 
@@ -85,21 +90,21 @@ class ExceptionHandler implements RequestProcessor
 
     public function get(Request $request)
     {
-        $this->processRequest($request, 'get');
+        return $this->processRequest($request, 'get');
     }
 
     public function post(Request $request)
     {
-        $this->processRequest($request, 'post');
+        return $this->processRequest($request, 'post');
     }
 
     public function put(Request $request)
     {
-        $this->processRequest($request, 'put');
+        return $this->processRequest($request, 'put');
     }
 
     public function delete(Request $request)
     {
-        $this->processRequest($request, 'delete');
+        return $this->processRequest($request, 'delete');
     }
 }

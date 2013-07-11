@@ -74,7 +74,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Level3\Security\Authentication\Exceptions\InvalidCredentials
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testAuthenticateRequestShouldThrowInvalidCredentials()
     {
@@ -101,7 +101,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Level3\Security\Authentication\Exceptions\BadCredentials
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testAuthenticateRequestShouldThrowBadCredentials()
     {

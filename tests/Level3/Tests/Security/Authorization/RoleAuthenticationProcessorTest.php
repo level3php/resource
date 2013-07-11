@@ -57,11 +57,11 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider methods
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testShouldReturnForbiddenResponseDueToSetup($methodName)
     {
         $request = $this->setupRequestWithMocksUsingFile(__DIR__ . '/../../Resources/role-no-methods.yaml');
-        $this->shouldCreateForbiddenResponse();
 
         $response = $this->roleAuthorizationProcessor->$methodName($request);
 
@@ -70,11 +70,11 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider methods
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testShouldReturnForbiddenResponseDueToNotMatchingRoute($methodName)
     {
         $request = $this->setupRequestWithMocksUsingFile(__DIR__ . '/../../Resources/role-not-matching-route.yaml');
-        $this->shouldCreateForbiddenResponse();
 
         $response = $this->roleAuthorizationProcessor->$methodName($request);
 
@@ -83,6 +83,7 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider methods
+     * @expectedException Level3\Exceptions\Forbidden
      */
     public function testShouldCreateForbiddenResponseDueToRoles($methodName)
     {
@@ -92,7 +93,6 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         $request->shouldReceive('getPathInfo')->withNoArgs()->once()->andReturn('/bla/blah');
         $credentials = new Credentials();
         $request->shouldReceive('getCredentials')->withNoArgs()->once()->andReturn($credentials);
-        $this->shouldCreateForbiddenResponse();
 
         $response = $this->roleAuthorizationProcessor->$methodName($request);
 
@@ -119,11 +119,5 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         $credentials = $this->createCredentialsWithAdminRole();
         $request->shouldReceive('getCredentials')->withNoArgs()->once()->andReturn($credentials);
         return $request;
-    }
-
-    private function shouldCreateForbiddenResponse()
-    {
-        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with(array(), 403)->once()
-            ->andReturn(self::IRRELEVANT_RESPONSE);
     }
 }
