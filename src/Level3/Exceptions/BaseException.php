@@ -1,5 +1,5 @@
 <?php
 
-namespace Level3\Repository\Exception;
+namespace Level3\Exceptions;
 
 abstract class BaseException extends \RuntimeException {}

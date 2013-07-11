@@ -15,10 +15,9 @@ class AclAuthorizationProcessor extends AbstractAuthorizationProcessor
 
     public function __construct(
         RequestProcessor $processor,
-        ConfigParser $configParser,
-        ResponseFactory $responseFactory
+        ConfigParser $configParser
     ) {
-        parent::__construct($processor, $responseFactory);
+        parent::__construct($processor);
         $this->config = $configParser->getConfig();
         if (!isset($this->config['acl']) || !isset($this->config['acl']['routes'])) {
             throw new ConfigError('acl -> routes config sections have to be defined');

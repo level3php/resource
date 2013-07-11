@@ -2,11 +2,10 @@
 
 namespace Level3\Security\Authentication\Methods;
 
+use Level3\Exceptions\Forbidden;
 use Level3\Messages\Request;
 use Level3\Security\Authentication\AuthenticationMethod;
 use Level3\Security\Authentication\CredentialsRepository;
-use Level3\Security\Authentication\Exceptions\BadCredentials;
-use Level3\Security\Authentication\Exceptions\InvalidCredentials;
 use Level3\Security\Authentication\Exceptions\MissingCredentials;
 
 class HMAC implements AuthenticationMethod
@@ -56,7 +55,7 @@ class HMAC implements AuthenticationMethod
         $authHeaderFirst = explode(self::TOKEN_SEPARATOR, $authHeader);
 
         if ($authHeaderFirst[0] !== self::TOKEN) {
-            throw new InvalidCredentials();
+            throw new Forbidden('Provided credentials are invalid');
         }
 
         $authHeaderSecond = explode(self::TOKEN_SEPARATOR, $authHeader);
@@ -71,7 +70,7 @@ class HMAC implements AuthenticationMethod
         $signature = strtolower($this->extractSignatureFromRequest($request));
 
         if ($calculatedSignature !== $signature) {
-            throw new BadCredentials();
+            throw new Forbidden('Access Forbidden');
         }
     }
 

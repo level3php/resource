@@ -15,7 +15,7 @@ class ResponseFactory
         $this->resourceFactory = $resourceFactory;
     }
 
-    public function create(Resource $resource = null, $statusCode)
+    public function create(Resource $resource = null, $statusCode = StatusCode::OK)
     {
         return new Response($resource, $statusCode);
     }

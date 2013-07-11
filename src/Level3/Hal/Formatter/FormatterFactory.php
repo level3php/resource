@@ -3,7 +3,7 @@
 namespace Level3\Hal\Formatter;
 
 use Level3\Hal\Formatter\JsonFormatter;
-use Level3\Messages\Exceptions\NotAcceptable;
+use Level3\Exceptions\NotAcceptable;
 
 class FormatterFactory
 {
@@ -27,6 +27,6 @@ class FormatterFactory
             }
         }
 
-        throw new NotAcceptable();
+        throw new NotAcceptable(sprintf('Content-Type not supported: %s', join(', ', $contentTypes)));
     }
 }

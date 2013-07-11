@@ -368,7 +368,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     private function shouldCreateResponseWithNotAcceptableAndReturn($request, $resource, $response, $status = 200)
     {
-        $this->shouldPrepareResponseWithAndThrow($request, $resource, $status, 'Level3\Messages\Exceptions\NotAcceptable');
+        $this->shouldPrepareResponseWithAndThrow($request, $resource, $status, 'Level3\Exceptions\NotAcceptable');
         $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with(array(), 406)->once()
             ->andReturn($response);
     }
