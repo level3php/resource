@@ -40,12 +40,10 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethodWithBaseExceptionAndDebug($methodName)
     {
-        //TODO: fix test
-        return;
         $exception = new Conflict();
         $this->processorMock->shouldReceive($methodName)->with($this->requestMock)->once()->andThrow($exception);
         $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')
-            ->with($this->requestMock, m::subset(array('code'=>409, 'message' => '')), 409)
+            ->with($this->requestMock, m::subset(array('code'=>409, 'message' => '')), 409, true)
             ->once()->andReturn(self::IRRELEVANT_RESPONSE);
 
         $this->exceptionHandler->enableDebug();
@@ -59,15 +57,33 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethodWithExceptionAndDebug($methodName)
     {
-        //TODO: fix test
-        return;
         $exception = new \Exception();
         $this->processorMock->shouldReceive($methodName)->with($this->requestMock)->once()->andThrow($exception);
         $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')
-            ->with($this->requestMock, m::subset(array('code'=>500, 'message' => '')), 500)
+            ->with($this->requestMock, m::subset(array('code'=>500, 'message' => '')), 500, true)
             ->once()->andReturn(self::IRRELEVANT_RESPONSE);
 
         $this->exceptionHandler->enableDebug();
+        $response = $this->exceptionHandler->$methodName($this->requestMock);
+
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    }
+
+    /**
+     * @dataProvider methods
+     */
+    public function testMethodWithExceptionLoggerAndDebug($methodName)
+    {
+        $exception = new \Exception();
+        $this->processorMock->shouldReceive($methodName)->with($this->requestMock)->once()->andThrow($exception);
+        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')
+            ->with($this->requestMock, m::subset(array('code'=>500, 'message' => '')), 500, true)
+            ->once()->andReturn(self::IRRELEVANT_RESPONSE);
+        $logger = m::mock('Psr\Log\LoggerInterface');
+        $logger->shouldReceive('log')->once();
+
+        $this->exceptionHandler->enableDebug();
+        $this->exceptionHandler->setLogger($logger);
         $response = $this->exceptionHandler->$methodName($this->requestMock);
 
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
