@@ -23,7 +23,7 @@
         "pimple/pimple": "v1.0.2",
         "nocarrier/hal": "dev-develop",
         "symfony/http-foundation": "*",
-        "psr/log": "dev-master",
+        "psr/log": "~1.0",
         "symfony/yaml": "*"
     },
     "require-dev": {
