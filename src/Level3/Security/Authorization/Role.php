@@ -4,12 +4,12 @@ namespace Level3\Security\Authorization;
 
 class Role
 {
-    private $listAccess;
-    private $readAccess;
-    private $writeAccess;
-    private $createAccess;
-    private $deleteAccess;
-    private $adminAccess;
+    private $listAccess = false;
+    private $readAccess = false;
+    private $writeAccess = false;
+    private $createAccess = false;
+    private $deleteAccess = false;
+    private $adminAccess = false;
 
     public function hasListAccess()
     {
@@ -38,7 +38,7 @@ class Role
 
     public function hasAdminAccess()
     {
-        return $this->isAdmin();
+        return $this->adminAccess;
     }
 
     public function addListAccess()

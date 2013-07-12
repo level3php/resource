@@ -1,0 +1,15 @@
+role:
+  routes:
+    - path: /.*/
+      policies:
+        find:
+          role: listAccess
+        get:
+          role: readAccess
+        put:
+          role: createAccess
+        post:
+          role: writeAccess
+        delete:
+          role: deleteAccess
+        default: false

@@ -2,11 +2,9 @@
 
 namespace Level3\Tests\Messages\Processors;
 
-use Level3\Hal\Resource;
-use Level3\Messages\RequestFactory;
 use Level3\Messages\Processors\AccessorWrapper;
 use Mockery as m;
-use Teapot\StatusCode;
+use Symfony\Component\HttpFoundation\Request;
 
 class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,238 +12,198 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_ID = 'XX';
     const IRRELEVANT_CONTENT = 'Y';
     const IRRELEVANT_RESPONSE = 'YY';
-    const IRRELEVANT_CONTENT_TYPE = 'YYY';
-
+    const IRRELEVANT_RANGE = 'YYY';
+    const IRRELEVANT_CONTENT_TYPE = 'XXX';
+    const IRRELEVANT_CODE = 'XY';
     private $accessorMock;
-    private $requestFactory;
-    private $dummyRequest;
     private $responseFactoryMock;
-    private $dummyResource;
+    private $formatterFactorymock;
     private $parserFactoryMock;
-
+    private $requestMock;
+    private $resourceMock;
+    private $responseMock;
     private $accessorWrapper;
-
-    public function __construct($name = null, $data = array(), $dataName='') {
-        parent::__construct($name, $data, $dataName);
-        $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
-    }
 
     public function setUp()
     {
         $this->accessorMock = m::mock('Level3\Accessor');
-        $this->requestFactory = new RequestFactory();
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
+        $this->formatterFactorymock = m::mock('Level3\Hal\Formatter\FormatterFactory');
         $this->parserFactoryMock = m::mock('Level3\Messages\Parser\ParserFactory');
-        $this->dummyRequest = $this->createDummyRequest();
-        $this->accessorWrapper = new AccessorWrapper($this->accessorMock, $this->responseFactoryMock, $this->parserFactoryMock);
-        $this->dummyResource = new Resource();
+        $this->requestMock = m::mock('Level3\Messages\Request');
+        $this->accessorWrapper = new AccessorWrapper(
+            $this->accessorMock, $this->responseFactoryMock, $this->parserFactoryMock
+        );
+        $this->resourceMock = m::mock('Level3\Hal\Resource');
+        $this->responseMock = m::mock('Level3\Messages\Response');
     }
 
     public function tearDown()
     {
-        $this->accessorMock = null;
-        $this->requestFactory = null;
-        $this->responseFactoryMock = null;
-        $this->dummyRequest = null;
-        $this->accessorWrapper = null;
-        $this->dummyResource = null;
+        unset($this->accessorMock);
+        unset($this->responseFactoryMock);
+        unset($this->formatterFactorymock);
+        unset($this->parserFactoryMock);
+        unset($this->requestMock);
+        unset($this->accessorWrapper);
+        unset($this->resourceMock);
+        unset($this->responseMock);
     }
-
 
     public function testFind()
     {
-        //TODO: fix test
-        return;
-        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()
-            ->andReturn($this->dummyResource);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            $this->dummyResource, StatusCode::OK, self::IRRELEVANT_RESPONSE
+        $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->requestShouldHaveRange(self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE);
+        $this->accesorFindShouldReceiveAndReturn(
+            self::IRRELEVANT_KEY,
+            self::IRRELEVANT_RANGE,
+            self::IRRELEVANT_RANGE,
+            $this->resourceMock
         );
+        $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock);
 
-        $result = $this->accessorWrapper->find($this->dummyRequest);
+        $response = $this->accessorWrapper->find($this->requestMock);
 
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo($this->responseMock));
     }
 
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function findShouldFailWithException($exception, $code)
+    private function requestShouldHaveKey($key)
     {
-        //TODO: fix test
-        return;
-        $this->accessorMock->shouldReceive('find')->with(self::IRRELEVANT_KEY)->once()
-            ->andThrow($exception);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            null, $code, self::IRRELEVANT_RESPONSE
+        $this->requestMock->shouldReceive('getKey')->withNoArgs()->once()->andReturn($key);
+    }
+
+    private function requestShouldHaveRange($lowerBound, $upperBound)
+    {
+        $this->requestMock->shouldReceive('getRange')->withNoArgs()->once()->andReturn(array($lowerBound, $upperBound));
+    }
+
+    private function accesorFindShouldReceiveAndReturn($key, $lowerBound, $upperBound, $return)
+    {
+        $this->accessorMock->shouldReceive('find')->with($key, $lowerBound, $upperBound)
+            ->once()->andReturn($return);
+    }
+
+    private function shouldCreateResponseWithAndReturn($request, $resource, $response, $status = 200)
+    {
+        $this->responseFactoryMock->shouldReceive('create')->with($request, $resource, $status)->once()->andReturn($response);
+    }
+
+    private function shouldPrepareResponseWithAndReturn($request, $resource, $response, $status = 200)
+    {
+        $response->shouldReceive('setContentType')->once();
+        $this->shouldSetresourceFormatterWith($request, $resource);
+
+        $response->shouldReceive('prepare')->with($request)->once();
+    }
+
+    private function shouldSetresourceFormatterWith($request, $resource)
+    {
+        $contentTypeArray = array(self::IRRELEVANT_CONTENT_TYPE);
+        $formatterMock = m::mock('Level3\Hal\Formatter\Formatter');
+        $request->shouldReceive('getAcceptableContentTypes')->withNoArgs()->once()
+            ->andReturn($contentTypeArray);
+        $this->formatterFactorymock->shouldReceive('create')->with($contentTypeArray)->once()->andReturn(
+            $formatterMock
         );
-
-        $result = $this->accessorWrapper->find($this->dummyRequest);
-
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $formatterMock->shouldReceive('getContentType')->once();
+        $resource->shouldReceive('setFormatter')->with($formatterMock)->once();
     }
 
     public function testGet()
     {
-        $this->accessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
-            ->andReturn($this->dummyResource);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            $this->dummyResource, StatusCode::OK, self::IRRELEVANT_RESPONSE
-        );
+        $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->requestShouldHaveId(self::IRRELEVANT_ID);
+        $this->accesorGetShouldReceiveAndReturn(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, $this->resourceMock);
+        $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock);
 
-        $result = $this->accessorWrapper->get($this->dummyRequest);
+        $response = $this->accessorWrapper->get($this->requestMock);
 
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo($this->responseMock));
     }
 
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function getShouldFailWithException($exception, $code)
+    private function requestShouldHaveId($id)
     {
-        $this->accessorMock->shouldReceive('get')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
-            ->andThrow($exception);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            null, $code, self::IRRELEVANT_RESPONSE
-        );
-
-        $result = $this->accessorWrapper->get($this->dummyRequest);
-
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->requestMock->shouldReceive('getId')->withNoArgs()->once()->andReturn($id);
     }
 
-    public function testPost()
+    private function accesorGetShouldReceiveAndReturn($key, $id, $return)
     {
-        $this->accessorMock->shouldReceive('post')
-            ->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()
-            ->andReturn($this->dummyResource);
-        $this->setupParser();
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            $this->dummyResource, StatusCode::OK, self::IRRELEVANT_RESPONSE
-        );
-
-        $result = $this->accessorWrapper->post($this->dummyRequest);
-
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function postShouldFailWithException($exception, $code)
-    {
-        $this->accessorMock->shouldReceive('post')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, array())->once()
-            ->andThrow($exception);
-        $this->setupParser();
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            null, $code, self::IRRELEVANT_RESPONSE
-        );
-
-        $result = $this->accessorWrapper->post($this->dummyRequest);
-
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->accessorMock->shouldReceive('get')->with($key, $id)
+            ->once()->andReturn($return);
     }
 
     public function testPut()
     {
-        $this->accessorMock->shouldReceive('put')
-            ->with(self::IRRELEVANT_KEY, array())->once()
-            ->andReturn($this->dummyResource);
-        $this->setupParser();
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            $this->dummyResource, StatusCode::CREATED, self::IRRELEVANT_RESPONSE
-        );
+        $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->shouldGetContentAsArrayAndReturn(array());
+        $this->accesorPutShouldReceiveAndReturn(self::IRRELEVANT_KEY, array(), $this->resourceMock);
+        $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock, 201);
 
-        $result = $this->accessorWrapper->put($this->dummyRequest);
+        $response = $this->accessorWrapper->put($this->requestMock);
 
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo($this->responseMock));
     }
 
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function putShouldFailWithException($exception, $code)
+    private function shouldGetContentAsArrayAndReturn($data)
     {
-        $this->accessorMock->shouldReceive('put')->with(self::IRRELEVANT_KEY, array())->once()
-            ->andThrow($exception);
-        $this->setupParser();
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            null, $code, self::IRRELEVANT_RESPONSE
+        $this->requestMock->shouldReceive('getContentType')->withNoArgs()->once()->andReturn(
+            self::IRRELEVANT_CONTENT_TYPE
         );
+        $parserMock = m::mock('Level3\Messages\Parser\Parser');
+        $this->parserFactoryMock->shouldReceive('create')->with(self::IRRELEVANT_CONTENT_TYPE)->once()->andReturn(
+            $parserMock
+        );
+        $this->requestMock->shouldReceive('getContent')->withNoArgs()->once()->andReturn(self::IRRELEVANT_CONTENT);
+        $parserMock->shouldReceive('parse')->with(self::IRRELEVANT_CONTENT)->once()->andreturn($data);
+    }
 
-        $result = $this->accessorWrapper->put($this->dummyRequest);
+    private function accesorPutShouldReceiveAndReturn($key, $data, $return)
+    {
+        $this->accessorMock->shouldReceive('put')->with($key, $data)
+            ->once()->andReturn($return);
+    }
 
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+    public function testPost()
+    {
+        $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->requestShouldHaveId(self::IRRELEVANT_ID);
+        $this->shouldGetContentAsArrayAndReturn(array());
+        $this->accesorPostShouldReceiveAndReturn(
+            self::IRRELEVANT_KEY,
+            self::IRRELEVANT_ID,
+            array(),
+            $this->resourceMock
+        );
+        $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock);
+
+        $response = $this->accessorWrapper->post($this->requestMock);
+
+        $this->assertThat($response, $this->equalTo($this->responseMock));
+    }
+
+    private function accesorPostShouldReceiveAndReturn($key, $id, $data, $return)
+    {
+        $this->accessorMock->shouldReceive('post')->with($key, $id, $data)
+            ->once()->andReturn($return);
     }
 
     public function testDelete()
     {
-        $this->accessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once();
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            null, StatusCode::OK, self::IRRELEVANT_RESPONSE
+        $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->requestShouldHaveId(self::IRRELEVANT_ID);
+        $this->accesorDeleteShouldReceiveAndReturn(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, $this->resourceMock);
+        $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with($this->requestMock, array(), 200)->once()->andReturn(
+            self::IRRELEVANT_RESPONSE
         );
 
-        $result = $this->accessorWrapper->delete($this->dummyRequest);
+        $response = $this->accessorWrapper->delete($this->requestMock);
 
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @test
-     * @dataProvider exceptionMapping
-     */
-    public function deleteShouldFailWithException($exception, $code)
+    private function accesorDeleteShouldReceiveAndReturn($key, $id, $return)
     {
-        $this->accessorMock->shouldReceive('delete')->with(self::IRRELEVANT_KEY, self::IRRELEVANT_ID)->once()
-            ->andThrow($exception);
-        $this->responseFactoryCreateResponseShouldReceiveAndReturn(
-            null, $code, self::IRRELEVANT_RESPONSE
-        );
-
-        $result = $this->accessorWrapper->delete($this->dummyRequest);
-
-        $this->assertThat($result, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
-    private function createDummyRequest()
-    {
-        $headers = array(
-            'Content-Type' => self::IRRELEVANT_CONTENT_TYPE
-        );
-
-        return $this->requestFactory->clear()
-            ->withId(self::IRRELEVANT_ID)
-            ->withKey(self::IRRELEVANT_KEY)
-            ->withContent(self::IRRELEVANT_CONTENT)
-            ->withHeaders($headers)
-            ->create();
-    }
-
-    private function responseFactoryCreateResponseShouldReceiveAndReturn($value, $statusCode, $return)
-    {
-        $this->responseFactoryMock->shouldReceive('createResponse')->with($value, $statusCode)->once()->andReturn($return);
-    }
-
-    public function exceptionMapping()
-    {
-        return array(
-            array('Level3\Repository\Exception\Conflict', StatusCode::CONFLICT),
-            array('Level3\Repository\Exception\DataError', StatusCode::BAD_REQUEST),
-            array('Level3\Repository\Exception\NoContent', StatusCode::NO_CONTENT),
-            array('Level3\Repository\Exception\NotFound', StatusCode::NOT_FOUND),
-            array('\Exception', StatusCode::INTERNAL_SERVER_ERROR)
-        );
-    }
-
-    private function setupParser()
-    {
-        $parser = m::mock('Level3\Messages\Parser\Parser');
-        $parser->shouldReceive('parse')->with(self::IRRELEVANT_CONTENT)->once()->andReturn(array());
-        $this->parserFactoryMock->shouldReceive('createParser')->with(self::IRRELEVANT_CONTENT_TYPE)->once()
-            ->andReturn($parser);
+        $this->accessorMock->shouldReceive('delete')->with($key, $id)
+            ->once()->andReturn($return);
     }
 }

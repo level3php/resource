@@ -2,16 +2,15 @@
 
 namespace Level3\Messages;
 
-use Level3\Security\Authentication\User;
+use Level3\Security\Authentication\Credentials;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 class RequestFactory
 {
     private $key;
     private $id;
-    private $user;
-    private $attributes = array();
-    private $headers = array();
-    private $content;
+    private $credentials;
+    private $symfonyRequest;
 
     public function withKey($key)
     {
@@ -25,40 +24,28 @@ class RequestFactory
         return $this;
     }
 
-    public function withUser(User $user)
+    public function withCredentials(Credentials $credentials)
     {
-        $this->user = $user;
+        $this->credentials = $credentials;
         return $this;
     }
 
-    public function withAttributes(array $attributes)
+    public function withSymfonyRequest(SymfonyRequest $symfonyRequest)
     {
-        $this->attributes = $attributes;
-        return $this;
-    }
-
-    public function withContent($content)
-    {
-        $this->content = $content;
-        return $this;
-    }
-
-    public function withHeaders(array $array)
-    {
-        $this->headers = $array;
+        $this->symfonyRequest = $symfonyRequest;
         return $this;
     }
 
     public function create()
     {
-        $request = new Request($this->key, $this->headers, $this->attributes, $this->content);
+        $request = new Request($this->key, $this->symfonyRequest);
 
         if ($this->id !== null) {
             $request->setId($this->id);
         }
 
-        if ($this->user !== null) {
-            $request->setUser($this->user);
+        if ($this->credentials !== null) {
+            $request->setCredentials($this->credentials);
         }
 
         return $request;
@@ -68,10 +55,8 @@ class RequestFactory
     {
         $this->key = null;
         $this->id = null;
-        $this->user = null;
-        $this->attributes = array();
-        $this->headers = array();
-        $this->content = null;
+        $this->credentials = null;
+        $this->symfonyRequest = null;
         return $this;
     }
 }

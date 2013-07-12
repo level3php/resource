@@ -1,0 +1,12 @@
+acl:
+  routes:
+    - path: /\/.+/(\w+)/
+      policies:
+         get:
+           apiKeys:
+             - 123456
+             - 654321
+           matchings:
+             credentialsMethod: getApiKey
+             pathGroupMatch: 1
+         default: false

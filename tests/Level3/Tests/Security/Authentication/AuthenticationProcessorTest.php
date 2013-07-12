@@ -13,12 +13,9 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_RESPONSE = 'XX';
 
     private $requestProcessorMock;
-    private $userRepositoryMock;
     private $responseFactoryMock;
-    private $requestFactory;
-    private $headers;
-    private $request;
-    private $authenticatedUser;
+    private $authMethodMock;
+    private $requestMock;
 
     private $authenticationProcessor;
 
@@ -30,21 +27,21 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
-        $this->methodMock = m::mock('Level3\Security\Authentication\Method');
+        $this->authMethodMock = m::mock('Level3\Security\Authentication\AuthenticationMethod');
         $this->requestMock = m::mock('Level3\Messages\Request');
 
         $this->authenticationProcessor = new AuthenticationProcessor(
-            $this->requestProcessorMock, $this->methodMock, $this->responseFactoryMock
+            $this->requestProcessorMock, $this->authMethodMock, $this->responseFactoryMock
         );
     }
 
     /**
      * @dataProvider methodsToAuthenticate
      */
-    public function testFindWhenAuthenticateRequestThrowsBadCredentials($methodName)
+    public function testMethod($methodName)
     {
-        $this->methodAuthenticateRequestshouldThrowBadCredentials();
-        $this->requestFactoryShouldCreateForbiddenResponse();
+        $this->shouldAuthenticateRequest();
+        $this->requestProcessorMockShouldReceiveCallTo($methodName);
 
         $response = $this->authenticationProcessor->$methodName($this->requestMock);
 
@@ -64,19 +61,6 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
     }
 
-    /**
-     * @dataProvider methodsToAuthenticate
-     */
-    public function testFindWhenAuthenticateRequestThrowsInvalidCredentials($methodName)
-    {
-        $this->methodAuthenticateRequestshouldThrowInvalidCredentials();
-        $this->requestFactoryShouldCreateForbiddenResponse();
-
-        $response = $this->authenticationProcessor->$methodName($this->requestMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESPONSE));
-    }
-
     public function methodsToAuthenticate()
     {
         return array(
@@ -88,35 +72,12 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function methodAuthenticateRequestShouldThrowBadCredentials()
-    {
-        $this->methodMock
-            ->shouldReceive('authenticateRequest')
-            ->with($this->requestMock)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\BadCredentials');
-    }
-
     private function methodAuthenticateRequestShouldThrowMissingCredentials()
     {
-        $this->methodMock
+        $this->authMethodMock
             ->shouldReceive('authenticateRequest')
             ->with($this->requestMock)->once()
             ->andThrow('Level3\Security\Authentication\Exceptions\MissingCredentials');
-    }
-
-    private function methodAuthenticateRequestShouldThrowInvalidCredentials()
-    {
-        $this->methodMock
-            ->shouldReceive('authenticateRequest')
-            ->with($this->requestMock)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\InvalidCredentials');
-    }
-
-    private function requestFactoryShouldCreateForbiddenResponse()
-    {
-        $this->responseFactoryMock
-            ->shouldReceive('create')->once()->with(null, StatusCode::FORBIDDEN)
-            ->andReturn(self::IRRELEVANT_RESPONSE);
     }
 
     private function requestProcessorMockShouldReceiveCallTo($method)
@@ -125,5 +86,11 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive($method)->once()
             ->with($this->requestMock)
             ->andReturn(self::IRRELEVANT_RESPONSE);
+    }
+
+    private function shouldAuthenticateRequest()
+    {
+        $this->authMethodMock->shouldReceive('authenticateRequest')->with($this->requestMock)->once()
+            ->andReturn($this->requestMock);
     }
 }

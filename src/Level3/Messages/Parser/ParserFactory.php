@@ -4,12 +4,12 @@ namespace Level3\Messages\Parser;
 
 class ParserFactory 
 {
-    const HEADER_APPLICATION_JSON = 'application/json';
-    const HEADER_APPLICATION_XML = 'application/xml';
+    const HEADER_APPLICATION_JSON = 'application/hal+json';
+    const HEADER_APPLICATION_XML = 'application/hal+xml';
 
-    public function createParser($format)
+    public function create($contentType)
     {
-        switch($format) {
+        switch($contentType) {
             case self::HEADER_APPLICATION_XML:
                 return new XmlParser();
             case self::HEADER_APPLICATION_JSON:
