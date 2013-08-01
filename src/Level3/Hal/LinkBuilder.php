@@ -19,9 +19,18 @@ class LinkBuilder
     private $name;
     private $title;
 
-    public function __construct(RepositoryMapper $repositoryMapper)
+    public function setRepositoryMapper(RepositoryMapper $repositoryMapper)
     {
         $this->repositoryMapper = $repositoryMapper;
+    }
+
+    public function clear()
+    {
+        $this->href = null;
+        $this->name = null;
+        $this->title = null;
+
+        return $this;
     }
 
     public function withResource($repositoryKey, $id)

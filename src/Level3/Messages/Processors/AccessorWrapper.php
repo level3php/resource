@@ -35,7 +35,8 @@ class AccessorWrapper implements RequestProcessor
     {
         $key = $request->getKey();
         $range = $request->getRange();
-        $resource = $this->accessor->find($key, $range[0], $range[1]);
+        $criteria = $request->getCriteria();
+        $resource = $this->accessor->find($key, $range[0], $range[1], $criteria);
         return $this->createResponse($request, $resource);
     }
 

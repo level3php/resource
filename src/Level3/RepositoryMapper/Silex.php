@@ -18,7 +18,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 class Silex extends RepositoryMapper
 {
     private $app;
-    private $repositoryHub;
 
     public function __construct(RepositoryHub $repositoryHub, Application $app)
     {

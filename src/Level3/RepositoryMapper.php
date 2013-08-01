@@ -46,7 +46,6 @@ abstract class RepositoryMapper
     public function boot()
     {
         foreach($this->repositoryHub->getKeys() as $resourceKey) {
-            $this->setThisInstanceToRepository($resourceKey);
             $this->mapRepositoryToRoutes($resourceKey);
         }
     }
@@ -75,11 +74,6 @@ abstract class RepositoryMapper
         if ($this->repositoryHub->isDeleter($repositoryKey)) {
             $this->mapDelete($repositoryKey, $particularURI);
         }
-    }
-
-    private function setThisInstanceToRepository($repositoryKey)
-    {
-        $this->getRepositoryHub()->get($repositoryKey)->setRepositoryMapper($this);
     }
 
     abstract public function mapFind($repositoryKey, $uri);

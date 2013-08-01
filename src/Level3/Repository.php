@@ -9,13 +9,17 @@
  */
 
 namespace Level3;
-use Level3\Hal\LinkBuilder;
-use Level3\Hal\ResourceBuilder;
+use Level3\Hal\ResourceBuilderFactory;
 
 abstract class Repository
 {
-    private $repositoryMapper;
     private $repositoryKey;
+    private $resourceBuilderFactory;
+
+    public function __construct(ResourceBuilderFactory $resourceBuilderFactory)
+    {
+        $this->resourceBuilderFactory = $resourceBuilderFactory;
+    }
 
     public function setKey($repositoryKey)
     {
@@ -27,16 +31,6 @@ abstract class Repository
         return $this->repositoryKey;
     }
 
-    public function setRepositoryMapper(RepositoryMapper $repositoryMapper)
-    {
-        $this->repositoryMapper = $repositoryMapper;
-    }
-
-    public function getRepositoryMapper()
-    {
-        return $this->repositoryMapper;
-    }
-
     public function getDescription()
     {
         $reflectionClass = new \ReflectionClass(get_class($this));
@@ -46,13 +40,8 @@ abstract class Repository
         return $description;
     }
 
-    public function createLinkBuilder()
+    protected function createResourceBuilder()
     {
-        return new LinkBuilder($this->repositoryMapper);
-    }
-
-    public function createResourceBuilder()
-    {
-        return new ResourceBuilder($this->repositoryMapper);
+        return $this->resourceBuilderFactory->create();
     }
 }

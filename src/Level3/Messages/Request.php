@@ -94,4 +94,22 @@ class Request extends SymfonyRequest
     {
         return $this->headers->get($header);
     }
+
+    public function getCriteria()
+    {
+        $result = array();
+        $parameters = explode('&', $this->getQueryString());
+        foreach ($parameters as $parameter) {
+            if (!strpos($parameter, '=')) break;
+            $entry = explode('=', $parameter);
+            $key = $entry[0];
+            $value = $entry[1];
+            if (!isset($result[$key]) ) {
+                $result[$key] = array();
+            }
+            $result[$key][] = $value;
+        }
+
+        return $result;
+    }
 }
