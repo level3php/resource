@@ -12,5 +12,5 @@ namespace Level3\Repository;
 
 interface Finder
 {
-    public function find($lowerBound, $upperBound, $criteria);
+    public function find($lowerBound, $upperBound, array $criteria);
 }
