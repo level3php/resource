@@ -14,15 +14,28 @@ use Level3\RepositoryMapper;
 class ResourceBuilder
 {
     private $repositoryMapper;
+    private $linkBuilder;
 
     private $uri;
     private $data;
     private $links = array();
     private $embedded = array();
 
-    public function __construct(RepositoryMapper $repositoryMapper)
+    public function __construct(RepositoryMapper $repositoryMapper, LinkBuilder $linkBuilder)
     {
         $this->repositoryMapper = $repositoryMapper;
+        $this->linkBuilder = $linkBuilder;
+        $this->linkBuilder->setRepositoryMapper($this->repositoryMapper);
+    }
+
+    public function clear()
+    {
+        $this->uri = null;
+        $this->data = null;
+        $this->links = array();
+        $this->embedded = array();
+
+        return $this;
     }
 
     public function withURI($uri)
@@ -44,12 +57,12 @@ class ResourceBuilder
 
     public function withLinkToResource($relation, $repositoryKey, $id, $title = null)
     {
-        $linkBuilder = $this->getRepository($repositoryKey)->createLinkBuilder();
-        $linkBuilder->withResource($repositoryKey, $id);
-        $linkBuilder->withName($id);
-        if ($title) $linkBuilder->withTitle($title);
+        $this->linkBuilder->clear()
+            ->withResource($repositoryKey, $id)
+            ->withName($id)
+            ->withTitle($title);
 
-        $this->links[$relation][] = $linkBuilder->build();
+        $this->links[$relation][] = $this->linkBuilder->build();
 
         return $this;
     }

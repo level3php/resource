@@ -22,7 +22,8 @@ class LinkBuilderTest extends TestCase
             ->once()
             ->with('foo', 'get', array('id' => 'bar'));
 
-        $linkBuilder = new LinkBuilder($mapper);
+        $linkBuilder = new LinkBuilder();
+        $linkBuilder->setRepositoryMapper($mapper);
         $this->assertSame($linkBuilder, $linkBuilder->withResource('foo', 'bar'));
     }
 
@@ -32,6 +33,7 @@ class LinkBuilderTest extends TestCase
         $mapper->shouldReceive('getURI')->andReturn('/foo');
 
         $linkBuilder = new LinkBuilder($mapper);
+        $linkBuilder->setRepositoryMapper($mapper);
         $linkBuilder->withResource('foo', 'bar');
 
         $link = $linkBuilder->build();

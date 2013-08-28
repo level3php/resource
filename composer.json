@@ -27,7 +27,8 @@
         "symfony/yaml": "*"
     },
     "require-dev": {
-        "mockery/mockery": "*"
+        "mockery/mockery": "*",
+        "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
         "psr-0": {

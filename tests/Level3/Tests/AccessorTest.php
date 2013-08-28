@@ -29,13 +29,11 @@ class AccessorTest extends \PHPUnit_Framework_TestCase
 
     public function testFind()
     {
-        //TODO:fix test
-        return;
         $finder = $this->createFinderMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $finder);
-        $finder->shouldReceive('find')->withNoArgs()->once()->andReturn(array());
+        $finder->shouldReceive('find')->with(0, 0, array())->once()->andReturn(array());
 
-        $response = $this->accessor->find(self::IRRELEVANT_KEY);
+        $response = $this->accessor->find(self::IRRELEVANT_KEY, 0, 0, array());
 
         $this->assertThat($response, $this->equalTo(array()));
     }

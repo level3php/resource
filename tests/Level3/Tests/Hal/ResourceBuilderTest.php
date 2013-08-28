@@ -15,9 +15,21 @@ use Mockery as m;
 
 class ResourceBuilderTest extends TestCase
 {
+    private $mapperMock;
+    private $linkBuilderMock;
+
+    public function setUp()
+    {
+        $this->mapperMock = m::mock('Level3\RepositoryMapper');
+        $this->linkBuilderMock = m::mock('Level3\Hal\LinkBuilder');
+
+        $this->linkBuilderMock->shouldReceive('setRepositoryMapper')->with($this->mapperMock)->once();
+    }
+
     public function testWithURI()
     {
-        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
+
+        $builder = new ResourceBuilder($this->mapperMock, $this->linkBuilderMock);
 
         $expected = 'foo';
         $this->assertSame($builder, $builder->withURI($expected));
@@ -27,7 +39,7 @@ class ResourceBuilderTest extends TestCase
 
     public function testWithData()
     {
-        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
+        $builder = new ResourceBuilder($this->mapperMock, $this->linkBuilderMock);
 
         $expected = array('foo');
         $this->assertSame($builder, $builder->withData($expected));
@@ -37,7 +49,7 @@ class ResourceBuilderTest extends TestCase
 
     public function WithEmbedded()
     {
-        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
+        $builder = new ResourceBuilder($this->mapperMock, $this->linkBuilderMock);
 
         $this->assertSame($builder, $builder->withEmbedded('next', 'mock', 2));
         
@@ -48,7 +60,7 @@ class ResourceBuilderTest extends TestCase
 
     public function WithRelation()
     {
-        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
+        $builder = new ResourceBuilder($this->mapperMock, $this->linkBuilderMock);
 
         $this->assertSame($builder, $builder->withRelation('next', 'mock', 2));
 
@@ -59,7 +71,7 @@ class ResourceBuilderTest extends TestCase
 
     public function WithLink()
     {
-        $builder = new ResourceBuilder(m::mock('Level3\RepositoryMapper'));
+        $builder = new ResourceBuilder($this->mapperMock, $this->linkBuilderMock);
 
         $this->assertSame($builder, $builder->withLink('search', 'mock', 'find', array()));
         

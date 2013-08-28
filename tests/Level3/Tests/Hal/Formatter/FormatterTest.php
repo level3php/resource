@@ -39,10 +39,18 @@ abstract class FormatterTest extends TestCase {
             $resource->format()
         );
 
-        $this->assertSame(
-            $this->readResource($this->pretty),
-            $resource->formatPretty()
-        );
+
+        if (version_compare(PHP_VERSION, '5.4' , '>=')) {
+            $this->assertSame(
+                $this->readResource($this->pretty),
+                $resource->formatPretty()
+            );
+        } else {
+            $this->assertSame(
+                $this->readResource($this->nonPretty),
+                $resource->formatPretty()
+            );
+        }
     }
 
     public function readResource($filename)

@@ -19,10 +19,10 @@ class Accessor
         $this->repositoryHub = $repositoryHub;
     }
 
-    public function find($key, $lowerBound, $upperBound)
+    public function find($key, $lowerBound, $upperBound, $criteria)
     {
         $repository = $this->repositoryHub->get($key);
-        return $repository->find($lowerBound, $upperBound);
+        return $repository->find($lowerBound, $upperBound, $criteria);
     }
 
     public function get($key, $id)

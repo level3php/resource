@@ -58,9 +58,11 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
             self::IRRELEVANT_KEY,
             self::IRRELEVANT_RANGE,
             self::IRRELEVANT_RANGE,
+            array(),
             $this->resourceMock
         );
         $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock);
+        $this->requestMock->shouldReceive('getCriteria')->withNoArgs()->once()->andReturn(array());
 
         $response = $this->accessorWrapper->find($this->requestMock);
 
@@ -77,9 +79,9 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->shouldReceive('getRange')->withNoArgs()->once()->andReturn(array($lowerBound, $upperBound));
     }
 
-    private function accesorFindShouldReceiveAndReturn($key, $lowerBound, $upperBound, $return)
+    private function accesorFindShouldReceiveAndReturn($key, $lowerBound, $upperBound, $criteria, $return)
     {
-        $this->accessorMock->shouldReceive('find')->with($key, $lowerBound, $upperBound)
+        $this->accessorMock->shouldReceive('find')->with($key, $lowerBound, $upperBound, $criteria)
             ->once()->andReturn($return);
     }
 

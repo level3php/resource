@@ -30,6 +30,13 @@ class Request extends SymfonyRequest
         $this->credentials = new Credentials();
     }
 
+    protected static function initializeFormats()
+    {
+        parent::initializeFormats();
+        static::$formats['application/hal+json'] = array('application/hal+json');
+        static::$formats['application/hal+xml'] = array('application/hal+xml');
+    }
+
     public function getCredentials()
     {
         return $this->credentials;
@@ -93,5 +100,20 @@ class Request extends SymfonyRequest
     public function getHeader($header)
     {
         return $this->headers->get($header);
+    }
+
+    public function getCriteria()
+    {
+        $result = array();
+        $parameters = explode('&', $this->getQueryString());
+        foreach ($parameters as $parameter) {
+            if (!strpos($parameter, '=')) break;
+            $entry = explode('=', $parameter);
+            $key = $entry[0];
+            $value = $entry[1];
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 }
