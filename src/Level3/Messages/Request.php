@@ -30,6 +30,13 @@ class Request extends SymfonyRequest
         $this->credentials = new Credentials();
     }
 
+    protected static function initializeFormats()
+    {
+        parent::initializeFormats();
+        static::$formats['application/hal+json'] = array('application/hal+json');
+        static::$formats['application/hal+xml'] = array('application/hal+xml');
+    }
+
     public function getCredentials()
     {
         return $this->credentials;
