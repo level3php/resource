@@ -41,11 +41,13 @@ abstract class FormatterTest extends TestCase {
 
 
         if (version_compare(PHP_VERSION, '5.4' >= 0)) {
+            echo('Version >= 5.4: ' . PHP_VERSION . "\n");
             $this->assertSame(
                 $this->readResource($this->pretty),
                 $resource->formatPretty()
             );
         } else {
+            echo('Version < 5.4: ' . PHP_VERSION . "\n");
             $this->assertSame(
                 $this->readResource($this->nonPretty),
                 $resource->formatPretty()
