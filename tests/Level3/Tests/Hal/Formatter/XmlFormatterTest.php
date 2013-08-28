@@ -10,6 +10,9 @@
 
 namespace Level3\Tests\Hal\Formatter;
 
+use Level3\Hal\Link;
+use Level3\Hal\Resource;
+
 class XmlFormatterTest extends FormatterTest {
     protected $class = 'Level3\Hal\Formatter\XmlFormatter';
     protected $nonPretty = 'HalFormatXMLNonPretty.xml';
