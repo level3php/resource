@@ -1,4 +1,4 @@
-xLevel3 RESTful API builder [![Build Status](https://travis-ci.org/yunait/level3.png?branch=master)](https://travis-ci.org/yunait/level3)
+Level3 RESTful API builder [![Build Status](https://travis-ci.org/yunait/level3.png?branch=master)](https://travis-ci.org/yunait/level3)
 ==============================
 
 A RESTful API builder based on 3-level model (URI, HTTP and Hypermedia) 
