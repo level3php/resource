@@ -57,6 +57,8 @@ The `RepositoryMapper` knows about `Repositories` and `URLs`.
 
 `Repositories` have to be extended in order to implement the logic in charge of handling resources from the storage system.
 
+![Classes overview](https://raw.github.com/amartinj/level3/master/doc/overview.pdf)
+
 ### Request and Response
 Are the messages passed through a chain of `RequestProcessor`s. They encapsulate all the business logic.
 
