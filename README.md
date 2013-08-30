@@ -62,7 +62,7 @@ The `RepositoryMapper` knows about `Repositories` and `URLs`.
 ### Request and Response
 Are the messages passed through a chain of `RequestProcessor`s. They encapsulate all the business logic.
 
-On the one hand the Controller handling the HTTP request has to create a `Request` object, but on the other hand, Level3 `Response` objects, in the case of using a (Symfony)[http://symfony.com/] based framework can be returned directly since they extend its Response implementation.
+On the one hand the Controller handling the HTTP request has to create a `Request` object, but on the other hand, Level3 `Response` objects, in the case of using a [Symfony](http://symfony.com/) based framework can be returned directly since they extend its Response implementation.
 
 ### RequestProcessor
 All subclasses are intended to handle the request, pass it to the next processor, get their response, handle it, and reuturn it. They can be chained in order to implement any kind of functionality. Some default are already provided as an example, since they can also be useful (you can read more about `RequestProcessor` (here)[https://raw.github.com/yunait/level3/master/doc/RequestProcessor.md]):
@@ -79,7 +79,7 @@ Logs all requests to a [PSR3 Logger](https://github.com/php-fig/fig-standards/bl
 #### AuthenticationProcessor
 This class authenticates the request and sets *proper* credentials in order to, later, authorize or not the request. The way the authentication is handled is done using implementations of `Level3\Security\Authentication\Method`. By default, `HMAC` is used.
 
-Read more about this [here](https://raw.github.com/yunait/level3/master/doc/AuthenticationProcessor.md)
+Read more about this [here](https://raw.github.com/yunait/level3/master/doc/AuthenticationProcessor.md).
 
 #### AuthorizationProcessor
 Authorizes the request based on it's `getCredentials()` method. Several authorizators are provided:
@@ -88,10 +88,10 @@ Authorizes the request based on it's `getCredentials()` method. Several authoriz
 
 By default, all request have anonymous credentials, so if no `AuthenticationProcessor` is chained before, this is what you can expect.
 
-You can read more about `AurizationProcesor` [here](https://raw.github.com/yunait/level3/master/doc/AuthorizationProcessor.md)
+You can read more about `AurizationProcesor` [here](https://raw.github.com/yunait/level3/master/doc/AuthorizationProcessor.md).
 
 ### Repository
-Is the one in charge of retrieving the data from the underlying storage and returning a `Level3\Hal\Resource` with some help from `Level3\Hal\ResourceBuilder`
+Is the one in charge of retrieving the data from the underlying storage and returning a `Level3\Hal\Resource` with some help from `Level3\Hal\ResourceBuilder`.
 
 
 License
