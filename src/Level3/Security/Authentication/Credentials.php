@@ -10,7 +10,7 @@ class Credentials
     const ANONYMOUS_API_KEY = 'anonymous';
 
     private $role;
-    
+
     public function __construct()
     {
         $this->role = new Role();
