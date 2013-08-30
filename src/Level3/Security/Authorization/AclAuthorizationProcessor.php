@@ -4,7 +4,6 @@ namespace Level3\Security\Authorization;
 
 use Level3\Messages\Processors\RequestProcessor;
 use Level3\Messages\Request;
-use Level3\Messages\ResponseFactory;
 use Level3\Resources\ConfigParser;
 use Level3\Resources\Exceptions\ConfigError;
 use Level3\Security\Authentication\Credentials;
