@@ -65,7 +65,7 @@ Are the messages passed through a chain of `RequestProcessor`s. They encapsulate
 On the one hand the Controller handling the HTTP request has to create a `Request` object, but on the other hand, Level3 `Response` objects, in the case of using a [Symfony](http://symfony.com/) based framework can be returned directly since they extend its Response implementation.
 
 ### RequestProcessor
-All subclasses are intended to handle the request, pass it to the next processor, get their response, handle it, and reuturn it. They can be chained in order to implement any kind of functionality. Some default are already provided as an example, since they can also be useful (you can read more about `RequestProcessor` (here)[https://raw.github.com/yunait/level3/master/doc/RequestProcessor.md]):
+All subclasses are intended to handle the request, pass it to the next processor, get their response, handle it, and reuturn it. They can be chained in order to implement any kind of functionality. Some default are already provided as an example, since they can also be useful (you can read more about `RequestProcessor` [here](https://raw.github.com/yunait/level3/master/doc/RequestProcessor.md):
 
 #### AcessorWrapper
 Is the only mandatory `RequestProcessor`. It translates the request into a `RepositoryFriendly` format and generates a response from its response. If chained to others, this has to be the last one in the chain.
