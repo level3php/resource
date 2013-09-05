@@ -12,6 +12,8 @@ class Request extends SymfonyRequest
     const HEADER_RANGE = 'Range';
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
+
+    const HEADER_SORT = 'X-Level3-Sort';
     private $credentials;
     private $id;
     private $key;
@@ -115,5 +117,19 @@ class Request extends SymfonyRequest
         }
 
         return $result;
+    }
+
+    public function getSort()
+    {
+        if (!$this->headers->has(self::HEADER_SORT)) return null;
+
+        $sortHeader = $this->headers->get(self::HEADER_SORT);
+
+        $sort = json_decode($sortHeader, true);
+        if (!$sort) return null; // ToDo: throw exception to escalate to 403
+        if (!is_array($sort)) {
+            $sort = array($sort => 1);
+        }
+        return $sort;
     }
 }

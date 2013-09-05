@@ -12,6 +12,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_ID = 'XX';
     const IRRELEVANT_CONTENT = 'Y';
     const IRRELEVANT_RESPONSE = 'YY';
+    const IRRELEVANT_SORT = 'ZZ';
     const IRRELEVANT_RANGE = 'YYY';
     const IRRELEVANT_CONTENT_TYPE = 'XXX';
     const IRRELEVANT_CODE = 'XY';
@@ -56,6 +57,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->requestShouldHaveRange(self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE);
         $this->accesorFindShouldReceiveAndReturn(
             self::IRRELEVANT_KEY,
+            self::IRRELEVANT_SORT,
             self::IRRELEVANT_RANGE,
             self::IRRELEVANT_RANGE,
             array(),
@@ -63,6 +65,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         );
         $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock);
         $this->requestMock->shouldReceive('getCriteria')->withNoArgs()->once()->andReturn(array());
+        $this->requestMock->shouldReceive('getSort')->withNoArgs()->once()->andReturn(self::IRRELEVANT_SORT);
 
         $response = $this->accessorWrapper->find($this->requestMock);
 
@@ -79,9 +82,9 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->shouldReceive('getRange')->withNoArgs()->once()->andReturn(array($lowerBound, $upperBound));
     }
 
-    private function accesorFindShouldReceiveAndReturn($key, $lowerBound, $upperBound, $criteria, $return)
+    private function accesorFindShouldReceiveAndReturn($key, $sort, $lowerBound, $upperBound, $criteria, $return)
     {
-        $this->accessorMock->shouldReceive('find')->with($key, $lowerBound, $upperBound, $criteria)
+        $this->accessorMock->shouldReceive('find')->with($key, $sort, $lowerBound, $upperBound, $criteria)
             ->once()->andReturn($return);
     }
 
