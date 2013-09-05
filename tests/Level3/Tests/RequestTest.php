@@ -126,4 +126,26 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
         $this->assertThat($header, $this->equalTo('bar'));
     }
+
+    public function testGetSort()
+    {
+        $sort = array('foo' => 1);
+        $this->request->headers->add(
+            array(Request::HEADER_SORT => json_encode($sort))
+        );
+
+        $this->assertEquals($sort, $this->request->getSort());
+    }
+
+    public function testGetSortOnlyWithFieldName()
+    {
+        $field = 'foo';
+        $this->request->headers->add(array(Request::HEADER_SORT => json_encode($field)));
+        $this->assertEquals(array($field => 1), $this->request->getSort());
+    }
+
+    public function testGetSortWithAbsentHeader()
+    {
+        $this->assertSame(null, $this->request->getSort());
+    }
 }
