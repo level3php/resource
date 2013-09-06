@@ -14,8 +14,8 @@ abstract class RepositoryMapper
 {
     const SLASH_CHARACTER = '/';
 
-    private $repositoryHub;
-    private $baseURI = self::SLASH_CHARACTER;
+    protected $repositoryHub;
+    protected $baseURI = self::SLASH_CHARACTER;
 
     public function __construct(RepositoryHub $repositoryHub)
     {
@@ -82,22 +82,22 @@ abstract class RepositoryMapper
     abstract public function mapPut($repositoryKey, $uri);
     abstract public function mapDelete($repositoryKey, $uri);
 
-    private function calculateGeneralUri($repositoryKey)
+    protected function calculateGeneralUri($repositoryKey)
     {
         return $this->baseURI . $repositoryKey;
     }
 
-    private function calculateParticularUri($repositoryKey)
+    protected function calculateParticularUri($repositoryKey)
     {
         return $this->calculateGeneralUri($repositoryKey) . '/{id}';
     }
 
-    private function doesNotEndInSlash($uri)
+    protected function doesNotEndInSlash($uri)
     {
         return $uri[strlen($uri) - 1] != self::SLASH_CHARACTER;
     }
 
-    private function addSlashToUri($uri)
+    protected function addSlashToUri($uri)
     {
         return $uri . self::SLASH_CHARACTER;
     }
