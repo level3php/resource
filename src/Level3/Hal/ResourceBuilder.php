@@ -10,6 +10,7 @@
 
 namespace Level3\Hal;
 use Level3\RepositoryMapper;
+use stdClass;
 
 class ResourceBuilder
 {
@@ -45,21 +46,21 @@ class ResourceBuilder
         return $this;
     }
 
-    public function withEmbedded($relation, $repositoryKey, $id)
+    public function withEmbedded($relation, $repositoryKey, stdClass $parameters)
     {
-        $resource = $this->getRepository($repositoryKey)->get($id);
-        $this->setSelfLinkToResource($resource, $repositoryKey, $id);
+        $resource = $this->getRepository($repositoryKey)->get($parameters);
+        $this->setSelfLinkToResource($resource, $repositoryKey, $parameters);
 
         $this->embedded[$relation][] = $resource;
 
         return $this;
     }
 
-    public function withLinkToResource($relation, $repositoryKey, $id, $title = null)
+    public function withLinkToResource($relation, $repositoryKey, stdClass $parameters, $title = null)
     {
         $this->linkBuilder->clear()
-            ->withResource($repositoryKey, $id)
-            ->withName($id)
+            ->withResource($repositoryKey, $parameters)
+            ->withName($title)
             ->withTitle($title);
 
         $this->links[$relation][] = $this->linkBuilder->build();
@@ -103,10 +104,10 @@ class ResourceBuilder
         return $resource;
     }
 
-    private function setSelfLinkToResource(Resource $resource, $repositoryKey, $id)
+    private function setSelfLinkToResource(Resource $resource, $repositoryKey, stdClass $parameters)
     {
         try {
-            $uri = $this->getResouceURI($repositoryKey, $id);
+            $uri = $this->getResouceURI($repositoryKey, $parameters);
         } catch (\Exception $e) {
             $uri = null;
         }
@@ -119,8 +120,8 @@ class ResourceBuilder
         return $this->repositoryMapper->getRepositoryHub()->get($repositoryKey);
     }
 
-    private function getResouceURI($repositoryKey, $id)
+    private function getResouceURI($repositoryKey, stdClass $parameters)
     {
-        return $this->repositoryMapper->getURI($repositoryKey, 'get', array('id' => $id));
+        return $this->repositoryMapper->getURI($repositoryKey, 'get', $parameters);
     }
 }

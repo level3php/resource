@@ -9,6 +9,7 @@
  */
 
 namespace Level3;
+use stdClass;
 
 abstract class RepositoryMapper
 {
@@ -41,7 +42,7 @@ abstract class RepositoryMapper
         return $this->baseURI;
     }
 
-    abstract public function getURI($repositoryKey, $method, array $parameters = array());
+    abstract public function getURI($repositoryKey, $method, stdClass $parameters = null);
 
     public function boot()
     {
