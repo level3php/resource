@@ -15,7 +15,7 @@ class ParserFactory
             case self::HEADER_APPLICATION_JSON:
                 return new JsonParser();
             default:
-                return new ArrayParser();
+                return new JsonParser();
         }
     }
 }
