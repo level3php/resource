@@ -3,6 +3,7 @@
 namespace Level3\Messages;
 
 use Level3\Security\Authentication\AuthenticatedCredentials;
+use Level3\Security\Authentication\AnonymousCredentials;
 use Level3\Security\Authentication\Credentials;
 use Level3\Security\Authentication\User;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -29,7 +30,7 @@ class Request extends SymfonyRequest
         $server = $request->server->all();
 
         $this->initialize($query, $req, $attributes, $cookies, $files, $server);
-        $this->credentials = new Credentials();
+        $this->credentials = new AnonymousCredentials();
     }
 
     protected static function initializeFormats()
@@ -44,7 +45,7 @@ class Request extends SymfonyRequest
         return $this->credentials;
     }
 
-    public function setCredentials(AuthenticatedCredentials $credentials)
+    public function setCredentials(Credentials $credentials)
     {
         $this->credentials = $credentials;
     }

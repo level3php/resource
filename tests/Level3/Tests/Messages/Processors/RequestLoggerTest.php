@@ -72,7 +72,7 @@ class RequestLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function testMethods($method, $message)
     {
-        $logMessage = sprintf('%s %s - %s(%s)', $message, '/', 'Anonymous Credentials', 'anonymous');
+        $logMessage = sprintf('%s / - Authenticated: false', $message);
         $this->loggerMock->shouldReceive('log')->with('info', $logMessage)->once();
         $this->requestProcessorMock->shouldReceive($method)->with($this->dummyRequest)->once()
             ->andReturn(self::IRRELEVANT_RESPONSE);
