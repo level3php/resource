@@ -4,15 +4,12 @@ namespace Level3\Security\Authentication\Methods;
 
 use Level3\Exceptions\Forbidden;
 use Level3\Messages\Request;
-use Level3\Security\Authentication\AuthenticationMethod;
 use Level3\Security\Authentication\CredentialsRepository;
-use Level3\Security\Authentication\Exceptions\BadCredentials;
-use Level3\Security\Authentication\Exceptions\MissingCredentials;
+use Level3\Security\Authentication\Credentials;
 
-class HMAC implements AuthenticationMethod
+class HMAC extends Base
 {
     const HASH_ALGORITHM = 'sha256';
-    const AUTHORIZATION_HEADER = 'Authorization';
     const TOKEN = 'Token';
     const TOKEN_SEPARATOR = ' ';
     const AUTHORIZATION_FIELDS_SEPARATOR = ':';
@@ -23,26 +20,11 @@ class HMAC implements AuthenticationMethod
         $this->credentialsRepository = $credentialsRepository;
     }
 
-    public function authenticateRequest(Request $request)
+    protected function getCredentialsFromRequest(Request $request)
     {
-        if (!$this->hasAuthorizationHeader($request)) {
-            throw new MissingCredentials();
-        }
-
         $apiKey = $this->getApiKeyFromRequest($request);
-
-        try {
-            $this->setRequestCredentials($request, $apiKey);
-        } catch (BadCredentials $e) {
-            throw new Forbidden('Provided credentials are invalid'  );
-        }
-
-        return $request;
-    }
-
-    protected function hasAuthorizationHeader(Request $request)
-    {
-        return $request->headers->has(self::AUTHORIZATION_HEADER);
+        $credentials = $this->credentialsRepository->findByApiKey($apiKey);
+        return $credentials;
     }
 
     protected function getApiKeyFromRequest(Request $request)
@@ -51,6 +33,13 @@ class HMAC implements AuthenticationMethod
         $authFields = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $authContent);
         return $authFields[0];
     }
+
+    protected function verifyCredentials(Request $request, Credentials $credentials)
+    {
+        $privateKey = $credentials->getSecretKey();
+        return $this->verifySignature($request, $privateKey);
+    }
+
 
     protected function extractAuthContent(Request $request)
     {
@@ -72,21 +61,12 @@ class HMAC implements AuthenticationMethod
 
         $signature = strtolower($this->extractSignatureFromRequest($request));
 
-        if ($calculatedSignature !== $signature) {
-            throw new Forbidden('Access Forbidden');
-        }
+        return $calculatedSignature === $signature;
     }
 
     protected function extractSignatureFromRequest(Request $request)
     {
         $authContent = explode(self::AUTHORIZATION_FIELDS_SEPARATOR, $this->extractAuthContent($request));
         return $authContent[1];
-    }
-
-    private function setRequestCredentials(Request $request, $apiKey)
-    {
-        $credentials = $this->credentialsRepository->findByApiKey($apiKey);
-        $this->verifySignature($request, $credentials->getSecretKey());
-        $request->setCredentials($credentials);
     }
 }

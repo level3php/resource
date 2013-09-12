@@ -4,6 +4,8 @@ namespace Level3\Tests\Security\Authorization;
 
 use Level3\Resources\YamlConfigParser;
 use Level3\Security\Authentication\Credentials;
+use Level3\Security\Authentication\AuthenticatedCredentials;
+use Level3\Security\Authentication\AnonymousCredentials;
 use Level3\Security\Authorization\Role;
 use Level3\Security\Authorization\RoleAuthorizationProcessor;
 use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
@@ -87,11 +89,29 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function testShouldCreateForbiddenResponseDueToRoles($methodName)
     {
+        $credentials = new AuthenticatedCredentials(1, 'x', 'xx', new Role(), '', '');
+        $this->doTestForbiddenResponseDueToRolesForCredentials($methodName, $credentials);
+
+    }
+
+    /**
+     * @dataProvider methods
+     * @expectedException Level3\Exceptions\Forbidden
+     */
+    public function testShouldCreateForbiddenResponseDueToRolesWithAnonymousCredentials($methodName)
+    {
+        $credentials = new AnonymousCredentials();
+        $this->doTestForbiddenResponseDueToRolesForCredentials($methodName, $credentials);
+    }
+
+    private function doTestForbiddenResponseDueToRolesForCredentials($methodName, Credentials $credentials)
+    {
         $this->configParser = new YamlConfigParser(__DIR__.'/../../Resources/role-all-methods.yaml');
-        $this->roleAuthorizationProcessor = new RoleAuthorizationProcessor($this->requestProcessorMock, $this->responseFactoryMock, $this->configParser);
+        $this->roleAuthorizationProcessor = new RoleAuthorizationProcessor(
+            $this->requestProcessorMock, $this->responseFactoryMock, $this->configParser
+        );
         $request = m::mock('Level3\Messages\Request');
         $request->shouldReceive('getPathInfo')->withNoArgs()->once()->andReturn('/bla/blah');
-        $credentials = new Credentials();
         $request->shouldReceive('getCredentials')->withNoArgs()->once()->andReturn($credentials);
 
         $response = $this->roleAuthorizationProcessor->$methodName($request);
