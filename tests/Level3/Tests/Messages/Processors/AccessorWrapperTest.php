@@ -5,8 +5,9 @@ namespace Level3\Tests\Messages\Processors;
 use Level3\Messages\Processors\AccessorWrapper;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\Request;
+use Level3\Tests\TestCase;
 
-class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
+class AccessorWrapperTest extends TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'XX';
@@ -27,6 +28,7 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->parametersMock = $this->createParametersMock();
         $this->accessorMock = m::mock('Level3\Accessor');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
         $this->formatterFactorymock = m::mock('Level3\Hal\Formatter\FormatterFactory');
@@ -54,9 +56,11 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     public function testFind()
     {
         $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->requestShouldHaveParameters();
         $this->requestShouldHaveRange(self::IRRELEVANT_RANGE, self::IRRELEVANT_RANGE);
         $this->accesorFindShouldReceiveAndReturn(
             self::IRRELEVANT_KEY,
+            $this->parametersMock,
             self::IRRELEVANT_SORT,
             self::IRRELEVANT_RANGE,
             self::IRRELEVANT_RANGE,
@@ -82,9 +86,9 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->requestMock->shouldReceive('getRange')->withNoArgs()->once()->andReturn(array($lowerBound, $upperBound));
     }
 
-    private function accesorFindShouldReceiveAndReturn($key, $sort, $lowerBound, $upperBound, $criteria, $return)
+    private function accesorFindShouldReceiveAndReturn($key, $parameters, $sort, $lowerBound, $upperBound, $criteria, $return)
     {
-        $this->accessorMock->shouldReceive('find')->with($key, $sort, $lowerBound, $upperBound, $criteria)
+        $this->accessorMock->shouldReceive('find')->with($key, $parameters, $sort, $lowerBound, $upperBound, $criteria)
             ->once()->andReturn($return);
     }
 
@@ -117,8 +121,8 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     public function testGet()
     {
         $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
-        $this->requestShouldHaveId(self::IRRELEVANT_ID);
-        $this->accesorGetShouldReceiveAndReturn(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, $this->resourceMock);
+        $this->requestShouldHaveParameters();
+        $this->accesorGetShouldReceiveAndReturn(self::IRRELEVANT_KEY, $this->parametersMock, $this->resourceMock);
         $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock);
 
         $response = $this->accessorWrapper->get($this->requestMock);
@@ -126,9 +130,9 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($response, $this->equalTo($this->responseMock));
     }
 
-    private function requestShouldHaveId($id)
+    private function requestShouldHaveParameters()
     {
-        $this->requestMock->shouldReceive('getId')->withNoArgs()->once()->andReturn($id);
+        $this->requestMock->shouldReceive('getParameters')->withNoArgs()->once()->andReturn($this->parametersMock);
     }
 
     private function accesorGetShouldReceiveAndReturn($key, $id, $return)
@@ -140,8 +144,9 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     public function testPut()
     {
         $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
+        $this->requestShouldHaveParameters();
         $this->shouldGetContentAsArrayAndReturn(array());
-        $this->accesorPutShouldReceiveAndReturn(self::IRRELEVANT_KEY, array(), $this->resourceMock);
+        $this->accesorPutShouldReceiveAndReturn(self::IRRELEVANT_KEY, $this->parametersMock, array(), $this->resourceMock);
         $this->shouldCreateResponseWithAndReturn($this->requestMock, $this->resourceMock, $this->responseMock, 201);
 
         $response = $this->accessorWrapper->put($this->requestMock);
@@ -162,20 +167,20 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
         $parserMock->shouldReceive('parse')->with(self::IRRELEVANT_CONTENT)->once()->andreturn($data);
     }
 
-    private function accesorPutShouldReceiveAndReturn($key, $data, $return)
+    private function accesorPutShouldReceiveAndReturn($key, $parameters, $data, $return)
     {
-        $this->accessorMock->shouldReceive('put')->with($key, $data)
+        $this->accessorMock->shouldReceive('put')->with($key, $parameters, $data)
             ->once()->andReturn($return);
     }
 
     public function testPost()
     {
         $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
-        $this->requestShouldHaveId(self::IRRELEVANT_ID);
+        $this->requestShouldHaveParameters();
         $this->shouldGetContentAsArrayAndReturn(array());
         $this->accesorPostShouldReceiveAndReturn(
             self::IRRELEVANT_KEY,
-            self::IRRELEVANT_ID,
+            $this->parametersMock,
             array(),
             $this->resourceMock
         );
@@ -195,8 +200,8 @@ class AccessorWrapperTest extends \PHPUnit_Framework_TestCase
     public function testDelete()
     {
         $this->requestShouldHaveKey(self::IRRELEVANT_KEY);
-        $this->requestShouldHaveId(self::IRRELEVANT_ID);
-        $this->accesorDeleteShouldReceiveAndReturn(self::IRRELEVANT_KEY, self::IRRELEVANT_ID, $this->resourceMock);
+        $this->requestShouldHaveParameters();
+        $this->accesorDeleteShouldReceiveAndReturn(self::IRRELEVANT_KEY, $this->parametersMock, $this->resourceMock);
         $this->responseFactoryMock->shouldReceive('createFromDataAndStatusCode')->with($this->requestMock, array(), 200)->once()->andReturn(
             self::IRRELEVANT_RESPONSE
         );

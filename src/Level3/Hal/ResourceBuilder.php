@@ -10,7 +10,7 @@
 
 namespace Level3\Hal;
 use Level3\RepositoryMapper;
-use stdClass;
+use Level3\Messages\Parameters;
 
 class ResourceBuilder
 {
@@ -46,7 +46,7 @@ class ResourceBuilder
         return $this;
     }
 
-    public function withEmbedded($relation, $repositoryKey, stdClass $parameters)
+    public function withEmbedded($relation, $repositoryKey, Parameters $parameters)
     {
         $resource = $this->getRepository($repositoryKey)->get($parameters);
         $this->setSelfLinkToResource($resource, $repositoryKey, $parameters);
@@ -56,7 +56,7 @@ class ResourceBuilder
         return $this;
     }
 
-    public function withLinkToResource($relation, $repositoryKey, stdClass $parameters, $title = null)
+    public function withLinkToResource($relation, $repositoryKey, Parameters $parameters, $title = null)
     {
         $this->linkBuilder->clear()
             ->withResource($repositoryKey, $parameters)
@@ -104,7 +104,7 @@ class ResourceBuilder
         return $resource;
     }
 
-    private function setSelfLinkToResource(Resource $resource, $repositoryKey, stdClass $parameters)
+    private function setSelfLinkToResource(Resource $resource, $repositoryKey, Parameters $parameters)
     {
         try {
             $uri = $this->getResouceURI($repositoryKey, $parameters);
@@ -120,7 +120,7 @@ class ResourceBuilder
         return $this->repositoryMapper->getRepositoryHub()->get($repositoryKey);
     }
 
-    private function getResouceURI($repositoryKey, stdClass $parameters)
+    private function getResouceURI($repositoryKey, Parameters $parameters)
     {
         return $this->repositoryMapper->getURI($repositoryKey, 'get', $parameters);
     }

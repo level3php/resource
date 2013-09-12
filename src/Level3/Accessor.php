@@ -9,6 +9,7 @@
  */
 
 namespace Level3;
+use Level3\Messages\Parameters;
 
 class Accessor
 {
@@ -19,34 +20,34 @@ class Accessor
         $this->repositoryHub = $repositoryHub;
     }
 
-    public function find($key, $sort, $lowerBound, $upperBound, $criteria)
+    public function find($key, Parameters $parameters, $sort, $lowerBound, $upperBound, $criteria)
     {
         $repository = $this->repositoryHub->get($key);
-        return $repository->find($sort, $lowerBound, $upperBound, $criteria);
+        return $repository->find($parameters, $sort, $lowerBound, $upperBound, $criteria);
     }
 
-    public function get($key, $id)
+    public function get($key, Parameters $parameters)
     {
         $repository = $this->repositoryHub->get($key);
-        return $repository->get($id);
+        return $repository->get($parameters);
     }
 
-    public function post($key, $id, Array $receivedResourceData)
+    public function post($key, Parameters $parameters, Array $receivedResourceData)
     {
         $repository = $this->repositoryHub->get($key);
-        $repository->post($id, $receivedResourceData);
-        return $repository->get($id);
+        $repository->post($parameters, $receivedResourceData);
+        return $repository->get($parameters);
     }
 
-    public function put($key, Array $receivedResourceData)
+    public function put($key, Parameters $parameters, Array $receivedResourceData)
     {
         $repository = $this->repositoryHub->get($key);
-        return $repository->put($receivedResourceData);
+        return $repository->put($parameters, $receivedResourceData);
     }
 
-    public function delete($key, $id)
+    public function delete($key, Parameters $parameters)
     {
         $repository = $this->repositoryHub->get($key);
-        $repository->delete($id);
+        $repository->delete($parameters);
     }
 }

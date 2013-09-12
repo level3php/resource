@@ -9,8 +9,9 @@
  */
 
 namespace Level3\Repository;
+use Level3\Messages\Parameters;
 
 interface Putter
 {
-    public function put($data);
+    public function put(Parameters $parameters, $data);
 }

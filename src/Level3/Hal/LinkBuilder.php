@@ -10,7 +10,7 @@
 
 namespace Level3\Hal;
 use Level3\RepositoryMapper;
-use stdClass;
+use Level3\Messages\Parameters;
 
 class LinkBuilder
 {
@@ -65,7 +65,7 @@ class LinkBuilder
         return $resource;
     }
 
-    private function getResouceURI($repositoryKey, stdClass $parameters)
+    private function getResouceURI($repositoryKey, Parameters $parameters)
     {
         return $this->repositoryMapper->getURI($repositoryKey, 'get', $parameters);
     }

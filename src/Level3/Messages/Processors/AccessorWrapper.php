@@ -37,40 +37,46 @@ class AccessorWrapper implements RequestProcessor
         $sort = $request->getSort();
         $range = $request->getRange();
         $criteria = $request->getCriteria();
-        $resource = $this->accessor->find($key, $sort, $range[0], $range[1], $criteria);
+        $parameters = $request->getParameters();
+        
+        $resource = $this->accessor->find(
+            $key, $parameters, $sort, $range[0], $range[1], $criteria);
+        
         return $this->createResponse($request, $resource);
     }
 
     public function get(Request $request)
     {
         $key = $request->getKey();
-        $id = $request->getId();
-        $resource = $this->accessor->get($key, $id);
+        $parameters = $request->getParameters();
+
+        $resource = $this->accessor->get($key, $parameters);
         return $this->createResponse($request, $resource);
     }
 
     public function post(Request $request)
     {
         $key = $request->getKey();
-        $id = $request->getId();
+        $parameters = $request->getParameters();
         $content = $this->getRequestContentAsArray($request);
-        $resource = $this->accessor->post($key, $id, $content);
+        $resource = $this->accessor->post($key, $parameters, $content);
         return $this->createResponse($request, $resource);
     }
 
     public function put(Request $request)
     {
         $key = $request->getKey();
+        $parameters = $request->getParameters();
         $content = $this->getRequestContentAsArray($request);
-        $resource = $this->accessor->put($key, $content);
+        $resource = $this->accessor->put($key, $parameters, $content);
         return $this->createResponse($request, $resource, StatusCode::CREATED);
     }
 
     public function delete(Request $request)
     {
         $key = $request->getKey();
-        $id = $request->getId();
-        $this->accessor->delete($key, $id);
+        $parameters = $request->getParameters();
+        $this->accessor->delete($key, $parameters);
         return $this->responseFactory->createFromDataAndStatusCode($request, array(), StatusCode::OK);
     }
 

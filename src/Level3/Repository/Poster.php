@@ -9,8 +9,9 @@
  */
 
 namespace Level3\Repository;
+use Level3\Messages\Parameters;
 
 interface Poster
 {
-    public function post($id, $data);
+    public function post(Parameters $parameters, $data);
 }

@@ -20,8 +20,39 @@ class TestCase extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_HREF = 'XX';
 
     protected $resourceHubMock;
+    protected $repositoryHubMock;
+
+    protected function createFinderMock()
+    {
+        return m::mock('Level3\Repository\Finder');
+    }
+
+    protected function createGetterMock()
+    {
+        return m::mock('Level3\Repository\Getter');
+    }
+
+    protected function createDeleterMock()
+    {
+        return m::mock('Level3\Repository\Deleter');
+    }
+
+    protected function createPutterMock()
+    {
+        return m::mock('Level3\Repository\Putter');
+    }
+
+    protected function createParametersMock()
+    {
+        return m::mock('Level3\Messages\Parameters');
+    }
 
     protected function repositoryHubShouldHavePair($key, $value)
+    {
+        $this->repositoryHubMock->shouldReceive('get')->with($key)->once()->andReturn($value);
+    }
+
+    protected function repositoryHubShouldHavePairOLD($key, $value)
     {
         $this->repositoryHubKeyShouldExist($key);
         $this->repositoryHubMock->shouldReceive('offsetGet')->with($key)->once()->andReturn($value);

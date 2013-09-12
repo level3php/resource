@@ -17,14 +17,16 @@ class LinkBuilderTest extends TestCase
 {
     public function testWithResource()
     {
+        $parameters = $this->createParametersMock();
+        
         $mapper = m::mock('Level3\RepositoryMapper');
         $mapper->shouldReceive('getURI')
             ->once()
-            ->with('foo', 'get', array('id' => 'bar'));
+            ->with('foo', 'get', $parameters);
 
         $linkBuilder = new LinkBuilder();
         $linkBuilder->setRepositoryMapper($mapper);
-        $this->assertSame($linkBuilder, $linkBuilder->withResource('foo', 'bar'));
+        $this->assertSame($linkBuilder, $linkBuilder->withResource('foo', $parameters));
     }
 
     public function testBoot()
@@ -34,7 +36,7 @@ class LinkBuilderTest extends TestCase
 
         $linkBuilder = new LinkBuilder($mapper);
         $linkBuilder->setRepositoryMapper($mapper);
-        $linkBuilder->withResource('foo', 'bar');
+        $linkBuilder->withResource('foo', $this->createParametersMock());
 
         $link = $linkBuilder->build();
 

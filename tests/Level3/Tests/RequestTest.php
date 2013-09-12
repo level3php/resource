@@ -34,12 +34,9 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertThat($key, $this->equalTo(self::IRRELEVANT_KEY));
     }
 
-    public function testSetAndGetId()
+    public function testGetParameters()
     {
-        $this->request->setId(self::IRRELEVANT_ID);
-        $id = $this->request->getId();
-
-        $this->assertThat($id, $this->equalTo(self::IRRELEVANT_ID));
+        $this->assertInstanceOf('Level3\Messages\Parameters', $this->request->getParameters());
     }
 
     public function testGetCredentials()

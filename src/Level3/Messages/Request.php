@@ -18,17 +18,17 @@ class Request extends SymfonyRequest
     private $id;
     private $key;
 
-    public function __construct($key, SymfonyRequest $request)
-    {
+    public function __construct($key, SymfonyRequest $origin)
+    {       
         $this->key = $key;
-        $query = $request->query->all();
-        $req = $request->request->all();
-        $attributes = $request->attributes->all();
-        $cookies = $request->cookies->all();
-        $files = $request->files->all();
-        $server = $request->server->all();
+        $query = $origin->query->all();
+        $request = $origin->request->all();
+        $attributes = $origin->attributes->all();
+        $cookies = $origin->cookies->all();
+        $files = $origin->files->all();
+        $server = $origin->server->all();
 
-        $this->initialize($query, $req, $attributes, $cookies, $files, $server);
+        $this->initialize($query, $request, $attributes, $cookies, $files, $server);
         $this->credentials = new Credentials();
     }
 
@@ -49,14 +49,9 @@ class Request extends SymfonyRequest
         $this->credentials = $credentials;
     }
 
-    public function getId()
+    public function getParameters()
     {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
+        return new Parameters($this->attributes->all());
     }
 
     public function getKey()

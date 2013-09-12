@@ -9,8 +9,9 @@
  */
 
 namespace Level3\Repository;
+use Level3\Messages\Parameters;
 
 interface Getter
 {
-    public function get($id);
+    public function get(Parameters $parameters);
 }

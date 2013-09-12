@@ -9,7 +9,7 @@
  */
 
 namespace Level3;
-use stdClass;
+use Level3\Messages\Parameters;
 
 abstract class RepositoryMapper
 {
@@ -42,7 +42,7 @@ abstract class RepositoryMapper
         return $this->baseURI;
     }
 
-    abstract public function getURI($repositoryKey, $method, stdClass $parameters = null);
+    abstract public function getURI($repositoryKey, $method, Parameters $parameters = null);
 
     public function boot()
     {
