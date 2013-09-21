@@ -28,6 +28,10 @@ class AccessorWrapperTest extends TestCase
 
     public function setUp()
     {
+        $this->markTestSkipped(
+              'The MySQLi extension is not available.'
+            );
+        
         $this->parametersMock = $this->createParametersMock();
         $this->accessorMock = m::mock('Level3\Accessor');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');

@@ -12,10 +12,12 @@ namespace Level3;
 
 use Level3\Resource\Link;
 use Level3\Resource\Parameters;
-use Level3\Resource\Formatter\Formatter;
+use Level3\Resource\Formatter;
 
 class Resource
 {
+    const DEFAULT_INTERFACE_METHOD = 'Level3\Repository\Getter';
+
     protected $repository;
     protected $formatter;
 
@@ -85,9 +87,9 @@ class Resource
         return $this->parameters;
     }
 
-    public function getURI($method = 'GET')
+    public function getURI($interface = self::DEFAULT_INTERFACE_METHOD)
     {
-        return $this->repository->getResourceURI($this, $method);
+        return $this->repository->getResourceURI($this, $interface);
     } 
 
     public function getSelfLink()

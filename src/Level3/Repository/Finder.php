@@ -9,7 +9,7 @@
  */
 
 namespace Level3\Repository;
-use Level3\Messages\Parameters;
+use Level3\Resource\Parameters;
 
 interface Finder
 {

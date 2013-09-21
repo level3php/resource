@@ -22,6 +22,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected $resourceHubMock;
     protected $repositoryHubMock;
 
+    protected function createLevel3Mock()
+    {
+        return m::mock('Level3\Level3');
+    }
+
     protected function createFinderMock()
     {
         return m::mock('Level3\Repository\Finder');
@@ -42,15 +47,27 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository\Putter');
     }
 
-    protected function createParametersMock()
+    protected function createPatcherMock()
     {
-        return m::mock('Level3\Messages\Parameters');
+        return m::mock('Level3\Repository\Patcher');
     }
 
-    protected function repositoryHubShouldHavePair($key, $value)
+    protected function createRepositoryMock()
     {
-        $this->repositoryHubMock->shouldReceive('get')->with($key)->once()->andReturn($value);
+        return m::mock('Level3\Repository');
     }
+
+    protected function createResourceMock()
+    {
+        return m::mock('Level3\Resource');
+    }
+
+    protected function createParametersMock()
+    {
+        return m::mock('Level3\Resource\Parameters');
+    }
+
+
 
     protected function repositoryHubShouldHavePairOLD($key, $value)
     {

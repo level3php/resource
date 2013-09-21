@@ -2,7 +2,7 @@
     "qux": "bar",
     "_links": {
         "self": {
-            "href": "foo"
+            "href": "/test"
         },
         "quz": {
             "href": "foo",
@@ -17,7 +17,7 @@
                 "bar": "qux",
                 "_links": {
                     "self": {
-                        "href": "foo"
+                        "href": "/test"
                     }
                 }
             }

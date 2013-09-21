@@ -22,7 +22,7 @@ class AccessorTest extends TestCase
     public function setUp()
     {
         $this->parametersMock = $this->createParametersMock();
-        $this->repositoryHubMock = m::mock('Level3\RepositoryHub');
+        $this->repositoryHubMock = m::mock('Level3\Level3');
         $this->accessor = new Accessor($this->repositoryHubMock);
     }
 
@@ -79,6 +79,18 @@ class AccessorTest extends TestCase
         $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
     }
 
+    public function testPatch()
+    {
+        $patcherMock = $this->createPatcherMock();
+        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $patcherMock);
+        $patcherMock->shouldReceive('patch')->with($this->parametersMock, array())->once()->andReturn(self::IRRELEVANT_RESOURCE);
+        $patcherMock->shouldReceive('get')->with($this->parametersMock)->once()->andReturn(self::IRRELEVANT_RESOURCE);
+
+        $response = $this->accessor->patch(self::IRRELEVANT_KEY, $this->parametersMock, array());
+
+        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
+    }
+
     public function testDelete()
     {
         $deleterMock = $this->createDeleterMock();
@@ -90,4 +102,8 @@ class AccessorTest extends TestCase
         $this->assertThat($response, $this->equalTo(null));
     }
 
+    protected function repositoryHubShouldHavePair($key, $value)
+    {
+        $this->repositoryHubMock->shouldReceive('getRepository')->with($key)->once()->andReturn($value);
+    }
 }

@@ -20,6 +20,10 @@ class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->markTestSkipped(
+            'The MySQLi extension is not available.'
+        );
+        
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
     }

@@ -16,6 +16,10 @@ class AclAuthorizationTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->markTestSkipped(
+            'The MySQLi extension is not available.'
+        );
+        
         $this->configParser = new YamlConfigParser(__DIR__ . '/../../Resources/acl.yaml');
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
         $this->aclAuthorizationProcessor = new AclAuthorizationProcessor($this->requestProcessorMock, $this->configParser);
