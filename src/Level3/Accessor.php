@@ -21,7 +21,7 @@ class Accessor
         $this->level3 = $level3;
     }
 
-    public function find($key, Parameters $parameters, $sort, $lowerBound, $upperBound, $criteria)
+    public function find($key, Parameters $parameters, Parameters $filters)
     {
         $repository = $this->level3->getRepository($key);
         return $repository->find($parameters, $sort, $lowerBound, $upperBound, $criteria);
