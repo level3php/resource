@@ -13,5 +13,5 @@ use Level3\Resource\Parameters;
 
 interface Putter
 {
-    public function put(Parameters $parameters, $data);
+    public function put(Parameters $attributes, Array $data);
 }

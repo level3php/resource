@@ -76,9 +76,10 @@ class Request extends SymfonyRequest
         ));
     }
 
-    public function getContentParsed()
+    public function getContent($asResource = false)
     {
-
+        $content = parent::getContent();
+        return $this->getFormatter()->fromRequest($content);
     }
 
     public function getKey()

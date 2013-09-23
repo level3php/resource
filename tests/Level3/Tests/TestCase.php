@@ -62,21 +62,23 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Resource');
     }
 
+    protected function createProcessorMock()
+    {
+        return m::mock('Level3\Processor');
+    }
+
+    protected function createFormatterMock()
+    {
+        return m::mock('Level3\Resource\Formatter');
+    }
+
+    protected function createRequestMock()
+    {
+        return m::mock('Level3\Messages\Request');
+    }
+
     protected function createParametersMock()
     {
         return m::mock('Level3\Resource\Parameters');
-    }
-
-
-
-    protected function repositoryHubShouldHavePairOLD($key, $value)
-    {
-        $this->repositoryHubKeyShouldExist($key);
-        $this->repositoryHubMock->shouldReceive('offsetGet')->with($key)->once()->andReturn($value);
-    }
-
-    protected function repositoryHubKeyShouldExist($key)
-    {
-        $this->repositoryHubMock->shouldReceive('offsetExists')->with($key)->andReturn(true);
     }
 }

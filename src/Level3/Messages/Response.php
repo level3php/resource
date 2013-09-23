@@ -64,7 +64,7 @@ class Response extends SymfonyResponse
     public function getContent()
     {
         if (!$this->formatter instanceOf Formatter) {
-            if ($this->resource instanceOf Resource)
+            if ($this->resource instanceOf Resource) {
                 return '';
             }
         }

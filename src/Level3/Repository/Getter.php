@@ -13,5 +13,5 @@ use Level3\Resource\Parameters;
 
 interface Getter
 {
-    public function get(Parameters $parameters);
+    public function get(Parameters $attributes);
 }

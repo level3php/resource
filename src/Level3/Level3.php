@@ -16,13 +16,13 @@ class Level3
 {
     private $hub;
     private $mapper;
-    private $accessor;
+    private $processor;
 
-    public function __construct(Mapper $mapper, Hub $hub, Accessor $accessor)
+    public function __construct(Mapper $mapper, Hub $hub, Processor $processor)
     {
         $this->hub = $hub;
         $this->mapper = $mapper;
-        $this->accessor = $accesor;
+        $this->processor = $processor;
     }
 
     public function getyHub()
@@ -35,9 +35,9 @@ class Level3
         return $this->mapper;
     }
 
-    public function getAccessor()
+    public function getProcessor()
     {
-        return $this->accessor;
+        return $this->processor;
     }
 
     public function getRepository($repositoryKey)

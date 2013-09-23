@@ -13,5 +13,5 @@ use Level3\Resource\Parameters;
 
 interface Patcher
 {    
-    public function patch(Parameters $parameters, $data);
+    public function patch(Parameters $attributes, Array $data);
 }

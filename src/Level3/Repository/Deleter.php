@@ -13,5 +13,5 @@ use Level3\Resource\Parameters;
 
 interface Deleter
 {
-    public function delete(Parameters $parameters);
+    public function delete(Parameters $attributes);
 }

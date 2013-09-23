@@ -111,11 +111,11 @@ class RepositoryMock
         \Level3\Repository\Deleter,
         \Level3\Repository\Patcher
 {
-    public function delete(Parameters $parameters) {}
-    public function get(Parameters $parameters) {}
-    public function post(Parameters $parameters, $data) {}
-    public function put(Parameters $parameters, $data) {}
-    public function patch(Parameters $parameters, $data) {}
-    public function find(Parameters $parameters, $sort, $lowerBound, $upperBound, array $criteria) {}
+    public function delete(Parameters $attributes) {}
+    public function get(Parameters $attributes) {}
+    public function post(Parameters $attributes, Array $data) {}
+    public function put(Parameters $attributes, Array $data) {}
+    public function patch(Parameters $attributes, Array $data) {}
+    public function find(Parameters $attributes, Parameters $filters) {}
 
 }
