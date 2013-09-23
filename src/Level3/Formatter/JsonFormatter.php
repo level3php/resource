@@ -9,16 +9,28 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Resource\Formatter;
+namespace Level3\Formatter;
 
-use Level3\Resource\Formatter;
+use Level3\Formatter;
 use Level3\Resource;
+use Level3\Exceptions\BadRequest;
 
 class JsonFormatter extends Formatter
 {
     const CONTENT_TYPE = 'application/hal+json';
 
-    protected function formatResource(Resource $resource, $pretty)
+    public function fromRequest($string)
+    {
+        $array = json_decode($string, true);
+
+        if (!is_array($array)) {
+            throw new BadRequest();
+        }
+
+        return $array;
+    }
+
+    public function toResponse(Resource $resource, $pretty = false)
     {
         $options = 0;
         if (version_compare(PHP_VERSION, '5.4.0') >= 0 and $pretty) {

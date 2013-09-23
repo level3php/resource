@@ -53,6 +53,17 @@ class AccessorWrapper implements RequestProcessor
         return $this->createResponse($request, $resource);
     }
 
+    public function patch(Request $request)
+    {
+        $key = $request->getKey();
+        $attributes = $request->getAttributes();
+        $content = $request->getContentParsed();
+
+        $resource = $this->getRepository($key)->patch($attributes, $content);
+
+        return $this->createResponse($request, $resource, StatusCode::CREATED);
+    }
+
     public function put(Request $request)
     {
         $key = $request->getKey();
@@ -74,7 +85,7 @@ class AccessorWrapper implements RequestProcessor
         return $this->responseFactory->createFromDataAndStatusCode($request, array(), StatusCode::OK);
     }
 
-    private function createResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
+    protected function createResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
     {
         $response = new Response($request, $resource, $statusCode);
         $response->setResource($resource);

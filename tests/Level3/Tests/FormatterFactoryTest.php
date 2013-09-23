@@ -10,16 +10,16 @@
 
 namespace Level3\Tests;
 
-use Level3\Resource\FormatterFactory;
-use Level3\Resource\Formatter\JsonFormatter;
-use Level3\Resource\Formatter\XmlFormatter;
+use Level3\FormatterFactory;
+use Level3\Formatter\JsonFormatter;
+use Level3\Formatter\XmlFormatter;
 
 class FormatterFactoryTest extends TestCase {
     public function testCreateWithOutContentTypes()
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Resource\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter', 
             $factory->create()
         );
     }
@@ -31,7 +31,7 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Resource\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter', 
             $factory->create(array('foo'))
         );
     }
@@ -41,7 +41,7 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Resource\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter', 
             $factory->create(array('foo'), true)
         );
     }
@@ -50,7 +50,7 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Resource\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter', 
             $factory->create(array(JsonFormatter::CONTENT_TYPE), true)
         );
     }
@@ -59,7 +59,7 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Resource\Formatter\XmlFormatter', 
+            'Level3\Formatter\XmlFormatter', 
             $factory->create(array(XmlFormatter::CONTENT_TYPE), true)
         );
     }

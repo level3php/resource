@@ -12,7 +12,6 @@ namespace Level3;
 
 use Level3\Resource\Link;
 use Level3\Resource\Parameters;
-use Level3\Resource\Formatter;
 
 class Resource
 {
@@ -95,35 +94,5 @@ class Resource
     public function getSelfLink()
     {
         return new Link($this->getURI());
-    }
-
-    public function setFormatter(Formatter $formatter)
-    {
-        $this->formatter = $formatter;
-
-        return $this;
-    }
-
-    public function format()
-    {
-        if (!$this->formatter) {
-            return null;
-        }
-
-        return $this->formatter->format($this);
-    }
-
-    public function formatPretty()
-    {
-        if (!$this->formatter) {
-            return null;
-        }
-
-        return $this->formatter->formatPretty($this);
-    }
-
-    public function __toString()
-    {
-        return $this->format();
     }
 }

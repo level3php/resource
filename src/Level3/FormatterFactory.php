@@ -8,15 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Resource;
+namespace Level3;
 
-use Level3\Resource\Formatter\JsonFormatter;
-use Level3\Resource\Formatter\XmlFormatter;
+use Level3\Formatter\JsonFormatter;
+use Level3\Formatter\XmlFormatter;
 use Level3\Exceptions\NotAcceptable;
 
 class FormatterFactory
 {
-
     public function create(array $contentTypes = array(), $avoidNotAcceptable = false)
     {
         if (count($contentTypes) === 0) {

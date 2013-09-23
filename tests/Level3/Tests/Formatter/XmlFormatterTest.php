@@ -8,10 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Tests\Resource\Formatter;
+namespace Level3\Tests\Formatter;
 
 class XmlFormatterTest extends FormatterTest {
-    protected $class = 'Level3\Resource\Formatter\XmlFormatter';
-    protected $nonPretty = 'HalFormatXMLNonPretty.xml';
-    protected $pretty = 'HalFormatXMLPretty.xml';
+    protected $class = 'Level3\Formatter\XmlFormatter';
+    protected $toNonPretty = 'ToFormatXMLNonPretty.xml';
+    protected $toPretty = 'ToFormatXMLPretty.xml';
+    protected $from = 'FromFormatXML.xml';
 }

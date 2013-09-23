@@ -9,18 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Resource\Formatter;
+namespace Level3\Formatter;
 
-use Level3\Resource\Formatter;
+use Level3\Formatter;
 use Level3\Resource;
+use Level3\Exceptions\BadRequest;
+
 use SimpleXMLElement;
+use Exception;
 
 class XmlFormatter extends Formatter
 {
     const CONTENT_TYPE = 'application/hal+xml';
 
-    public function formatResource(Resource $resource, $pretty)
+    public function fromRequest($string)
     {
+        try {
+            return $this->xmlToArray(new SimpleXMLElement($string));
+        } catch (Exception $e) {
+            throw new BadRequest();
+        }
+    }
+
+    protected function xmlToArray(SimpleXMLElement $xml)
+    {
+        $data = (array) $xml;
+        foreach($data as $key => &$value) {
+            if ($value instanceOf SimpleXMLElement) {
+                $value = $this->xmlToArray($value);
+            }
+        }
+
+        return $data;
+    }
+
+    public function toResponse(Resource $resource, $pretty = false)
+    { 
         $doc = new SimpleXMLElement('<resource></resource>');
         if (!is_null($uri = $resource->getUri())) {
             $doc->addAttribute('href', $uri);
@@ -40,6 +64,7 @@ class XmlFormatter extends Formatter
             $dom->ownerDocument->preserveWhiteSpace = false;
             $dom->ownerDocument->formatOutput = true;
         }
+
         return $dom->ownerDocument->saveXML();
     }
 
@@ -50,6 +75,7 @@ class XmlFormatter extends Formatter
                 $element = $doc->addChild('link');
                 $element->addAttribute('rel', $rel);
                 $element->addAttribute('href', $link->getHref());
+
                 foreach ($link->getAttributes() as $attribute => $value) {
                     $element->addAttribute($attribute, $value);
                 }
@@ -90,7 +116,7 @@ class XmlFormatter extends Formatter
         }
     }
 
-    protected function resourcesForXml(\SimpleXmlElement $doc, $rel, array $resources)
+    protected function resourcesForXml(SimpleXmlElement $doc, $rel, array $resources)
     {
         foreach($resources as $resource) {
 

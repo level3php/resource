@@ -8,10 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Tests\Resource\Formatter;
+namespace Level3\Tests\Formatter;
 
 class JsonFormatterTest extends FormatterTest {
-    protected $class = 'Level3\Resource\Formatter\JsonFormatter';
-    protected $nonPretty = 'HalFormatJSONNonPretty.json';
-    protected $pretty = 'HalFormatJSONPretty.json';
+    protected $class = 'Level3\Formatter\JsonFormatter';
+    protected $toNonPretty = 'ToFormatJSONNonPretty.json';
+    protected $toPretty = 'ToFormatJSONPretty.json';
+    protected $from = 'FromFormatJSON.json';
 }

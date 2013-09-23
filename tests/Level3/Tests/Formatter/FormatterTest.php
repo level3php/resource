@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Tests\Resource\FormatTer;
+namespace Level3\Tests\Formatter;
 
 use Level3\Tests\TestCase;
 use Level3\Resource;
@@ -18,7 +18,25 @@ use Level3\Resource\Parameters;
 abstract class FormatterTest extends TestCase {
     const EXAMPLE_URI = '/test';
 
-    public function testConstructor()
+    public function testFromRequest()
+    {
+        $formatter = new $this->class();
+        $array = $formatter->fromRequest($this->readResource($this->from));
+
+        $this->assertCount(1, $array);
+        $this->assertSame('bar', $array['qux']);
+    }
+
+    /**
+      * @expectedException Level3\Exceptions\BadRequest
+      */
+    public function testFromRequestInvalid()
+    {
+        $formatter = new $this->class();
+        $array = $formatter->fromRequest('foo');
+    }
+
+    public function testToResponse()
     {
         $formatter = new $this->class();
 
@@ -37,23 +55,22 @@ abstract class FormatterTest extends TestCase {
             $this->createResource(array('bar' => 'qux'), self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
         );
 
-        $resource->setFormatter($formatter);
 
         $this->assertSame(
-            $this->readResource($this->nonPretty),
-            $resource->format()
+            $this->readResource($this->toNonPretty),
+            $formatter->toResponse($resource)
         );
 
 
         if (version_compare(PHP_VERSION, '5.4' , '>=')) {
             $this->assertSame(
-                $this->readResource($this->pretty),
-                $resource->formatPretty()
+                $this->readResource($this->toPretty),
+                $formatter->toResponse($resource, true)
             );
         } else {
             $this->assertSame(
-                $this->readResource($this->nonPretty),
-                $resource->formatPretty()
+                $this->readResource($this->toNonPretty),
+                $formatter->toResponse($resource, true)
             );
         }
     }
@@ -80,6 +97,6 @@ abstract class FormatterTest extends TestCase {
 
     public function readResource($filename)
     {
-        return file_get_contents(__DIR__ . '/../../../Resources/' . $filename);
+        return file_get_contents(__DIR__ . '/../../Resources/' . $filename);
     }
 }
