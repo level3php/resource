@@ -62,7 +62,10 @@ abstract class FormatterTest extends TestCase {
         );
 
 
-        if (version_compare(PHP_VERSION, '5.4' , '>=')) {
+        if (
+            version_compare(PHP_VERSION, '5.4' , '>=') || 
+            $this->class != 'Level3\Formatter\JsonFormatter'
+        ) {
             $this->assertSame(
                 $this->readResource($this->toPretty),
                 $formatter->toResponse($resource, true)
