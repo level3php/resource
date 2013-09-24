@@ -7,6 +7,7 @@ use Level3\Messages\Request;
 use Level3\Messages\ResponseFactory;
 use Level3\Resources\ConfigParser;
 use Level3\Resources\Exceptions\ConfigError;
+use Level3\Security\Authentication\AuthenticatedCredentials;
 
 class RoleAuthorizationProcessor extends AbstractAuthorizationProcessor
 {
@@ -26,7 +27,10 @@ class RoleAuthorizationProcessor extends AbstractAuthorizationProcessor
 
     protected function hasAccess(Request $request, $methodName)
     {
-        $role = $request->getCredentials()->getRole();
+        $credentials = $request->getCredentials();
+        if (!($credentials instanceof AuthenticatedCredentials)) return false;
+
+        $role = $credentials->getRole();
 
         foreach ($this->config['role']['routes'] as $routeConfig) {
             if ($this->matches($request, $routeConfig)) {
