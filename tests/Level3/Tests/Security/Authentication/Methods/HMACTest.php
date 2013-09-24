@@ -22,6 +22,10 @@ class HMACTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->markTestSkipped(
+          'The MySQLi extension is not available.'
+        );
+    
         $this->credentialsRespositoryMock = m::mock('Level3\Security\Authentication\CredentialsRepository');
         $this->requestFactory = new RequestFactory();
         $this->headers = $this->createHeaders();

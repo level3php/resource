@@ -2,7 +2,6 @@
 
 namespace Level3;
 
-use Level3\Resource\FormatterFactory;
 use Level3\Exceptions\NotFound;
 use Level3\Messages\Response;
 use Level3\Messages\Request;
