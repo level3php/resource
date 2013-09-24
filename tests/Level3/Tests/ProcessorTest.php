@@ -7,6 +7,7 @@ use Level3\Processor;
 use Level3\Repository\Exception\BaseException;
 use Mockery as m;
 
+use RuntimeException;
 
 class ProcessorTest extends TestCase
 {
@@ -20,13 +21,27 @@ class ProcessorTest extends TestCase
         $this->level3 = $this->createLevel3Mock();
         $this->processor = new Processor($this->level3);
     }
-    
+
+    /**
+     * @expectedException Level3\Exceptions\NotFound
+     */
+    public function testRepository()
+    {
+        $attributes = $this->createParametersMock();
+        $request = $this->createRequestMock($attributes);
+
+        $exception = new RuntimeException();
+        $this->level3->shouldReceive('getRepository')
+            ->with(self::IRRELEVANT_KEY)->once()->andThrow($exception);
+        
+        $response = $this->processor->get($request);
+    }
+
     /**
      * @dataProvider provider
      */
-    public function testFind($method, $repositoryMock, $attributes, $filters, $content, $statusCode)
+    public function testMethods($method, $repositoryMock, $attributes, $filters,  $content, $formatter, $statusCode)
     {
-        $formatter = $this->createFormatterMock();
         $request = $this->createRequestMock($attributes, $filters, $formatter, $content);
 
         $repository = $this->$repositoryMock();
@@ -48,8 +63,10 @@ class ProcessorTest extends TestCase
         $response = $this->processor->$method($request);
 
         $this->assertSame($statusCode, $response->getStatusCode());
-        //$this->assertSame($resource, $response->getResource());
-        //$this->assertSame($formatter, $response->getFormatter());
+        if ($statusCode != StatusCode::NO_CONTENT) {
+            $this->assertSame($resource, $response->getResource());
+            $this->assertSame($formatter, $response->getFormatter());
+        }
     }
 
     public function provider()
@@ -58,52 +75,35 @@ class ProcessorTest extends TestCase
             array(
                 'find', 'createFinderMock', 
                 $this->createParametersMock(), $this->createParametersMock(), null,
-                StatusCode::OK
+                $this->createFormatterMock(), StatusCode::OK
             ),
             array(
                 'get', 'createGetterMock', 
                 $this->createParametersMock(), null, null,
-                StatusCode::OK
+                $this->createFormatterMock(), StatusCode::OK
             ),
             array(
                 'post', 'createPosterMock', 
                 $this->createParametersMock(), null, array(true),
-                StatusCode::CREATED
+                $this->createFormatterMock(), StatusCode::CREATED
             ),
             array(
                 'put', 'createPutterMock', 
                 $this->createParametersMock(), null, array(true),
-                StatusCode::OK
+                $this->createFormatterMock(), StatusCode::OK
             ),
             array(
                 'patch', 'createPatcherMock', 
                 $this->createParametersMock(), null, array(true),
-                StatusCode::OK
+                $this->createFormatterMock(), StatusCode::OK
             ),
             array(
                 'delete', 'createDeleterMock', 
                 $this->createParametersMock(), null, null,
-                StatusCode::OK
+                null, StatusCode::NO_CONTENT
             )
         );
     }
-
-
-/*
-
-
-
-    public function testDelete()
-    {
-        $deleterMock = $this->createDeleterMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $deleterMock);
-        $deleterMock->shouldReceive('delete')->with($this->parametersMock)->once();
-
-        $response = $this->processor->delete(self::IRRELEVANT_KEY, $this->parametersMock);
-
-        $this->assertThat($response, $this->equalTo(null));
-    }
-*/
 
     protected function createRequestMock(
         $attributes = null, $filters = null, $formatter = null, $content = null)
@@ -122,14 +122,14 @@ class ProcessorTest extends TestCase
                 ->withNoArgs()->once()->andReturn($filters);
         }
 
-        if ($formatter) {
-            $request->shouldReceive('getFormatter')
-                ->withNoArgs()->once()->andReturn($formatter);
-        }
-
         if ($content) {
             $request->shouldReceive('getContent')
                 ->withNoArgs()->once()->andReturn($content);
+        }
+
+        if ($formatter) {
+            $request->shouldReceive('getFormatter')
+                ->withNoArgs()->once()->andReturn($formatter);
         }
 
         return $request;
