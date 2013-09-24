@@ -6,6 +6,12 @@ use Level3\Security\Authorization\Role;
 
 class RoleTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        $this->markTestSkipped(
+            'The MySQLi extension is not available.'
+        );
+    }
 
     /**
      * @dataProvider accessLevels

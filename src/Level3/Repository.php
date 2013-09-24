@@ -9,18 +9,23 @@
  */
 
 namespace Level3;
-use Level3\Hal\ResourceBuilderFactory;
+use Level3\Resource;
+use ReflectionClass;
 
 abstract class Repository
 {
     private $repositoryKey;
-    private $resourceBuilderFactory;
 
-    public function __construct(ResourceBuilderFactory $resourceBuilderFactory)
+    public function __construct(Level3 $level3)
     {
-        $this->resourceBuilderFactory = $resourceBuilderFactory;
+        $this->level3 = $level3;
     }
 
+    public function getLevel3()
+    {
+        return $this->level3;
+    }
+    
     public function setKey($repositoryKey)
     {
         $this->repositoryKey = $repositoryKey;
@@ -31,17 +36,25 @@ abstract class Repository
         return $this->repositoryKey;
     }
 
+    public function getResourceURI(Resource $resource, $method)
+    {   
+        $key = $this->getKey();
+        $parameters = $resource->getParameters();
+
+        return $this->level3->getURI($key, $method, $parameters);
+    }
+
     public function getDescription()
     {
-        $reflectionClass = new \ReflectionClass(get_class($this));
+        $reflectionClass = new ReflectionClass(get_class($this));
 
         $description = substr($reflectionClass->getDocComment(), 3, -2);
         $description = trim(preg_replace('/\s*\*/', '', $description));
         return $description;
     }
 
-    protected function createResourceBuilder()
+    public function createResource()
     {
-        return $this->resourceBuilderFactory->create();
+        return new Resource($this);
     }
 }

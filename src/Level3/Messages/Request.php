@@ -2,6 +2,7 @@
 
 namespace Level3\Messages;
 
+use Level3\Resource\FormatterFactory;
 use Level3\Security\Authentication\AuthenticatedCredentials;
 use Level3\Security\Authentication\AnonymousCredentials;
 use Level3\Security\Authentication\Credentials;
@@ -40,6 +41,18 @@ class Request extends SymfonyRequest
         static::$formats['application/hal+xml'] = array('application/hal+xml');
     }
 
+    public function getFormatter()
+    {
+        $contentTypes = $this->getAcceptableContentTypes();
+
+        return $this->getFormatterFactory()->create($contentTypes, true);
+    }
+
+    protected function getFormatterFactory()
+    {
+        return new FormatterFactory();
+    }
+
     public function getCredentials()
     {
         return $this->credentials;
@@ -50,9 +63,24 @@ class Request extends SymfonyRequest
         $this->credentials = $credentials;
     }
 
-    public function getParameters()
+    public function getAttributes()
     {
         return new Parameters($this->attributes->all());
+    }
+
+    public function getFilters()
+    {
+        return new Parameters(array(
+            'range' => $this->getRange(),
+            'criteria' => $this->getCriteria(),
+            'sort' => $this->getSort()
+        ));
+    }
+
+    public function getContent($asResource = false)
+    {
+        $content = parent::getContent();
+        return $this->getFormatter()->fromRequest($content);
     }
 
     public function getKey()

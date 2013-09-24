@@ -11,7 +11,7 @@
 namespace Level3\Repository;
 use Level3\Resource\Parameters;
 
-interface Getter
-{
-    public function get(Parameters $attributes);
+interface Patcher
+{    
+    public function patch(Parameters $attributes, Array $data);
 }

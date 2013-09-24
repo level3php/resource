@@ -17,6 +17,10 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->markTestSkipped(
+              'The MySQLi extension is not available.'
+            );
+
         $this->processorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
         $this->requestMock = m::mock('Level3\Messages\Request');

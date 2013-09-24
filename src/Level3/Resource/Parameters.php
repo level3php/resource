@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Repository;
-use Level3\Resource\Parameters;
+namespace Level3\Resource;
 
-interface Getter
+use Symfony\Component\HttpFoundation\ParameterBag;
+
+class Parameters extends ParameterBag
 {
-    public function get(Parameters $attributes);
 }

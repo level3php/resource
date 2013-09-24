@@ -20,6 +20,10 @@ class RequestLoggerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->markTestSkipped(
+            'The MySQLi extension is not available.'
+        );
+
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
         $this->loggerMock = m::mock('Psr\Log\LoggerInterface');
         $this->dummyRequest = $this->createDummyRequest();

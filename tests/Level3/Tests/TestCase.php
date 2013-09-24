@@ -22,6 +22,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected $resourceHubMock;
     protected $repositoryHubMock;
 
+    protected function createLevel3Mock()
+    {
+        return m::mock('Level3\Level3');
+    }
+
     protected function createFinderMock()
     {
         return m::mock('Level3\Repository\Finder');
@@ -42,24 +47,38 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository\Putter');
     }
 
+    protected function createPatcherMock()
+    {
+        return m::mock('Level3\Repository\Patcher');
+    }
+
+    protected function createRepositoryMock()
+    {
+        return m::mock('Level3\Repository');
+    }
+
+    protected function createResourceMock()
+    {
+        return m::mock('Level3\Resource');
+    }
+
+    protected function createProcessorMock()
+    {
+        return m::mock('Level3\Processor');
+    }
+
+    protected function createFormatterMock()
+    {
+        return m::mock('Level3\Resource\Formatter');
+    }
+
+    protected function createRequestMock()
+    {
+        return m::mock('Level3\Messages\Request');
+    }
+
     protected function createParametersMock()
     {
-        return m::mock('Level3\Messages\Parameters');
-    }
-
-    protected function repositoryHubShouldHavePair($key, $value)
-    {
-        $this->repositoryHubMock->shouldReceive('get')->with($key)->once()->andReturn($value);
-    }
-
-    protected function repositoryHubShouldHavePairOLD($key, $value)
-    {
-        $this->repositoryHubKeyShouldExist($key);
-        $this->repositoryHubMock->shouldReceive('offsetGet')->with($key)->once()->andReturn($value);
-    }
-
-    protected function repositoryHubKeyShouldExist($key)
-    {
-        $this->repositoryHubMock->shouldReceive('offsetExists')->with($key)->andReturn(true);
+        return m::mock('Level3\Resource\Parameters');
     }
 }

@@ -8,10 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Level3\Repository;
-use Level3\Resource\Parameters;
+namespace Level3;
 
-interface Getter
+abstract class Formatter
 {
-    public function get(Parameters $attributes);
+    const CONTENT_TYPE_ANY = '*/*';
+
+    public abstract function toResponse(Resource $resource, $pretty = false);
+
+    public abstract function fromRequest($string);
 }

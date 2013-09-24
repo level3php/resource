@@ -1,2 +1,0 @@
-<?xml version="1.0"?>
-<resource href="foo"><link rel="quz" href="foo" name="name" lang="lang" title="title"/><qux>bar</qux><resource rel="baz" href="foo"><bar>qux</bar></resource></resource>

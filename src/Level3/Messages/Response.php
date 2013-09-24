@@ -10,18 +10,25 @@
 
 namespace Level3\Messages;
 
-use Level3\Hal\Resource;
+use Level3\Resource;
+use Level3\Resource\Formatter;
+
 use Teapot\StatusCode;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class Response extends SymfonyResponse
 {
     protected $resource;
+    protected $formatter;
 
-    public function __construct(Resource $resource = null, $status = StatusCode::OK, $headers = array())
+    public function setFormatter(Formatter $formatter)
     {
-        parent::__construct('', $status, $headers);
-        $this->resource = $resource;
+        $this->formatter = $formatter;
+    }
+
+    public function getFormatter()
+    {
+        return $this->formatter;
     }
 
     public function setResource(Resource $resource)
@@ -56,10 +63,13 @@ class Response extends SymfonyResponse
 
     public function getContent()
     {
-        if ($this->resource === null) {
-            return '';
+        if (!$this->formatter instanceOf Formatter) {
+            if ($this->resource instanceOf Resource) {
+                return '';
+            }
         }
 
+        $this->resource->setFormatter($this->formatter);
         return $this->resource->format();
     }
 
