@@ -2,7 +2,7 @@
 
 namespace Level3\Tests;
 
-use Hal\Resource;
+use Teapot\StatusCode;
 use Level3\Processor;
 use Level3\Repository\Exception\BaseException;
 use Mockery as m;
@@ -20,81 +20,78 @@ class ProcessorTest extends TestCase
         $this->level3 = $this->createLevel3Mock();
         $this->processor = new Processor($this->level3);
     }
-
-    public function testFind()
+    
+    /**
+     * @dataProvider provider
+     */
+    public function testFind($method, $repositoryMock, $attributes, $filters, $content, $statusCode)
     {
-        $attributes = $this->createParametersMock();
-        $filters = $this->createParametersMock();
         $formatter = $this->createFormatterMock();
-        $request = $this->createRequestMock($attributes, $filters, $formatter);
-        
-        $finder = $this->createFinderMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $finder);
+        $request = $this->createRequestMock($attributes, $filters, $formatter, $content);
+
+        $repository = $this->$repositoryMock();
+        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $repository);
         
         $resource = $this->createResourceMock();
-        $finder->shouldReceive('find')
-            ->with($attributes, $filters)->once()->andReturn($resource);
 
-        $response = $this->processor->find($request);
+        if ($filters) {
+            $repository->shouldReceive($method)
+                ->with($attributes, $filters)->once()->andReturn($resource);
+        } else if ($content) {
+            $repository->shouldReceive($method)
+                ->with($attributes, $content)->once()->andReturn($resource);
+        } else {
+            $repository->shouldReceive($method)
+                ->with($attributes)->once()->andReturn($resource);
+        }
+       
+        $response = $this->processor->$method($request);
 
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame($statusCode, $response->getStatusCode());
         $this->assertSame($resource, $response->getResource());
         $this->assertSame($formatter, $response->getFormatter());
     }
 
-
-    public function testGet()
+    public function provider()
     {
-
-        $getterMock = $this->createGetterMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $getterMock);
-        $getterMock->shouldReceive('get')->with($this->parametersMock)->once()->andReturn(self::IRRELEVANT_RESOURCE);
-
-        $response = $this->processor->get(self::IRRELEVANT_KEY, $this->parametersMock);
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
+        return array(
+            array(
+                'find', 'createFinderMock', 
+                $this->createParametersMock(), $this->createParametersMock(), null,
+                StatusCode::OK
+            ),
+            array(
+                'get', 'createGetterMock', 
+                $this->createParametersMock(), null, null,
+                StatusCode::OK
+            ),
+            array(
+                'post', 'createPosterMock', 
+                $this->createParametersMock(), null, array(true),
+                StatusCode::CREATED
+            ),
+            array(
+                'put', 'createPutterMock', 
+                $this->createParametersMock(), null, array(true),
+                StatusCode::OK
+            ),
+            array(
+                'patch', 'createPatcherMock', 
+                $this->createParametersMock(), null, array(true),
+                StatusCode::OK
+            ),
+            array(
+                'delete', 'createDeleterMock', 
+                $this->createParametersMock(), null, null,
+                StatusCode::OK
+            )
+        );
     }
 
 
-    public function testPost()
-    {
-        $posterMock = $this->createPosterAndGetterMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $posterMock);
-        $posterMock->shouldReceive('post')->with($this->parametersMock, array())->once();
-        $posterMock->shouldReceive('get')->with($this->parametersMock)->once()->andReturn(self::IRRELEVANT_RESOURCE);
+/*
 
-        $response = $this->processor->post(self::IRRELEVANT_KEY, $this->parametersMock, array());
 
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
-    }
-
-    private function createPosterAndGetterMock()
-    {
-        return m::mock('Level3\Repository\Poster, Level3\Repository\Getter');
-    }
-
-    public function testPut()
-    {
-        $putterMock = $this->createPutterMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $putterMock);
-        $putterMock->shouldReceive('put')->with($this->parametersMock, array())->once()->andReturn(self::IRRELEVANT_RESOURCE);
-
-        $response = $this->processor->put(self::IRRELEVANT_KEY, $this->parametersMock, array());
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
-    }
-
-    public function testPatch()
-    {
-        $patcherMock = $this->createPatcherMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $patcherMock);
-        $patcherMock->shouldReceive('patch')->with($this->parametersMock, array())->once()->andReturn(self::IRRELEVANT_RESOURCE);
-        $patcherMock->shouldReceive('get')->with($this->parametersMock)->once()->andReturn(self::IRRELEVANT_RESOURCE);
-
-        $response = $this->processor->patch(self::IRRELEVANT_KEY, $this->parametersMock, array());
-
-        $this->assertThat($response, $this->equalTo(self::IRRELEVANT_RESOURCE));
-    }
 
     public function testDelete()
     {
@@ -106,22 +103,37 @@ class ProcessorTest extends TestCase
 
         $this->assertThat($response, $this->equalTo(null));
     }
+*/
 
-    protected function createRequestMock($attributes, $filters, $formatter)
+    protected function createRequestMock(
+        $attributes = null, $filters = null, $formatter = null, $content = null)
     {
         $request = parent::createRequestMock();
         $request->shouldReceive('getKey')
             ->withNoArgs()->once()->andReturn(self::IRRELEVANT_KEY);
-        $request->shouldReceive('getAttributes')
-            ->withNoArgs()->once()->andReturn($attributes);
-        $request->shouldReceive('getFilters')
-            ->withNoArgs()->once()->andReturn($filters);
-        $request->shouldReceive('getFormatter')
-            ->withNoArgs()->once()->andReturn($formatter);
+        
+        if ($attributes) {
+            $request->shouldReceive('getAttributes')
+                ->withNoArgs()->once()->andReturn($attributes);
+        }
+
+        if ($filters) {
+            $request->shouldReceive('getFilters')
+                ->withNoArgs()->once()->andReturn($filters);
+        }
+
+        if ($formatter) {
+            $request->shouldReceive('getFormatter')
+                ->withNoArgs()->once()->andReturn($formatter);
+        }
+
+        if ($content) {
+            $request->shouldReceive('getContent')
+                ->withNoArgs()->once()->andReturn($content);
+        }
 
         return $request;
     }
-
 
     protected function repositoryHubShouldHavePair($key, $value)
     {

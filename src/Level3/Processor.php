@@ -48,7 +48,7 @@ class Processor
 
         $resource = $this->getRepository($key)->post($attributes, $content);
 
-        return $this->createResponse($request, $resource);
+        return $this->createResponse($request, $resource, StatusCode::CREATED);
     }
 
     public function patch(Request $request)
@@ -59,7 +59,7 @@ class Processor
 
         $resource = $this->getRepository($key)->patch($attributes, $content);
 
-        return $this->createResponse($request, $resource, StatusCode::CREATED);
+        return $this->createResponse($request, $resource);
     }
 
     public function put(Request $request)
@@ -70,7 +70,7 @@ class Processor
 
         $resource = $this->getRepository($key)->put($attributes, $content);
 
-        return $this->createResponse($request, $resource, StatusCode::CREATED);
+        return $this->createResponse($request, $resource);
     }
 
     public function delete(Request $request)
@@ -80,7 +80,15 @@ class Processor
 
         $this->getRepository($key)->delete($attributes);
 
-        return $this->responseFactory->createFromDataAndStatusCode($request, array(), StatusCode::OK);
+        return $this->createEmptyResponse();
+    }
+
+    protected function createEmptyResponse($statusCode = StatusCode::NO_CONTENT)
+    {
+        $response = new Response();
+        $response->setStatusCode($statusCode);
+
+        return $response;
     }
 
     protected function createResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)

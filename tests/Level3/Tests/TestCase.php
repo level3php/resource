@@ -46,7 +46,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return m::mock('Level3\Repository\Putter');
     }
-
+    
+    protected function createPosterMock()
+    {
+        return m::mock('Level3\Repository\Poster');
+    }
+    
     protected function createPatcherMock()
     {
         return m::mock('Level3\Repository\Patcher');
