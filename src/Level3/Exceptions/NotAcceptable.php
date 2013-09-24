@@ -4,7 +4,7 @@ namespace Level3\Exceptions;
 
 use Teapot\StatusCode;
 
-class NotAcceptable extends BaseException
+class NotAcceptable extends HTTPException
 {
     public function __construct($message = '')
     {

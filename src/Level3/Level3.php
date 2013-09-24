@@ -14,6 +14,7 @@ use Level3\Resource\Parameters;
 
 class Level3
 {
+    private $debug;
     private $hub;
     private $mapper;
     private $processor;
@@ -23,6 +24,16 @@ class Level3
         $this->hub = $hub;
         $this->mapper = $mapper;
         $this->processor = $processor;
+    }
+
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    public function getDebug()
+    {
+        return $this->debug;
     }
 
     public function getyHub()

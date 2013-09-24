@@ -4,7 +4,7 @@ namespace Level3\Exceptions;
 
 use Teapot\StatusCode;
 
-class DataError extends BaseException
+class DataError extends HTTPException
 {
     public function __construct($message = '')
     {

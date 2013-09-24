@@ -4,7 +4,7 @@ namespace Level3\Exceptions;
 
 use Teapot\StatusCode;
 
-class Forbidden extends BaseException
+class Forbidden extends HTTPException
 {
     public function __construct($message = '')
     {

@@ -40,10 +40,6 @@ class ExceptionHandler implements RequestProcessor
         $this->logger = $logger;
     }
 
-    public function find(Request $request)
-    {
-        return $this->processRequest($request, 'find');
-    }
 
     private function processRequest(Request $request, $method)
     {
@@ -88,6 +84,11 @@ class ExceptionHandler implements RequestProcessor
         return $data;
     }
 
+    public function find(Request $request)
+    {
+        return $this->processRequest($request, 'find');
+    }
+    
     public function get(Request $request)
     {
         return $this->processRequest($request, 'get');

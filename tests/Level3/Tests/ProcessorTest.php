@@ -22,32 +22,50 @@ class ProcessorTest extends TestCase
         $this->processor = new Processor($this->level3);
     }
 
-    /**
-     * @expectedException Level3\Exceptions\NotFound
-     */
-    public function testRepository()
+    public function testMissingRepository()
     {
+        $formatter = $this->createFormatterMock();
         $attributes = $this->createParametersMock();
-        $request = $this->createRequestMock($attributes);
+        $request = $this->createRequestMock($attributes, null, $formatter);
 
         $exception = new RuntimeException();
         $this->level3->shouldReceive('getRepository')
             ->with(self::IRRELEVANT_KEY)->once()->andThrow($exception);
         
         $response = $this->processor->get($request);
+
+        $this->assertSame(StatusCode::NOT_FOUND, $response->getStatusCode());
+        $this->assertSame($formatter, $response->getFormatter());
+    }
+
+    public function testExceptionHandling()
+    {
+        $formatter = $this->createFormatterMock();
+        $attributes = $this->createParametersMock();
+        $request = $this->createRequestMock($attributes, null, $formatter);
+
+        $repository = $this->createGetterMock();
+        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $repository);
+
+        $exception = new RuntimeException();
+        $repository->shouldReceive('get')
+            ->with($attributes)->once()->andThrow($exception);
+        
+        $response = $this->processor->get($request);
+
+        $this->assertSame(StatusCode::INTERNAL_SERVER_ERROR, $response->getStatusCode());
+        $this->assertSame($formatter, $response->getFormatter());
     }
 
     /**
      * @dataProvider provider
      */
-    public function testMethods($method, $repositoryMock, $attributes, $filters,  $content, $formatter, $statusCode)
+    public function testMethods($method, $repositoryMock, $attributes, $filters,  $content, $resource, $formatter, $statusCode)
     {
         $request = $this->createRequestMock($attributes, $filters, $formatter, $content);
 
         $repository = $this->$repositoryMock();
         $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $repository);
-        
-        $resource = $this->createResourceMock();
 
         if ($filters) {
             $repository->shouldReceive($method)
@@ -75,32 +93,38 @@ class ProcessorTest extends TestCase
             array(
                 'find', 'createFinderMock', 
                 $this->createParametersMock(), $this->createParametersMock(), null,
-                $this->createFormatterMock(), StatusCode::OK
+                $this->createResourceMock(), $this->createFormatterMock(), 
+                StatusCode::OK
             ),
             array(
                 'get', 'createGetterMock', 
                 $this->createParametersMock(), null, null,
-                $this->createFormatterMock(), StatusCode::OK
+                $this->createResourceMock(), $this->createFormatterMock(), 
+                StatusCode::OK
             ),
             array(
                 'post', 'createPosterMock', 
                 $this->createParametersMock(), null, array(true),
-                $this->createFormatterMock(), StatusCode::CREATED
+                $this->createResourceMock(), $this->createFormatterMock(), 
+                StatusCode::CREATED
             ),
             array(
                 'put', 'createPutterMock', 
                 $this->createParametersMock(), null, array(true),
-                $this->createFormatterMock(), StatusCode::OK
+                $this->createResourceMock(), $this->createFormatterMock(), 
+                StatusCode::OK
             ),
             array(
                 'patch', 'createPatcherMock', 
                 $this->createParametersMock(), null, array(true),
-                $this->createFormatterMock(), StatusCode::OK
+                $this->createResourceMock(), $this->createFormatterMock(), 
+                StatusCode::OK
             ),
             array(
                 'delete', 'createDeleterMock', 
                 $this->createParametersMock(), null, null,
-                null, StatusCode::NO_CONTENT
+                null, null, 
+                StatusCode::NO_CONTENT
             )
         );
     }

@@ -2,16 +2,19 @@
 
 namespace Level3;
 
+use Level3\Exceptions\HTTPException;
 use Level3\Exceptions\NotFound;
 use Level3\Messages\Response;
 use Level3\Messages\Request;
 
 use Teapot\StatusCode;
 use RuntimeException;
+use Exception;
 
 class Processor
 {
     private $level3;
+    private $lastException;
 
     public function __construct(Level3 $level3)
     {
@@ -20,82 +23,104 @@ class Processor
 
     public function find(Request $request)
     {
-        $key = $request->getKey();
         $attributes = $request->getAttributes();
         $filters = $request->getFilters();
         
-        $resource = $this->getRepository($key)->find($attributes, $filters);
-        
-        return $this->createResponse($request, $resource);
+        return $this->callRepositoryMethod($request, 'find', $attributes, $filters);
     }
 
     public function get(Request $request)
     {
-        $key = $request->getKey();
         $attributes = $request->getAttributes();
 
-        $resource = $this->getRepository($key)->get($attributes);
-
-        return $this->createResponse($request, $resource);
+        return $this->callRepositoryMethod($request, 'get', $attributes);
     }
 
     public function post(Request $request)
     {
-        $key = $request->getKey();
         $attributes = $request->getAttributes();
         $content = $request->getContent();
 
-        $resource = $this->getRepository($key)->post($attributes, $content);
-
-        return $this->createResponse($request, $resource, StatusCode::CREATED);
-    }
-
-    public function patch(Request $request)
-    {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-        $content = $request->getContent();
-
-        $resource = $this->getRepository($key)->patch($attributes, $content);
-
-        return $this->createResponse($request, $resource);
-    }
-
-    public function put(Request $request)
-    {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-        $content = $request->getContent();
-
-        $resource = $this->getRepository($key)->put($attributes, $content);
-
-        return $this->createResponse($request, $resource);
-    }
-
-    public function delete(Request $request)
-    {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-
-        $this->getRepository($key)->delete($attributes);
-
-        return $this->createEmptyResponse();
-    }
-
-    protected function createEmptyResponse($statusCode = StatusCode::NO_CONTENT)
-    {
-        $response = new Response();
-        $response->setStatusCode($statusCode);
+        $response = $this->callRepositoryMethod($request, 'post', $attributes, $content);
+        $response->setStatusCode(StatusCode::CREATED);
 
         return $response;
     }
 
-    protected function createResponse(Request $request, Resource $resource, $statusCode = StatusCode::OK)
+    public function patch(Request $request)
+    {
+        $attributes = $request->getAttributes();
+        $content = $request->getContent();
+
+        return $this->callRepositoryMethod($request, 'patch', $attributes, $content);
+    }
+
+    public function put(Request $request)
+    {
+        $attributes = $request->getAttributes();
+        $content = $request->getContent();
+
+        return $this->callRepositoryMethod($request, 'put', $attributes, $content);
+    }
+
+    public function delete(Request $request)
+    {
+        $attributes = $request->getAttributes();
+
+        return $this->callRepositoryMethod($request, 'delete', $attributes);
+    }
+
+    protected function callRepositoryMethod($request, $method)
+    {
+        $args = func_get_args();
+        $key = $request->getKey();
+
+        try {
+            $repository = $this->getRepository($key);
+            if (count($args) == 3 ) $resource = $repository->$method($args[2]);
+            if (count($args) == 4 ) $resource = $repository->$method($args[2], $args[3]);
+
+            if (!$resource) {
+                return $this->createEmptyResponse();
+            }
+
+            return $this->createResourceResponse($request, $resource);
+        } catch (Exception $exception) {
+            return $this->createExceptionResponse($request, $exception);
+        }
+
+        return $response;
+    }
+
+    protected function createEmptyResponse()
     {
         $response = new Response();
-        $response->setStatusCode($statusCode);
+        $response->setStatusCode(StatusCode::NO_CONTENT);
+
+        return $response;
+    }
+
+    protected function createResourceResponse(Request $request, Resource $resource)
+    {
+        $response = new Response();
+        $response->setStatusCode(StatusCode::OK);
         $response->setResource($resource);
         $response->setFormatter($request->getFormatter());
+
+        return $response;
+    }
+
+    protected function createExceptionResponse(Request $request, Exception $exception)
+    {
+        $code = StatusCode::INTERNAL_SERVER_ERROR;
+        if ($exception instanceOf HTTPException) {
+            $code = $exception->getCode();
+        }
+
+        $response = new Response();
+        $response->setStatusCode($code);
+        $response->setFormatter($request->getFormatter());
+        //$response->setResource($resource);
 
         return $response;
     }

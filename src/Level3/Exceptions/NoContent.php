@@ -4,7 +4,7 @@ namespace Level3\Exceptions;
 
 use Teapot\StatusCode;
 
-class NoContent extends BaseException
+class NoContent extends HTTPException
 {
     public function __construct($message = '')
     {
