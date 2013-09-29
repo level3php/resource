@@ -10,6 +10,7 @@ use Level3\Messages\Request;
 use Teapot\StatusCode;
 use RuntimeException;
 use Exception;
+use Closure;
 
 class Processor
 {
@@ -23,75 +24,99 @@ class Processor
 
     public function find(Request $request)
     {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-        $filters = $request->getFilters();
-        
-        $repository = $this->getRepository($key);
-        $resource = $repository->find($attributes, $filters);
+        return $this->execute('find', $request, function(Request $request) { 
+            $key = $request->getKey();
+            $attributes = $request->getAttributes();
+            $filters = $request->getFilters();
+            
+            $repository = $this->getRepository($key);
+            $resource = $repository->find($attributes, $filters);
 
-        return $this->createResponse($request, $resource);
+            return $this->createResponse($request, $resource);
+        });
     }
 
     public function get(Request $request)
     {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
+        return $this->execute('get', $request, function(Request $request) { 
+            $key = $request->getKey();
+            $attributes = $request->getAttributes();
 
-        $repository = $this->getRepository($key);
-        $resource = $repository->get($attributes);
+            $repository = $this->getRepository($key);
+            $resource = $repository->get($attributes);
 
-        return $this->createResponse($request, $resource);
+            return $this->createResponse($request, $resource);
+        });
     }
 
     public function post(Request $request)
     {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-        $content = $request->getContent();
+        return $this->execute('post', $request, function(Request $request) { 
+            $key = $request->getKey();
+            $attributes = $request->getAttributes();
+            $content = $request->getContent();
 
-        $repository = $this->getRepository($key);
-        $resource = $repository->post($attributes, $content);
+            $repository = $this->getRepository($key);
+            $resource = $repository->post($attributes, $content);
 
-        $response = $this->createResponse($request, $resource);
-        $response->setStatusCode(StatusCode::CREATED);
+            $response = $this->createResponse($request, $resource);
+            $response->setStatusCode(StatusCode::CREATED);
 
-        return $response;
+            return $response;
+        });
     }
 
     public function patch(Request $request)
     {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-        $content = $request->getContent();
+        return $this->execute('patch', $request, function(Request $request) { 
+            $key = $request->getKey();
+            $attributes = $request->getAttributes();
+            $content = $request->getContent();
 
-        $repository = $this->getRepository($key);
-        $resource = $repository->patch($attributes, $content);
+            $repository = $this->getRepository($key);
+            $resource = $repository->patch($attributes, $content);
 
-        return $this->createResponse($request, $resource);
+            return $this->createResponse($request, $resource);
+        });
     }
 
     public function put(Request $request)
     {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
-        $content = $request->getContent();
+        return $this->execute('put', $request, function(Request $request) { 
+            $key = $request->getKey();
+            $attributes = $request->getAttributes();
+            $content = $request->getContent();
 
-        $repository = $this->getRepository($key);
-        $resource = $repository->put($attributes, $content);
+            $repository = $this->getRepository($key);
+            $resource = $repository->put($attributes, $content);
 
-        return $this->createResponse($request, $resource);
+            return $this->createResponse($request, $resource);
+        });
     }
 
     public function delete(Request $request)
     {
-        $key = $request->getKey();
-        $attributes = $request->getAttributes();
+        return $this->execute('delete', $request, function(Request $request) { 
+            $key = $request->getKey();
+            $attributes = $request->getAttributes();
 
-        $repository = $this->getRepository($key);
-        $resource = $repository->delete($attributes);
+            $repository = $this->getRepository($key);
+            $resource = $repository->delete($attributes);
 
-        return $this->createResponse($request);
+            return $this->createResponse($request);
+        });
+    }
+
+    protected function execute($method, Request $request, Closure $execution)
+    {
+        $processors = $this->level3->getProcessorWrappers();
+        foreach (array_reverse($processors) as $processor) {
+            $execution = function($request) use ($execution, $method, $processor) {
+                return $processor->$method($execution, $request);
+            };
+        }
+    
+        return $execution($request);
     }
 
     protected function createResponse(Request $request, Resource $resource = null)

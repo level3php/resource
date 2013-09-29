@@ -19,6 +19,9 @@ class ProcessorTest extends TestCase
     public function setUp()
     {
         $this->level3 = $this->createLevel3Mock();
+        $this->level3->shouldReceive('getProcessorWrappers')
+            ->withNoArgs()->andReturn(array());
+
         $this->processor = new Processor($this->level3);
     }
 
