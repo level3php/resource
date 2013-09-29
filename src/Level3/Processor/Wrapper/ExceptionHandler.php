@@ -3,9 +3,13 @@
 namespace Level3\Processor\Wrapper;
 
 use Level3\Messages\Request;
+use Level3\Messages\Response;
+
 use Level3\Processor\Wrapper;
 use Level3\Exceptions\HTTPException;
+
 use Exception;
+use Closure;
 use Teapot\StatusCode;
 
 class ExceptionHandler implements Wrapper
@@ -26,6 +30,11 @@ class ExceptionHandler implements Wrapper
     }
 
     public function put(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request);
+    }
+
+    public function patch(Closure $execution, Request $request)
     {
         return $this->processRequest($execution, $request);
     }

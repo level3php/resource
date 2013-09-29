@@ -21,14 +21,16 @@ class Request extends SymfonyRequest
     private $key;
 
     public function __construct($key, SymfonyRequest $origin)
-    {       
+    {           
+        $query = $request = $attributes = $cookies = $files = $server = null;
+
         $this->key = $key;
-        $query = $origin->query->all();
-        $request = $origin->request->all();
-        $attributes = $origin->attributes->all();
-        $cookies = $origin->cookies->all();
-        $files = $origin->files->all();
-        $server = $origin->server->all();
+        if ($origin->query) $query = $origin->query->all();
+        if ($origin->request) $request = $origin->request->all();
+        if ($origin->attributes) $attributes = $origin->attributes->all();
+        if ($origin->cookies) $cookies = $origin->cookies->all();
+        if ($origin->files) $files = $origin->files->all();
+        if ($origin->server) $server = $origin->server->all();
 
         $this->initialize($query, $request, $attributes, $cookies, $files, $server);
         $this->credentials = new AnonymousCredentials();

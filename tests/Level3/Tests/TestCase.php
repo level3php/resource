@@ -17,6 +17,7 @@ use Mockery as m;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_HREF = 'XX';
 
     protected $resourceHubMock;
@@ -77,13 +78,43 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Resource\Formatter');
     }
 
-    protected function createRequestMock()
-    {
-        return m::mock('Level3\Messages\Request');
-    }
-
     protected function createParametersMock()
     {
         return m::mock('Level3\Resource\Parameters');
+    }
+
+    protected function createWrapperMock()
+    {
+        return m::mock('Level3\Processor\Wrapper\ExceptionHandler');
+    }
+    
+    protected function createRequestMock(
+        $attributes = null, $filters = null, $formatter = null, $content = null)
+    {
+        $request = m::mock('Level3\Messages\Request');
+        $request->shouldReceive('getKey')
+            ->withNoArgs()->once()->andReturn(self::IRRELEVANT_KEY);
+        
+        if ($attributes) {
+            $request->shouldReceive('getAttributes')
+                ->withNoArgs()->once()->andReturn($attributes);
+        }
+
+        if ($filters) {
+            $request->shouldReceive('getFilters')
+                ->withNoArgs()->once()->andReturn($filters);
+        }
+
+        if ($content) {
+            $request->shouldReceive('getContent')
+                ->withNoArgs()->once()->andReturn($content);
+        }
+
+        if ($formatter) {
+            $request->shouldReceive('getFormatter')
+                ->withNoArgs()->once()->andReturn($formatter);
+        }
+
+        return $request;
     }
 }

@@ -24,42 +24,48 @@ class Processor
 
     public function find(Request $request)
     {
-        return $this->execute('find', $request, function(Request $request) { 
+        $self = $this;
+
+        return $this->execute('find', $request, function(Request $request) use ($self) { 
             $key = $request->getKey();
             $attributes = $request->getAttributes();
             $filters = $request->getFilters();
             
-            $repository = $this->getRepository($key);
+            $repository = $self->getRepository($key);
             $resource = $repository->find($attributes, $filters);
 
-            return $this->createResponse($request, $resource);
+            return $self->createResponse($request, $resource);
         });
     }
 
     public function get(Request $request)
     {
-        return $this->execute('get', $request, function(Request $request) { 
+        $self = $this;
+
+        return $this->execute('get', $request, function(Request $request) use ($self) { 
             $key = $request->getKey();
             $attributes = $request->getAttributes();
 
-            $repository = $this->getRepository($key);
+            $repository = $self->getRepository($key);
             $resource = $repository->get($attributes);
 
-            return $this->createResponse($request, $resource);
+            return $self->createResponse($request, $resource);
         });
     }
 
     public function post(Request $request)
     {
-        return $this->execute('post', $request, function(Request $request) { 
+        $self = $this;
+
+        return $this->execute('post', $request, function(Request $request) use ($self) { 
             $key = $request->getKey();
             $attributes = $request->getAttributes();
             $content = $request->getContent();
 
-            $repository = $this->getRepository($key);
+            $repository = $self->getRepository($key);
             $resource = $repository->post($attributes, $content);
 
-            $response = $this->createResponse($request, $resource);
+            $response = $self->createResponse($request, $resource);
             $response->setStatusCode(StatusCode::CREATED);
 
             return $response;
@@ -68,49 +74,55 @@ class Processor
 
     public function patch(Request $request)
     {
-        return $this->execute('patch', $request, function(Request $request) { 
+        $self = $this;
+
+        return $this->execute('patch', $request, function(Request $request) use ($self) { 
             $key = $request->getKey();
             $attributes = $request->getAttributes();
             $content = $request->getContent();
 
-            $repository = $this->getRepository($key);
+            $repository = $self->getRepository($key);
             $resource = $repository->patch($attributes, $content);
 
-            return $this->createResponse($request, $resource);
+            return $self->createResponse($request, $resource);
         });
     }
 
     public function put(Request $request)
     {
-        return $this->execute('put', $request, function(Request $request) { 
+        $self = $this;
+
+        return $this->execute('put', $request, function(Request $request) use ($self) { 
             $key = $request->getKey();
             $attributes = $request->getAttributes();
             $content = $request->getContent();
 
-            $repository = $this->getRepository($key);
+            $repository = $self->getRepository($key);
             $resource = $repository->put($attributes, $content);
 
-            return $this->createResponse($request, $resource);
+            return $self->createResponse($request, $resource);
         });
     }
 
     public function delete(Request $request)
     {
-        return $this->execute('delete', $request, function(Request $request) { 
+        $self = $this;
+
+        return $this->execute('delete', $request, function(Request $request) use ($self) { 
             $key = $request->getKey();
             $attributes = $request->getAttributes();
 
-            $repository = $this->getRepository($key);
+            $repository = $self->getRepository($key);
             $resource = $repository->delete($attributes);
 
-            return $this->createResponse($request);
+            return $self->createResponse($request);
         });
     }
 
     protected function execute($method, Request $request, Closure $execution)
     {
         $processors = $this->level3->getProcessorWrappers();
-        foreach (array_reverse($processors) as $processor) {
+        foreach ($processors as $processor) {
             $execution = function($request) use ($execution, $method, $processor) {
                 return $processor->$method($execution, $request);
             };

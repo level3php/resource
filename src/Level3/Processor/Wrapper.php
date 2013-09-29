@@ -2,32 +2,21 @@
 
 namespace Level3\Processor;
 
+use Level3\Level3;
 use Level3\Messages\Request;
 use Closure;
 
-abstract class Wrapper
+interface Wrapper
 {
-    private $level3;
+    public function find(Closure $execution, Request $request);
 
-    public function setLeve3(Level3 $level3)
-    {
-        $this->level3 = $level3;
-    }
+    public function get(Closure $execution, Request $request);
 
-    public function getLeve3($level3)
-    {
-        return $this->level3;
-    }
+    public function post(Closure $execution, Request $request);
 
-    abstract public function find(Closure $execution, Request $request);
-
-    abstract public function get(Closure $execution, Request $request);
-
-    abstract public function post(Closure $execution, Request $request);
-
-    abstract public function put(Closure $execution, Request $request);
+    public function put(Closure $execution, Request $request);
     
-    abstract public function patch(Closure $execution, Request $request);
+    public function patch(Closure $execution, Request $request);
 
-    abstract public function delete(Closure $execution, Request $request);
+    public function delete(Closure $execution, Request $request);
 }

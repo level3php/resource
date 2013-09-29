@@ -4,33 +4,35 @@ namespace Level3\Tests;
 
 use Teapot\StatusCode;
 use Level3\Processor;
-use Level3\Repository\Exception\BaseException;
-use Mockery as m;
+use Level3\Processor\Wrapper;
+use Level3\Messages\Request;
+use Level3\Messages\Response;
 
+use Closure;
 use RuntimeException;
 
 class ProcessorTest extends TestCase
 {
-    const IRRELEVANT_KEY = 'X';
-    const IRRELEVANT_RESOURCE = '2X';
-
     private $processor;
 
     public function setUp()
     {
         $this->level3 = $this->createLevel3Mock();
         $this->level3->shouldReceive('getProcessorWrappers')
-            ->withNoArgs()->andReturn(array());
+            ->withNoArgs()->andReturn(array(
+                new WrapperMock('4', '*'),
+                new WrapperMock('2', '/'),
+                new WrapperMock('2', '/')
+            ));
 
         $this->processor = new Processor($this->level3);
     }
 
     /**
-      * @expectedException Level3\Exceptions\NotFound
-      */
+     * @expectedException Level3\Exceptions\NotFound
+     */
     public function testMissingRepository()
     {
-        $formatter = $this->createFormatterMock();
         $attributes = $this->createParametersMock();
         $request = $this->createRequestMock($attributes, null, null);
 
@@ -113,38 +115,65 @@ class ProcessorTest extends TestCase
         );
     }
 
-    protected function createRequestMock(
-        $attributes = null, $filters = null, $formatter = null, $content = null)
-    {
-        $request = parent::createRequestMock();
-        $request->shouldReceive('getKey')
-            ->withNoArgs()->once()->andReturn(self::IRRELEVANT_KEY);
-        
-        if ($attributes) {
-            $request->shouldReceive('getAttributes')
-                ->withNoArgs()->once()->andReturn($attributes);
-        }
-
-        if ($filters) {
-            $request->shouldReceive('getFilters')
-                ->withNoArgs()->once()->andReturn($filters);
-        }
-
-        if ($content) {
-            $request->shouldReceive('getContent')
-                ->withNoArgs()->once()->andReturn($content);
-        }
-
-        if ($formatter) {
-            $request->shouldReceive('getFormatter')
-                ->withNoArgs()->once()->andReturn($formatter);
-        }
-
-        return $request;
-    }
-
     protected function repositoryHubShouldHavePair($key, $value)
     {
         $this->level3->shouldReceive('getRepository')->with($key)->once()->andReturn($value);
+    }
+}
+
+class WrapperMock implements Wrapper
+{
+    private $id;
+    private $sign;
+
+    public function __construct($id, $sign)
+    {
+        $this->id = $id;
+        $this->sign = $sign;
+    }
+
+    public function find(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request);
+    }
+    
+    public function get(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution ,$request);
+    }
+
+    public function post(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request);
+    }
+
+    public function put(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request);
+    }
+
+    public function patch(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request);
+    }
+
+    public function delete(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request);
+    }
+
+    protected function processRequest(Closure $execution, Request $request)
+    {
+        $response = $execution($request);
+        $base = $response->getStatusCode() - 200;
+
+        if ($this->sign == '*') $code = $base * $this->id;
+        if ($this->sign == '+') $code = $base + $this->id;
+        if ($this->sign == '-') $code = $base - $this->id;
+        if ($this->sign == '/') $code = $base / $this->id;  
+    
+
+        $response->setStatusCode($code + 200);
+        return $response;
     }
 }
