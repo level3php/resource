@@ -22,39 +22,20 @@ class ProcessorTest extends TestCase
         $this->processor = new Processor($this->level3);
     }
 
+    /**
+      * @expectedException Level3\Exceptions\NotFound
+      */
     public function testMissingRepository()
     {
         $formatter = $this->createFormatterMock();
         $attributes = $this->createParametersMock();
-        $request = $this->createRequestMock($attributes, null, $formatter);
+        $request = $this->createRequestMock($attributes, null, null);
 
         $exception = new RuntimeException();
         $this->level3->shouldReceive('getRepository')
             ->with(self::IRRELEVANT_KEY)->once()->andThrow($exception);
         
         $response = $this->processor->get($request);
-
-        $this->assertSame(StatusCode::NOT_FOUND, $response->getStatusCode());
-        $this->assertSame($formatter, $response->getFormatter());
-    }
-
-    public function testExceptionHandling()
-    {
-        $formatter = $this->createFormatterMock();
-        $attributes = $this->createParametersMock();
-        $request = $this->createRequestMock($attributes, null, $formatter);
-
-        $repository = $this->createGetterMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $repository);
-
-        $exception = new RuntimeException();
-        $repository->shouldReceive('get')
-            ->with($attributes)->once()->andThrow($exception);
-        
-        $response = $this->processor->get($request);
-
-        $this->assertSame(StatusCode::INTERNAL_SERVER_ERROR, $response->getStatusCode());
-        $this->assertSame($formatter, $response->getFormatter());
     }
 
     /**

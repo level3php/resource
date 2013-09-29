@@ -11,13 +11,19 @@
 namespace Level3;
 
 use Level3\Resource\Parameters;
+use Level3\Processor\Wrapper;
 
 class Level3
 {
+    const PRIORITY_LOW = 30;
+    const PRIORITY_NORMAL = 20;
+    const PRIORITY_HIGH = 10;
+
     private $debug;
     private $hub;
     private $mapper;
     private $processor;
+    private $wrappers = array();
 
     public function __construct(Mapper $mapper, Hub $hub, Processor $processor)
     {
@@ -59,5 +65,25 @@ class Level3
     public function getURI($repositoryKey, $interface, Parameters $parameters = null)
     {
         return $this->mapper->getURI($repositoryKey, $interface, $parameters);
+    }
+
+    public function clearProcessWrappers()
+    {
+        $this->wrappers = array();
+    }
+
+    public function addProcessorWrapper(Wrapper $wrapper, $priority = self::PRIORITY_NORMAL)
+    {
+        $this->wrappers[$priority][] = $wrapper;
+    }
+
+    public function getProcessorWrappers()
+    {
+        $result = array();
+        foreach ($this->wrappers as $priority => $wrappers) {
+            $result = array_merge($result, $wrappers);
+        }
+
+        return $result;
     }
 }
