@@ -131,7 +131,10 @@ class Processor
         return $execution($request);
     }
 
-    protected function createResponse(Request $request, Resource $resource = null)
+    /**
+     * @protected 5.3
+     */
+    public function createResponse(Request $request, Resource $resource = null)
     {
         $response = new Response();
         if ($resource) {
@@ -145,7 +148,7 @@ class Processor
         return $response;
     }
 
-    /*
+    /*+
      * @protected 5.3
      */
     public function getRepository($key)
