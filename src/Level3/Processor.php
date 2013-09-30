@@ -145,7 +145,10 @@ class Processor
         return $response;
     }
 
-    protected function getRepository($key)
+    /*
+     * @protected 5.3
+     */
+    public function getRepository($key)
     {        
         try {
             return $this->level3->getRepository($key);
