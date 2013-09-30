@@ -12,17 +12,14 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'XX';
+    const IRRELEVANT_CONTENT = '{"foo":"bar"}';
 
     private $dummySymfonyRequest;
     private $request;
 
     public function setUp()
     {
-        $this->markTestSkipped(
-              'The MySQLi extension is not available.'
-            );
-
-        $this->dummySymfonyRequest = new SymfonyRequest();
+        $this->dummySymfonyRequest = new SymfonyRequest(array(), array(), array(), array(), array(), array(), self::IRRELEVANT_CONTENT);
         $this->request = new Request(self::IRRELEVANT_KEY, $this->dummySymfonyRequest);
     }
 
@@ -31,16 +28,41 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         unset($this->dummySymfonyRequest);
     }
 
+    public function testGetFormatter()
+    {
+        $formatter = $this->request->getFormatter();
+        $this->assertInstanceOf('Level3\Formatter', $formatter);
+    }
+
     public function testGetKey()
     {
         $key = $this->request->getKey();
-
         $this->assertThat($key, $this->equalTo(self::IRRELEVANT_KEY));
     }
 
     public function testGetParameters()
     {
-        $this->assertInstanceOf('Level3\Messages\Parameters', $this->request->getParameters());
+        $attributes = $this->request->getAttributes();
+        $this->assertInstanceOf('Level3\Resource\Parameters', $attributes);
+    }
+
+    public function testGetFilters()
+    {
+        $filters = $this->request->GetFilters();
+        $this->assertInstanceOf('Level3\Resource\Parameters', $filters);
+
+        $data = $filters->all();
+        $this->assertTrue(array_key_exists('range', $data));
+        $this->assertTrue(array_key_exists('sort', $data));
+        $this->assertTrue(array_key_exists('criteria', $data));
+    }
+
+    public function testGetCriteria()
+    {
+        $this->request->server->add(array('QUERY_STRING' => 'foo=bar'));
+
+        $criteria = $this->request->getCriteria();
+        $this->assertSame(array('foo' => 'bar'), $criteria);
     }
 
     public function testGetCredentials()
@@ -85,12 +107,17 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             ->build();
     }
 
+    public function testgetContent()
+    {
+        $content = $this->request->getContent();
+        $this->assertSame(array('foo' => 'bar'), $content);
+    }
+
     public function testGetRange()
     {
         $this->request->headers->add(array('Range' => 'entity=0-9'));
 
         $range = $this->request->getRange();
-
         $this->assertThat($range, $this->equalTo(array(0,9)));
     }
 
@@ -99,7 +126,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->request->headers->add(array('Range' => 'entity=-9'));
 
         $range = $this->request->getRange();
-
         $this->assertThat($range, $this->equalTo(array(0,9)));
     }
 
@@ -108,23 +134,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->request->headers->add(array('Range' => 'entity=9-'));
 
         $range = $this->request->getRange();
-
         $this->assertThat($range, $this->equalTo(array(9,0)));
     }
 
     public function testGetRangeWithoutHeader()
     {
         $range = $this->request->getRange();
-
         $this->assertThat($range, $this->equalTo(array(0,0)));
     }
 
     public function testGetHeader()
     {
-        $this->request->headers->add(array('foo'=>array('bar', 'crap')));
+        $this->request->headers->add(array('foo'=> array('bar', 'crap')));
 
         $header = $this->request->getHeader('foo');
-
         $this->assertThat($header, $this->equalTo('bar'));
     }
 

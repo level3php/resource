@@ -20,14 +20,21 @@ class TestCase extends \PHPUnit_Framework_TestCase
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_HREF = 'XX';
 
-    protected $resourceHubMock;
-    protected $repositoryHubMock;
-
     protected function createLevel3Mock()
     {
         return m::mock('Level3\Level3');
     }
 
+    protected function createMapperMock()
+    {
+        return m::mock('Level3\Mapper');
+    }
+
+    protected function createHubMock()
+    {
+        return m::mock('Level3\Hub');
+    }
+    
     protected function createFinderMock()
     {
         return m::mock('Level3\Repository\Finder');
@@ -75,7 +82,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createFormatterMock()
     {
-        return m::mock('Level3\Resource\Formatter');
+        $formatter = m::mock('Level3\Formatter');
+        $formatter->shouldReceive('getContentType')->andReturn('foo/bar');
+
+        return $formatter;
     }
 
     protected function createParametersMock()

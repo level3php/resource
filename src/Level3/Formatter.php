@@ -17,4 +17,9 @@ abstract class Formatter
     public abstract function toResponse(Resource $resource, $pretty = false);
 
     public abstract function fromRequest($string);
+
+    public function getContentType()
+    {
+        return static::CONTENT_TYPE;
+    }
 }

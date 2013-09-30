@@ -2,20 +2,22 @@
 
 namespace Level3\Messages;
 
-use Level3\Resource\FormatterFactory;
+use Level3\FormatterFactory;
 use Level3\Security\Authentication\AuthenticatedCredentials;
 use Level3\Security\Authentication\AnonymousCredentials;
 use Level3\Security\Authentication\Credentials;
 use Level3\Security\Authentication\User;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
+use Level3\Resource\Parameters;
+
 class Request extends SymfonyRequest
 {
     const HEADER_RANGE = 'Range';
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
-
     const HEADER_SORT = 'X-Level3-Sort';
+
     private $credentials;
     private $id;
     private $key;
@@ -25,6 +27,8 @@ class Request extends SymfonyRequest
         $query = $request = $attributes = $cookies = $files = $server = null;
 
         $this->key = $key;
+
+        $content = $origin->getContent();
         if ($origin->query) $query = $origin->query->all();
         if ($origin->request) $request = $origin->request->all();
         if ($origin->attributes) $attributes = $origin->attributes->all();
@@ -32,15 +36,13 @@ class Request extends SymfonyRequest
         if ($origin->files) $files = $origin->files->all();
         if ($origin->server) $server = $origin->server->all();
 
-        $this->initialize($query, $request, $attributes, $cookies, $files, $server);
+        $this->initialize($query, $request, $attributes, $cookies, $files, $server, $content);
         $this->credentials = new AnonymousCredentials();
     }
 
-    protected static function initializeFormats()
+    public function getKey()
     {
-        parent::initializeFormats();
-        static::$formats['application/hal+json'] = array('application/hal+json');
-        static::$formats['application/hal+xml'] = array('application/hal+xml');
+        return $this->key;
     }
 
     public function getFormatter()
@@ -79,15 +81,11 @@ class Request extends SymfonyRequest
         ));
     }
 
-    public function getContent($asResource = false)
+    public function getContent($none = false)
     {
         $content = parent::getContent();
-        return $this->getFormatter()->fromRequest($content);
-    }
 
-    public function getKey()
-    {
-        return $this->key;
+        return $this->getFormatter()->fromRequest($content);
     }
 
     public function getRange()
@@ -133,14 +131,7 @@ class Request extends SymfonyRequest
     public function getCriteria()
     {
         $result = array();
-        $parameters = explode('&', $this->getQueryString());
-        foreach ($parameters as $parameter) {
-            if (!strpos($parameter, '=')) break;
-            $entry = explode('=', $parameter);
-            $key = $entry[0];
-            $value = $entry[1];
-            $result[$key] = $value;
-        }
+        parse_str($this->getQueryString(), $result);
 
         return $result;
     }

@@ -42,7 +42,7 @@ class Level3
         return $this->debug;
     }
 
-    public function getyHub()
+    public function getHub()
     {
         return $this->hub;
     }
@@ -80,6 +80,8 @@ class Level3
     public function getProcessorWrappers()
     {
         $result = array();
+        
+        ksort($this->wrappers);
         foreach ($this->wrappers as $priority => $wrappers) {
             $result = array_merge($result, $wrappers);
         }
