@@ -34,7 +34,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return m::mock('Level3\Hub');
     }
-    
+   
+    protected function createLinkMock()
+    {
+        return m::mock('Level3\Resource\Link');
+    }
+
     protected function createFinderMock()
     {
         return m::mock('Level3\Repository\Finder');

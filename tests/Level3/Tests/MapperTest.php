@@ -73,6 +73,14 @@ class MapperTest extends TestCase
         );
     }
 
+    public function testGetCurieURIUnknown()
+    {
+        $mapper = $this->getMapperMock();
+        $this->assertNull( 
+            $mapper->getCurieURI('foo', 'Level3\Repository\Foo')
+        );
+    }
+
     public function testGetURI()
     {
         $mapper = $this->getMapperMock();
