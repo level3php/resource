@@ -33,8 +33,7 @@ class ProcessorTest extends TestCase
      */
     public function testMissingRepository()
     {
-        $attributes = $this->createParametersMock();
-        $request = $this->createRequestMock($attributes, null, null);
+        $request = $this->createRequestMock(null, null, null);
 
         $exception = new RuntimeException();
         $this->level3->shouldReceive('getRepository')
@@ -48,21 +47,22 @@ class ProcessorTest extends TestCase
      */
     public function testOptions()
     {
-        $request = $this->createRequestMockSimple();
+        $repository = $this->createFinderMock();
+        $this->level3ShouldHavePair(self::IRRELEVANT_KEY, $repository);
 
+        $request = $this->createRequestMock(null, null, null, $repository);
         $response = $this->processor->options($request);
     }
-
 
     /**
      * @dataProvider provider
      */
-    public function testMethods($method, $repositoryMock, $attributes, $filters,  $content, $resource, $formatter, $statusCode)
+    public function testMethods($method, $repositoryMock, $attributes, $filters, $content, $resource, $formatter, $statusCode)
     {
-        $request = $this->createRequestMock($attributes, $filters, $formatter, $content);
-
         $repository = $this->$repositoryMock();
-        $this->repositoryHubShouldHavePair(self::IRRELEVANT_KEY, $repository);
+        $this->level3ShouldHavePair(self::IRRELEVANT_KEY, $repository);
+
+        $request = $this->createRequestMock($attributes, $filters, $formatter, $repository, $content);
 
         if ($filters) {
             $repository->shouldReceive($method)
@@ -126,9 +126,10 @@ class ProcessorTest extends TestCase
         );
     }
 
-    protected function repositoryHubShouldHavePair($key, $value)
+    protected function level3ShouldHavePair($key, $repository)
     {
-        $this->level3->shouldReceive('getRepository')->with($key)->once()->andReturn($value);
+        $this->level3->shouldReceive('getRepository')
+            ->with($key)->once()->andReturn($repository);
     }
 }
 

@@ -42,32 +42,32 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createFinderMock()
     {
-        return m::mock('Level3\Repository\Finder');
+        return m::mock('Level3\Repository,Level3\Repository\Finder');
     }
 
     protected function createGetterMock()
     {
-        return m::mock('Level3\Repository\Getter');
+        return m::mock('Level3\Repository,Level3\Repository\Getter');
     }
 
     protected function createDeleterMock()
     {
-        return m::mock('Level3\Repository\Deleter');
+        return m::mock('Level3\Repository,Level3\Repository\Deleter');
     }
 
     protected function createPutterMock()
     {
-        return m::mock('Level3\Repository\Putter');
+        return m::mock('Level3\Repository,Level3\Repository\Putter');
     }
     
     protected function createPosterMock()
     {
-        return m::mock('Level3\Repository\Poster');
+        return m::mock('Level3\Repository,Level3\Repository\Poster');
     }
     
     protected function createPatcherMock()
     {
-        return m::mock('Level3\Repository\Patcher');
+        return m::mock('Level3\Repository,Level3\Repository\Patcher');
     }
 
     protected function createRepositoryMock()
@@ -109,7 +109,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
     
     protected function createRequestMock(
-        $attributes = null, $filters = null, $formatter = null, $content = null)
+        $attributes = null, $filters = null, $formatter = null, 
+        $repository = null, $content = null
+    )
     {
         $request = $this->createRequestMockSimple();
         $request->shouldReceive('getKey')
@@ -133,6 +135,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if ($formatter) {
             $request->shouldReceive('getFormatter')
                 ->withNoArgs()->once()->andReturn($formatter);
+        }
+
+        if ($repository) {
+            $request->shouldReceive('getRepository')
+                ->withNoArgs()->once()->andReturn($repository);
+
+            $request->shouldReceive('setRepository')
+                ->with($repository)->once()->andReturn(null);
         }
 
         return $request;
