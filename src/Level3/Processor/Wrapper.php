@@ -6,17 +6,37 @@ use Level3\Level3;
 use Level3\Messages\Request;
 use Closure;
 
-interface Wrapper
+abstract class Wrapper
 {
-    public function find(Closure $execution, Request $request);
-
-    public function get(Closure $execution, Request $request);
-
-    public function post(Closure $execution, Request $request);
-
-    public function put(Closure $execution, Request $request);
+    public function find(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request, __FUNCTION__);
+    }
     
-    public function patch(Closure $execution, Request $request);
+    public function get(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution ,$request, __FUNCTION__);
+    }
 
-    public function delete(Closure $execution, Request $request);
+    public function post(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request, __FUNCTION__);
+    }
+
+    public function put(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request, __FUNCTION__);
+    }
+
+    public function patch(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request, __FUNCTION__);
+    }
+
+    public function delete(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request, __FUNCTION__);
+    }
+
+    abstract protected function processRequest(Closure $execution, Request $request, $method);
 }

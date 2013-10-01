@@ -12,39 +12,9 @@ use Exception;
 use Closure;
 use Teapot\StatusCode;
 
-class ExceptionHandler implements Wrapper
+class ExceptionHandler extends Wrapper
 {
-    public function find(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-    
-    public function get(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution ,$request);
-    }
-
-    public function post(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    public function put(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    public function patch(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    public function delete(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    protected function processRequest(Closure $execution, Request $request)
+    protected function processRequest(Closure $execution, Request $request, $method)
     {
         try {
             return $execution($request);

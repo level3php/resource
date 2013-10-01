@@ -121,7 +121,7 @@ class ProcessorTest extends TestCase
     }
 }
 
-class WrapperMock implements Wrapper
+class WrapperMock extends Wrapper
 {
     private $id;
     private $sign;
@@ -132,37 +132,7 @@ class WrapperMock implements Wrapper
         $this->sign = $sign;
     }
 
-    public function find(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-    
-    public function get(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution ,$request);
-    }
-
-    public function post(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    public function put(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    public function patch(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    public function delete(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request);
-    }
-
-    protected function processRequest(Closure $execution, Request $request)
+    protected function processRequest(Closure $execution, Request $request, $method)
     {
         $response = $execution($request);
         $base = $response->getStatusCode() - 200;

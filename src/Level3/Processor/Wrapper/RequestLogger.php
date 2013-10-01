@@ -9,7 +9,7 @@ use Level3\Messages\Response;
 use Level3\Processor\Wrapper;
 use Closure;
 
-class RequestLogger implements Wrapper
+class RequestLogger extends Wrapper
 {
     private $logger;
 
@@ -17,37 +17,7 @@ class RequestLogger implements Wrapper
     {
         $this->logger = $logger;
     }
-
-    public function find(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request, __FUNCTION__);
-    }
     
-    public function get(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution ,$request, __FUNCTION__);
-    }
-
-    public function post(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request, __FUNCTION__);
-    }
-
-    public function put(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request, __FUNCTION__);
-    }
-
-    public function patch(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request, __FUNCTION__);
-    }
-
-    public function delete(Closure $execution, Request $request)
-    {
-        return $this->processRequest($execution, $request, __FUNCTION__);
-    }
-
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $response = $execution($request);
