@@ -44,6 +44,17 @@ class ProcessorTest extends TestCase
     }
 
     /**
+     * @expectedException Level3\Exceptions\NotImplemented
+     */
+    public function testOptions()
+    {
+        $request = $this->createRequestMockSimple();
+
+        $response = $this->processor->options($request);
+    }
+
+
+    /**
      * @dataProvider provider
      */
     public function testMethods($method, $repositoryMock, $attributes, $filters,  $content, $resource, $formatter, $statusCode)

@@ -19,7 +19,7 @@ class MapperTest extends TestCase
     public function getMapperMock($constructor = array())
     {
         return m::mock(
-            'Level3\Mapper[mapFinder,mapGetter,mapPoster,mapPutter,mapDeleter,mapPatcher]',
+            'Level3\Mapper[mapFinder,mapGetter,mapPoster,mapPutter,mapDeleter,mapPatcher,mapOptions]',
             $constructor
         );
     }
@@ -53,13 +53,16 @@ class MapperTest extends TestCase
         $hub->shouldReceive('get')->once()->with('foo')->andReturn($repository);
         $hub->shouldReceive('getKeys')->once()->andReturn(array('foo'));
 
+        $repositoryKey = $repository->getKey();
         $mapper = $this->getMapperMock();
-        $mapper->shouldReceive('mapGetter')->once()->with($repository, '/foo/{id}');
-        $mapper->shouldReceive('mapPutter')->once()->with($repository, '/foo');
-        $mapper->shouldReceive('mapPoster')->once()->with($repository, '/foo/{id}');
-        $mapper->shouldReceive('mapDeleter')->once()->with($repository, '/foo/{id}');
-        $mapper->shouldReceive('mapFinder')->once()->with($repository, '/foo');
-        $mapper->shouldReceive('mapPatcher')->once()->with($repository, '/foo/{id}');
+        $mapper->shouldReceive('mapGetter')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapPutter')->once()->with($repositoryKey, '/foo');
+        $mapper->shouldReceive('mapPoster')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapDeleter')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapFinder')->once()->with($repositoryKey, '/foo');
+        $mapper->shouldReceive('mapPatcher')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapOptions')->once()->with($repositoryKey, '/foo');
+        $mapper->shouldReceive('mapOptions')->once()->with($repositoryKey, '/foo/{id}');
 
         $mapper->boot($hub);
     }

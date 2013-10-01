@@ -102,11 +102,16 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return m::mock('Level3\Processor\Wrapper\ExceptionHandler');
     }
+
+    protected function createRequestMockSimple()
+    {
+        return m::mock('Level3\Messages\Request');
+    }
     
     protected function createRequestMock(
         $attributes = null, $filters = null, $formatter = null, $content = null)
     {
-        $request = m::mock('Level3\Messages\Request');
+        $request = $this->createRequestMockSimple();
         $request->shouldReceive('getKey')
             ->withNoArgs()->once()->andReturn(self::IRRELEVANT_KEY);
         

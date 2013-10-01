@@ -47,7 +47,8 @@ class ExceptionHandlerTest extends TestCase
             array('put', StatusCode::NOT_FOUND, new NotFound()),
             array('put', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
             array('delete', StatusCode::NOT_FOUND, new NotFound()),
-            array('delete', StatusCode::INTERNAL_SERVER_ERROR, new Exception())
+            array('delete', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
+            array('options', StatusCode::INTERNAL_SERVER_ERROR, new Exception())
         );
     }
 }

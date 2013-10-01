@@ -60,7 +60,8 @@ class RequestLoggerTest extends TestCase
             array('put', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
             array('delete', StatusCode::OK, LogLevel::INFO),
             array('delete', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('delete', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR)
+            array('delete', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
+            array('options', StatusCode::OK, LogLevel::INFO)
         );
     }
 }

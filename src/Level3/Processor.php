@@ -4,6 +4,7 @@ namespace Level3;
 
 use Level3\Exceptions\HTTPException;
 use Level3\Exceptions\NotFound;
+use Level3\Exceptions\NotImplemented;
 use Level3\Messages\Response;
 use Level3\Messages\Request;
 
@@ -119,12 +120,21 @@ class Processor
         });
     }
 
+    public function options(Request $request)
+    {
+        $self = $this;
+
+        return $this->execute('options', $request, function(Request $request) use ($self) { 
+            throw new NotImplemented();
+        });
+    }
+
     protected function execute($method, Request $request, Closure $execution)
     {
-        $processors = $this->level3->getProcessorWrappers();
-        foreach ($processors as $processor) {
-            $execution = function($request) use ($execution, $method, $processor) {
-                return $processor->$method($execution, $request);
+        $wrappers = $this->level3->getProcessorWrappers();
+        foreach ($wrappers as $wrapper) {
+            $execution = function($request) use ($execution, $method, $wrapper) {
+                return $wrapper->$method($execution, $request);
             };
         }
     

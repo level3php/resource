@@ -86,6 +86,8 @@ abstract class Mapper
         foreach ($interfaces as $interface => $method) {
             $this->mapMethodIfNeeded($repository, $interface);
         }
+
+        $this->mapOptionsMethod($repository);
     }
 
     private function mapMethodIfNeeded(Repository $repository, $interface)
@@ -95,15 +97,27 @@ abstract class Mapper
         }
     }
 
+    private function mapOptionsMethod(Repository $repository)
+    {
+        $repositoryKey = $repository->getKey();
+
+        $curieURIWithOutParams = $this->getCurieURIWithOutParams($repositoryKey);
+        $this->mapOptions($repositoryKey, $curieURIWithOutParams);  
+
+        $curieURIWithParams = $this->getCurieURIWithParams($repositoryKey);
+        $this->mapOptions($repositoryKey, $curieURIWithParams);  
+    }
+
     private function callToMapMethod(Repository $repository, $interface)
     {
         $namespace = explode('\\', $interface);
         $name = ucfirst(strtolower(end($namespace)));
         $method = sprintf('map%s', $name);
 
-        $curieURI = $this->getCurieURI($repository->getKey(), $interface);
+        $repositoryKey = $repository->getKey();
+        $curieURI = $this->getCurieURI($repositoryKey, $interface);
 
-        $this->$method($repository, $curieURI);
+        $this->$method($repositoryKey, $curieURI);
     }
 
     public function getURI($repositoryKey, $interface, Parameters $parameters = null)
@@ -138,10 +152,11 @@ abstract class Mapper
         return $this->getCurieURIWithOutParams($repositoryKey) . '/{id}';
     }
 
-    abstract public function mapFinder($repository, $uri);
-    abstract public function mapGetter($repository, $uri);
-    abstract public function mapPoster($repository, $uri);
-    abstract public function mapPutter($repository, $uri);
-    abstract public function mapPatcher($repository, $uri);
-    abstract public function mapDeleter($repository, $uri);
+    abstract public function mapFinder($repositoryKey, $uri);
+    abstract public function mapGetter($repositoryKey, $uri);
+    abstract public function mapPoster($repositoryKey, $uri);
+    abstract public function mapPutter($repositoryKey, $uri);
+    abstract public function mapPatcher($repositoryKey, $uri);
+    abstract public function mapDeleter($repositoryKey, $uri);
+    abstract public function mapOptions($repositoryKey, $uri);
 }
