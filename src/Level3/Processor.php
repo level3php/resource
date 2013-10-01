@@ -25,8 +25,6 @@ class Processor
 
     public function find(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         $self = $this;
 
         return $this->execute('find', $request, function(Request $request) use ($self) { 
@@ -42,8 +40,6 @@ class Processor
 
     public function get(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         $self = $this;
 
         return $this->execute('get', $request, function(Request $request) use ($self) { 
@@ -58,8 +54,6 @@ class Processor
 
     public function post(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         $self = $this;
 
         return $this->execute('post', $request, function(Request $request) use ($self) { 
@@ -78,8 +72,6 @@ class Processor
 
     public function patch(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         $self = $this;
 
         return $this->execute('patch', $request, function(Request $request) use ($self) { 
@@ -95,8 +87,6 @@ class Processor
 
     public function put(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         $self = $this;
 
         return $this->execute('put', $request, function(Request $request) use ($self) { 
@@ -112,8 +102,6 @@ class Processor
 
     public function delete(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         $self = $this;
 
         return $this->execute('delete', $request, function(Request $request) use ($self) { 
@@ -128,8 +116,6 @@ class Processor
 
     public function options(Request $request)
     {
-        $this->setRepositoryToRequest($request);
-
         return $this->execute('options', $request, function() { 
             throw new NotImplemented();
         });
@@ -145,6 +131,8 @@ class Processor
 
     protected function execute($method, Request $request, Closure $execution)
     {
+        $this->setRepositoryToRequest($request);
+
         $wrappers = $this->level3->getProcessorWrappers();
         foreach ($wrappers as $wrapper) {
             $execution = function($request) use ($execution, $method, $wrapper) {

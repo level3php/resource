@@ -31,7 +31,7 @@ class CrossOriginResourceSharingTest extends TestCase
     {
         if (!$request) $request = $this->createRequestMockSimple();
         
-        return $wrapper->get(function($request) {
+        return $wrapper->options(function($request) {
             return new Response();
         }, $request); 
     }
@@ -44,9 +44,9 @@ class CrossOriginResourceSharingTest extends TestCase
 
         $this->assertSame(CORS::ALLOW_ORIGIN_WILDCARD, $wrapper->getAllowOrigin());
 
-        $request = $this->createRequestMockWithGetHeader(CORS::ORIGIN_HEADER, $url);
+        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $url);
         $response = $this->callGetInWrapperAndGetResponse($wrapper, $request);
-        $this->assertSame(CORS::ALLOW_ORIGIN_WILDCARD, $response->getHeader(CORS::ALLOW_ORIGIN_HEADER));
+        $this->assertSame(CORS::ALLOW_ORIGIN_WILDCARD, $response->getHeader(CORS::HEADER_ALLOW_ORIGIN));
     }
 
     public function testSetAllowOriginHost()
@@ -57,9 +57,9 @@ class CrossOriginResourceSharingTest extends TestCase
 
         $this->assertSame($url, $wrapper->getAllowOrigin());
 
-        $request = $this->createRequestMockWithGetHeader(CORS::ORIGIN_HEADER, $url);
+        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $url);
         $response = $this->callGetInWrapperAndGetResponse($wrapper, $request);
-        $this->assertSame($url, $response->getHeader(CORS::ALLOW_ORIGIN_HEADER));
+        $this->assertSame($url, $response->getHeader(CORS::HEADER_ALLOW_ORIGIN));
     }
 
     /**
@@ -73,7 +73,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $wrapper = $this->createWrapper();
         $wrapper->setAllowOrigin($url);
 
-        $request = $this->createRequestMockWithGetHeader(CORS::ORIGIN_HEADER, $requestUrl);
+        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $requestUrl);
         $response = $this->callGetInWrapperAndGetResponse($wrapper, $request);
     }
 
@@ -87,7 +87,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $wrapper = $this->createWrapper();
         $wrapper->setAllowOrigin($allowOrigin);
 
-        $request = $this->createRequestMockWithGetHeader(CORS::ORIGIN_HEADER, null);
+        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, null);
         $response = $this->callGetInWrapperAndGetResponse($wrapper, $request);
     }
 
@@ -113,9 +113,9 @@ class CrossOriginResourceSharingTest extends TestCase
 
         $this->assertSame($urls, $wrapper->getAllowOrigin());
 
-        $request = $this->createRequestMockWithGetHeader(CORS::ORIGIN_HEADER, $urls[0]);
+        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $urls[0]);
         $response = $this->callGetInWrapperAndGetResponse($wrapper, $request);
-        $this->assertSame($urls, $response->getHeaders(CORS::ALLOW_ORIGIN_HEADER));
+        $this->assertSame($urls, $response->getHeaders(CORS::HEADER_ALLOW_ORIGIN));
     }
 
     public function testSetExposeHeaders()
@@ -128,7 +128,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($headers, $wrapper->getExposeHeaders());
 
         $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame('bar, foo', $response->getHeader(CORS::EXPOSE_HEADERS_HEADER));
+        $this->assertSame('bar, foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
     }
 
     public function testSetMaxAge()
@@ -141,7 +141,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($maxAge, $wrapper->getMaxAge());
 
         $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame($maxAge, $response->getHeader(CORS::MAX_AGE_HEADER));
+        $this->assertSame($maxAge, $response->getHeader(CORS::HEADER_MAX_AGE));
     }
 
     /**
@@ -164,7 +164,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($allow, $wrapper->getAllowCredentials());
 
         $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame('true', $response->getHeader(CORS::ALLOW_CRENDENTIALS_HEADER));
+        $this->assertSame('true', $response->getHeader(CORS::HEADER_ALLOW_CRENDENTIALS));
     }
 
     public function testSetAllowCredentialsFalse()
@@ -177,7 +177,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($allow, $wrapper->getAllowCredentials());
 
         $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame('false', $response->getHeader(CORS::ALLOW_CRENDENTIALS_HEADER));
+        $this->assertSame('false', $response->getHeader(CORS::HEADER_ALLOW_CRENDENTIALS));
     }
 
     /**
@@ -200,7 +200,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($methods, $wrapper->getAllowMethods());
 
         $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame('bar, foo', $response->getHeader(CORS::ALLOW_METHODS_HEADER));
+        $this->assertSame('bar, foo', $response->getHeader(CORS::HEADER_ALLOW_METHODS));
     }
 
     public function testSetAllowHeaders()
@@ -213,6 +213,6 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($headers, $wrapper->getAllowHeaders());
 
         $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame('bar, foo', $response->getHeader(CORS::ALLOW_HEADERS_HEADER));
+        $this->assertSame('bar, foo', $response->getHeader(CORS::HEADER_ALLOW_HEADERS));
     }
 }

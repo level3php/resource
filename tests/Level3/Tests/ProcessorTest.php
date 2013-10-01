@@ -51,6 +51,8 @@ class ProcessorTest extends TestCase
         $this->level3ShouldHavePair(self::IRRELEVANT_KEY, $repository);
 
         $request = $this->createRequestMock(null, null, null, $repository);
+        $request->getRepository();
+        
         $response = $this->processor->options($request);
     }
 

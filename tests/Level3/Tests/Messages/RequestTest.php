@@ -8,7 +8,7 @@ use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     const IRRELEVANT_KEY = 'X';
     const IRRELEVANT_ID = 'XX';
@@ -32,6 +32,13 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $formatter = $this->request->getFormatter();
         $this->assertInstanceOf('Level3\Formatter', $formatter);
+    }
+
+    public function testGetRepository()
+    {
+        $repository = $this->createRepositoryMock();
+        $this->request->setRepository($repository);
+        $this->assertSame($repository, $this->request->getRepository());
     }
 
     public function testGetKey()

@@ -10,13 +10,16 @@ use Level3\Security\Authentication\User;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 use Level3\Resource\Parameters;
+use Level3\Repository;
 
 class Request extends SymfonyRequest
 {
+    const HEADER_SORT = 'X-Sort';
     const HEADER_RANGE = 'Range';
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
-    const HEADER_SORT = 'X-Level3-Sort';
+
+    protected $availableHeaders = array(self::HEADER_SORT, self::HEADER_SORT);
 
     private $credentials;
     private $id;
@@ -43,6 +46,16 @@ class Request extends SymfonyRequest
     public function getKey()
     {
         return $this->key;
+    }
+
+    public function getRepository()
+    {
+        return $this->repository;
+    }
+
+    public function setRepository(Repository $repository)
+    {
+        $this->repository = $repository;
     }
 
     public function getFormatter()
