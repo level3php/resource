@@ -152,6 +152,26 @@ abstract class Mapper
         return $this->getCurieURIWithOutParams($repositoryKey) . '/{id}';
     }
 
+    public function getMethods($repository)
+    {
+        $interfaces = array_merge(
+            $this->interfacesWithOutParams, 
+            $this->interfacesWithParams
+        );
+
+        $methods = array();
+        foreach ($interfaces as $interface => $method) {
+            if ($repository instanceOf $interface) {
+                $methods[] = $method;
+            }
+        }
+
+        $methods = array_unique($methods);
+        sort($methods);
+        
+        return $methods;
+    }
+
     abstract public function mapFinder($repositoryKey, $uri);
     abstract public function mapGetter($repositoryKey, $uri);
     abstract public function mapPoster($repositoryKey, $uri);
