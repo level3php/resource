@@ -1,10 +1,10 @@
 <?php
 
-namespace Level3\Security\Authentication;
+namespace Level3\Processor\Wrapper\Authentication;
 
 use Level3\Messages\Processors\RequestProcessor;
 use Level3\Messages\Request;
-use Level3\Security\Authentication\Exceptions\MissingCredentials;
+use Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials;
 
 class AuthenticationProcessor implements RequestProcessor
 {
