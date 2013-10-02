@@ -27,12 +27,13 @@ class CrossOriginResourceSharingTest extends TestCase
         return $request;
     }
 
-    protected function callGetInWrapperAndGetResponse($wrapper, $request = null)
+    protected function callGetInWrapperAndGetResponse($wrapper, $request = null, $response = null)
     {
         if (!$request) $request = $this->createRequestMockSimple();
-        
-        return $wrapper->options(function($request) {
-            return new Response();
+        if (!$response) $response = new Response();
+
+        return $wrapper->options(function($request) use ($response) {
+            return $response;
         }, $request); 
     }
 
@@ -127,8 +128,23 @@ class CrossOriginResourceSharingTest extends TestCase
 
         $this->assertSame($headers, $wrapper->getExposeHeaders());
 
-        $response = $this->callGetInWrapperAndGetResponse($wrapper);
-        $this->assertSame('bar, foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
+        $response = new Response();
+        $response->addHeader('foo', 'qux');
+
+        $this->callGetInWrapperAndGetResponse($wrapper, null, $response);
+        $this->assertSame('foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
+    }
+
+    public function testSetExposeHeadersDefault()
+    {
+        $wrapper = $this->createWrapper();
+
+        $response = new Response();
+        $response->addHeader('foo', 'qux');
+        $response->addHeader('bar', 'baz');
+
+        $this->callGetInWrapperAndGetResponse($wrapper, null, $response);
+        $this->assertSame('foo, bar', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
     }
 
     public function testSetMaxAge()

@@ -26,8 +26,8 @@ class CrossOriginResourceSharing extends Wrapper
 
     protected $enabledHeaders = array(
         self::HEADER_ALLOW_ORIGIN => array(),
-        self::HEADER_EXPOSE_HEADERS => array(),
         self::HEADER_ALLOW_CRENDENTIALS => array(),
+        self::HEADER_EXPOSE_HEADERS => array(),
         self::HEADER_MAX_AGE => array('options'),
         self::HEADER_ALLOW_HEADERS => array('options'),
         self::HEADER_ALLOW_METHODS => array('options'),
@@ -37,12 +37,8 @@ class CrossOriginResourceSharing extends Wrapper
     protected $exposeHeaders;
     protected $maxAge;
     protected $allowCredentials;
+    protected $allowMethods;
     protected $allowHeaders = array(
-        Request::HEADER_RANGE,
-        Request::HEADER_SORT
-    );
-
-    protected $allowMethods = array(
         Request::HEADER_RANGE,
         Request::HEADER_SORT
     );
@@ -147,7 +143,7 @@ class CrossOriginResourceSharing extends Wrapper
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $this->readRequestHeaders($request, $method);
-        
+
         $response = $execution($request);
         $this->applyResponseHeaders($response, $method);
 
@@ -206,16 +202,38 @@ class CrossOriginResourceSharing extends Wrapper
 
     protected function applyExposeHeaders(Response $response, $method)
     {
-        if ($this->exposeHeaders === null) {
-            return;
-        }
-
         if (!$this->isHeaderEnabled(self::HEADER_EXPOSE_HEADERS, $method)) {
             return;
         }
 
-        $header = implode(', ',$this->exposeHeaders);
+        $nonBasicHeaders = $this->getNonSimpleResponseHeaders($response);
+        if ($this->exposeHeaders !== null) {
+            $exposeHeaders = array_intersect(
+                $this->exposeHeaders,
+                $nonBasicHeaders
+            );
+        } else {
+            $exposeHeaders = $nonBasicHeaders;
+        }
+
+        $header = implode(', ', $exposeHeaders);
         $response->addHeader(self::HEADER_EXPOSE_HEADERS, $header);
+    }
+
+    protected function getNonSimpleResponseHeaders(Response $response)
+    {
+        $simpleHeaders = array(
+            'cache-control', 'content-language', 'content-type',
+            'expires' , 'last-modified', 'pragma', 'status', 'date',
+            self::HEADER_ALLOW_ORIGIN, self::HEADER_EXPOSE_HEADERS, 
+            self::HEADER_MAX_AGE, self::HEADER_ALLOW_CRENDENTIALS, 
+            self::HEADER_ALLOW_METHODS, self::HEADER_ALLOW_HEADERS
+        );
+
+        array_walk($simpleHeaders, function(&$value) { $value = strtolower($value); });
+
+        $allHeaders = $response->headers->keys();
+        return array_diff($allHeaders, $simpleHeaders);
     }
 
     protected function applyMaxAge(Response $response, $method)
