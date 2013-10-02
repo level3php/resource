@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3\Security\Authorization;
+namespace Level3\Processor\Wrapper\Authorization;
 
 use Level3\Exceptions\Forbidden;
 use Level3\Messages\Processors\RequestProcessor;
