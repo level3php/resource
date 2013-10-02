@@ -170,7 +170,7 @@ class Request extends SymfonyRequest
 
     private function parseSortPart($part)
     {
-        $match = [];
+        $match = array();
         $pattern = '/^
             \s* (?P<field>\w+) \s* # capture the field
             (?: = \s* (?P<direction>-?1) )? \s* # capture the sort direction if it is there
