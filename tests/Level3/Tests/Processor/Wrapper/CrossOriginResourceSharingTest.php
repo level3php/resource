@@ -15,7 +15,11 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function createWrapper()
     {
-        return new CORS();
+        $wrapper = new CORS();
+        $wrapper->setAllowMethods(false);
+        $wrapper->setAllowOrigin(null);
+
+        return $wrapper;
     }
 
     protected function createRequestMockWithGetHeader($header, $value)
@@ -222,14 +226,29 @@ class CrossOriginResourceSharingTest extends TestCase
         $methods = array('bar', 'foo');
 
         $wrapper = $this->createWrapper();
-        $wrapper->setAllowMethods($methods);
+        $wrapper->setAllowMethods(true);
 
-        $this->assertSame($methods, $wrapper->getAllowMethods());
+        $level3 = $this->createLevel3Mock();
+        $hub = $this->createHubMock();
+        $mapper = $this->createMapperMock();
+        $repository = $this->createRepositoryMock();
 
-        $response = $this->callGetInWrapperAndGetResponse('options', $wrapper);
+        $wrapper->setLevel3($level3);
+        $level3->shouldReceive('getHub')->once()->withNoArgs()->andReturn($hub);
+        $level3->shouldReceive('getMapper')->once()->withNoArgs()->andReturn($mapper);
+
+        $hub->shouldReceive('get')->once()->with('X')->andReturn($repository);
+        $mapper->shouldReceive('getMethods')->once()->with($repository)->andReturn($methods);
+
+
+        $this->assertSame(true, $wrapper->getAllowMethods());
+
+        $request = $this->createRequestMock();
+
+        $response = $this->callGetInWrapperAndGetResponse('options', $wrapper, $request);
         $this->assertSame('bar, foo', $response->getHeader(CORS::HEADER_ALLOW_METHODS));
 
-        $response = $this->callGetInWrapperAndGetResponse('get', $wrapper);
+        $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
         $this->assertNull($response->getHeader(CORS::HEADER_ALLOW_METHODS));
     }
 
