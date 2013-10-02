@@ -2,7 +2,7 @@
 
 namespace Level3\Processor\Wrapper\Authentication;
 
-use Level3\Security\Authorization\Role;
+use Level3\Processor\Wrapper\Authorization\Role;
 
 abstract class Credentials
 {

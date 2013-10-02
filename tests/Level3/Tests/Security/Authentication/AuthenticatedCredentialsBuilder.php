@@ -2,8 +2,8 @@
 
 namespace Level3\Tests\Security\Authentication;
 
-use Level3\Security\Authentication\AuthenticatedCredentials;
-use Level3\Security\Authorization\Role;
+use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
+use Level3\Processor\Wrapper\Authorization\Role;
 
 class AuthenticatedCredentialsBuilder
 {

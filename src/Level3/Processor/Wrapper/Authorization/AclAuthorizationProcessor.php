@@ -6,7 +6,7 @@ use Level3\Messages\Processors\RequestProcessor;
 use Level3\Messages\Request;
 use Level3\Resources\ConfigParser;
 use Level3\Resources\Exceptions\ConfigError;
-use Level3\Security\Authentication\Credentials;
+use Level3\Processor\Wrapper\Authentication\Credentials;
 
 class AclAuthorizationProcessor extends AbstractAuthorizationProcessor
 {

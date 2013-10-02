@@ -3,11 +3,11 @@
 namespace Level3\Tests\Security\Authorization;
 
 use Level3\Resources\YamlConfigParser;
-use Level3\Security\Authentication\Credentials;
-use Level3\Security\Authentication\AuthenticatedCredentials;
-use Level3\Security\Authentication\AnonymousCredentials;
-use Level3\Security\Authorization\Role;
-use Level3\Security\Authorization\RoleAuthorizationProcessor;
+use Level3\Processor\Wrapper\Authentication\Credentials;
+use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
+use Level3\Processor\Wrapper\Authentication\AnonymousCredentials;
+use Level3\Processor\Wrapper\Authorization\Role;
+use Level3\Processor\Wrapper\Authorization\RoleAuthorizationProcessor;
 use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
 use Mockery as m;
 

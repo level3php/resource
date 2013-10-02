@@ -3,7 +3,7 @@
 namespace Level3\Tests\Security\Authorization;
 
 use Level3\Resources\YamlConfigParser;
-use Level3\Security\Authorization\AclAuthorizationProcessor;
+use Level3\Processor\Wrapper\Authorization\AclAuthorizationProcessor;
 use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
 use Mockery as m;
 
@@ -80,7 +80,7 @@ class AclAuthorizationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider methods
-     * @expectedException Level3\Security\Authorization\AclMatchingMethodNotFound
+     * @expectedException Level3\Processor\Wrapper\Authorization\AclMatchingMethodNotFound
      */
     public function testAuthorizeMethodsWithInvalidMatching($method)
     {

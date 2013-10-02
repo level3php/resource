@@ -3,8 +3,8 @@
 namespace Level3\Tests\Security\Authentication;
 
 use Level3\Messages\RequestFactory;
-use Level3\Security\Authentication\Exceptions\InvalidCredentials;
-use Level3\Security\Authentication\Methods\HMAC;
+use Level3\Processor\Wrapper\Authentication\Exceptions\InvalidCredentials;
+use Level3\Processor\Wrapper\Authentication\Methods\HMAC;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,7 +26,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
           'The MySQLi extension is not available.'
         );
     
-        $this->credentialsRespositoryMock = m::mock('Level3\Security\Authentication\CredentialsRepository');
+        $this->credentialsRespositoryMock = m::mock('Level3\Processor\Wrapper\Authentication\CredentialsRepository');
         $this->requestFactory = new RequestFactory();
         $this->headers = $this->createHeaders();
         $this->authenticatedUser = AuthenticatedCredentialsBuilder::anAuthenticatedUser()->build();
@@ -54,7 +54,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Level3\Security\Authentication\Exceptions\MissingCredentials
+     * @expectedException Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials
      */
     public function testAuthenticateRequestShouldThrowMissingCredentials()
     {
@@ -139,7 +139,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
         $request = $this->method->authenticateRequest($this->request);
 
         $this->assertInstanceOf(
-            'Level3\Security\Authentication\AuthenticatedCredentials',
+            'Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials',
             $request->getCredentials()
         );
     }
@@ -164,7 +164,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
         $request = $this->method->authenticateRequest($this->request);
 
         $this->assertInstanceOf(
-            'Level3\Security\Authentication\AuthenticatedCredentials',
+            'Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials',
             $request->getCredentials()
         );
     }

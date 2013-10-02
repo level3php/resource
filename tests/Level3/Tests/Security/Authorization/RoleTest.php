@@ -2,7 +2,7 @@
 
 namespace Level3\Tests\Security\Authorization;
 
-use Level3\Security\Authorization\Role;
+use Level3\Processor\Wrapper\Authorization\Role;
 
 class RoleTest extends \PHPUnit_Framework_TestCase
 {

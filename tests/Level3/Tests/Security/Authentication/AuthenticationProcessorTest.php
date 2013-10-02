@@ -3,7 +3,7 @@
 namespace Level3\Tests\Security\Authentication;
 
 use Level3\Messages\RequestFactory;
-use Level3\Security\Authentication\AuthenticationProcessor;
+use Level3\Processor\Wrapper\Authentication\AuthenticationProcessor;
 use Teapot\StatusCode;
 use Mockery as m;
 
@@ -31,7 +31,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         
         $this->requestProcessorMock = m::mock('Level3\Messages\Processors\RequestProcessor');
         $this->responseFactoryMock = m::mock('Level3\Messages\ResponseFactory');
-        $this->authMethodMock = m::mock('Level3\Security\Authentication\AuthenticationMethod');
+        $this->authMethodMock = m::mock('Level3\Processor\Wrapper\Authentication\AuthenticationMethod');
         $this->requestMock = m::mock('Level3\Messages\Request');
 
         $this->authenticationProcessor = new AuthenticationProcessor(
@@ -81,7 +81,7 @@ class AuthenticationProcessorTest extends \PHPUnit_Framework_TestCase
         $this->authMethodMock
             ->shouldReceive('authenticateRequest')
             ->with($this->requestMock)->once()
-            ->andThrow('Level3\Security\Authentication\Exceptions\MissingCredentials');
+            ->andThrow('Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials');
     }
 
     private function requestProcessorMockShouldReceiveCallTo($method)

@@ -2,8 +2,8 @@
 
 namespace Level3\Tests\Security\Authentication;
 
-use Level3\Security\Authentication\AuthenticatedUser;
-use Level3\Security\Authorization\Role;
+use Level3\Processor\Wrapper\Authentication\AuthenticatedUser;
+use Level3\Processor\Wrapper\Authorization\Role;
 
 class AuthenticatedUserBuilder
 {
