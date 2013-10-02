@@ -154,12 +154,46 @@ class Request extends SymfonyRequest
         if (!$this->headers->has(self::HEADER_SORT)) return null;
 
         $sortHeader = $this->headers->get(self::HEADER_SORT);
+        return $this->parseSortHeader($sortHeader);
+    }
 
-        $sort = json_decode($sortHeader, true);
-        if (!$sort) return null; // ToDo: throw exception to escalate to 403
-        if (!is_array($sort)) {
-            $sort = array($sort => 1);
+    private function parseSortHeader($sortHeader)
+    {
+        $sort = [];
+        $parts = explode(';', $sortHeader);
+        foreach ($parts as $part) {
+            list($field, $direction) = $this->parseSortPart($part);
+            if ($field) $sort[$field] = $direction;
         }
         return $sort;
+    }
+
+    private function parseSortPart($part)
+    {
+        $match = [];
+        $pattern = '/^
+            \s* (?P<field>\w+) \s* # capture the field
+            (?: = \s* (?P<direction>-?1) )? \s* # capture the sort direction if it is there
+        $/x';
+        preg_match($pattern, $part, $match);
+        list($field, $direction) = $this->extractFieldAndDirectionFromRegexMatch($match);
+        return array($field, $direction);
+    }
+
+    private function extractFieldAndDirectionFromRegexMatch($match)
+    {
+        if (isset($match['field'])) {
+            $field = $match['field'];
+        } else {
+            $field = null;
+        }
+
+        if (isset($match['direction'])) {
+            $direction = (int) $match['direction'];
+        } else {
+            $direction = 1;
+        }
+
+        return array($field, $direction);
     }
 }

@@ -160,19 +160,13 @@ class RequestTest extends TestCase
 
     public function testGetSort()
     {
-        $sort = array('foo' => 1);
         $this->request->headers->add(
-            array(Request::HEADER_SORT => json_encode($sort))
+            array(Request::HEADER_SORT => ' foo = 1; bar;baz  =-1')
         );
 
-        $this->assertEquals($sort, $this->request->getSort());
-    }
-
-    public function testGetSortOnlyWithFieldName()
-    {
-        $field = 'foo';
-        $this->request->headers->add(array(Request::HEADER_SORT => json_encode($field)));
-        $this->assertEquals(array($field => 1), $this->request->getSort());
+        $this->assertEquals(
+            array('foo' => 1, 'bar' => 1, 'baz' => -1),
+            $this->request->getSort());
     }
 
     public function testGetSortWithAbsentHeader()
