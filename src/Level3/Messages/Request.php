@@ -159,7 +159,7 @@ class Request extends SymfonyRequest
 
     private function parseSortHeader($sortHeader)
     {
-        $sort = [];
+        $sort = array();
         $parts = explode(';', $sortHeader);
         foreach ($parts as $part) {
             list($field, $direction) = $this->parseSortPart($part);
