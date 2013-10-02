@@ -8,6 +8,18 @@ use Closure;
 
 abstract class Wrapper
 {
+    protected $level3;
+
+    public function setLevel3(Level3 $level3)
+    {
+        $this->level3 = $level3;
+    }
+
+    public function getLevel3()
+    {
+        return $this->level3;
+    }
+
     public function find(Closure $execution, Request $request)
     {
         return $this->processRequest($execution, $request, __FUNCTION__);

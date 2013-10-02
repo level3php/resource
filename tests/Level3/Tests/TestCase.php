@@ -137,14 +137,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 ->withNoArgs()->once()->andReturn($formatter);
         }
 
-        if ($repository) {
-            $request->shouldReceive('getRepository')
-                ->withNoArgs()->once()->andReturn($repository);
-
-            $request->shouldReceive('setRepository')
-                ->with($repository)->once()->andReturn(null);
-        }
-
         return $request;
     }
 }

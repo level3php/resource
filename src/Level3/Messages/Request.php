@@ -48,16 +48,6 @@ class Request extends SymfonyRequest
         return $this->key;
     }
 
-    public function getRepository()
-    {
-        return $this->repository;
-    }
-
-    public function setRepository(Repository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     public function getFormatter()
     {
         $contentTypes = $this->getAcceptableContentTypes();

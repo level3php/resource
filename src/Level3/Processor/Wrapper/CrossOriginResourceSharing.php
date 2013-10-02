@@ -140,6 +140,15 @@ class CrossOriginResourceSharing extends Wrapper
         return $this->allowHeaders;
     }
 
+    public function options(Closure $execution, Request $request)
+    {
+        $response = new Response();
+        $response->setStatusCode(StatusCode::NO_CONTENT);
+        $this->applyResponseHeaders($response, 'options');
+
+        return $response;
+    }
+
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $this->readRequestHeaders($request, $method);
