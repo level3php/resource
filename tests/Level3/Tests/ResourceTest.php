@@ -56,11 +56,11 @@ class ResourceTest extends TestCase
         $this->assertSame(array('foo' => 'bar'), $this->resource->getData());
     }
 
-    public function testSetParameters()
+    public function testSetAtributes()
     {
-        $parameters = $this->createParametersMock();
+        $attributes = $this->createParametersMock();
 
-        $this->resource->setParameters($parameters);
-        $this->assertSame($parameters, $this->resource->getParameters());
+        $this->resource->setAttributes($attributes);
+        $this->assertSame($attributes, $this->resource->getAttributes());
     }
 }

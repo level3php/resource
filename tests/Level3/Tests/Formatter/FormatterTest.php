@@ -83,7 +83,7 @@ abstract class FormatterTest extends TestCase {
         $repository = $this->createRepositoryMock();
         $resource = new Resource($repository);
 
-        $resource->setParameters(new Parameters($parameters));
+        $resource->setAttributes(new Parameters($parameters));
         
         $this->shouldReceiveGetResouceURI($repository, $resource, $uri);
 

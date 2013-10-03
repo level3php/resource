@@ -39,7 +39,7 @@ abstract class Repository
     public function getResourceURI(Resource $resource, $method)
     {   
         $key = $this->getKey();
-        $parameters = $resource->getParameters();
+        $parameters = $resource->getAttributes();
 
         return $this->level3->getURI($key, $method, $parameters);
     }

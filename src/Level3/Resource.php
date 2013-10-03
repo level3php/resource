@@ -74,16 +74,16 @@ class Resource
         return $this->data;
     }
 
-    public function setParameters(Parameters $parameters)
+    public function setAttributes(Parameters $attributes)
     {
-        $this->parameters = $parameters;
+        $this->attributes = $attributes;
 
         return $this;
     }
 
-    public function getParameters()
+    public function getAttributes()
     {
-        return $this->parameters;
+        return $this->attributes;
     }
 
     public function getURI($interface = self::DEFAULT_INTERFACE_METHOD)
