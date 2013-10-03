@@ -2,23 +2,18 @@
 
 namespace Level3\Processor\Wrapper\Authorization;
 
-use Level3\Messages\Processors\RequestProcessor;
 use Level3\Messages\Request;
-use Level3\Messages\ResponseFactory;
 use Level3\Resources\ConfigParser;
 use Level3\Resources\Exceptions\ConfigError;
 use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
 
-class RoleAuthorizationProcessor extends AbstractAuthorizationProcessor
+class RoleAuthorizationWrapper extends AbstractAuthorizationWrapper
 {
     private $config;
 
     public function __construct(
-        RequestProcessor $requestProcessor,
-        ResponseFactory $responseFactory,
         ConfigParser $configParser
     ) {
-        parent::__construct($requestProcessor, $responseFactory);
         $this->config = $configParser->getConfig();
         if (!isset($this->config['role']) || !isset($this->config['role']['routes'])) {
             throw new ConfigError('role -> routes config sections have to be defined');
