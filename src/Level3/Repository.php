@@ -9,7 +9,9 @@
  */
 
 namespace Level3;
+
 use Level3\Resource;
+use Level3\Resource\Parameters;
 use ReflectionClass;
 
 abstract class Repository
@@ -36,12 +38,11 @@ abstract class Repository
         return $this->repositoryKey;
     }
 
-    public function getResourceURI(Resource $resource, $method)
+    public function getURI(Parameters $attributes = null, $method = null)
     {   
         $key = $this->getKey();
-        $parameters = $resource->getAttributes();
 
-        return $this->level3->getURI($key, $method, $parameters);
+        return $this->level3->getURI($key, $method, $attributes);
     }
 
     public function getDescription()
@@ -53,8 +54,11 @@ abstract class Repository
         return $description;
     }
 
-    public function createResource()
+    public function createResource(Parameters $attributes)
     {
-        return new Resource($this);
+        $uri = $this->getURI($attributes);
+
+        $resource = new Resource();
+        $resource->setURI($uri);
     }
 }

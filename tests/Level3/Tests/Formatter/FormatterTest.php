@@ -41,7 +41,7 @@ abstract class FormatterTest extends TestCase {
         $formatter = new $this->class();
 
         $repository = $this->createRepositoryMock();
-        $resource = $this->createResource(array('qux' => 'bar'), self::EXAMPLE_URI);
+        $resource = $this->createResource(self::EXAMPLE_URI);
         $resource->setData(array('qux' => 'bar'));
 
         $link = new Link('foo');
@@ -52,7 +52,7 @@ abstract class FormatterTest extends TestCase {
 
         $resource->addLink('quz', $link);
         $resource->addResource('baz', 
-            $this->createResource(array('bar' => 'qux'), self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
+            $this->createResource(self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
         );
 
 
@@ -78,15 +78,11 @@ abstract class FormatterTest extends TestCase {
         }
     }
 
-    protected function createResource($parameters, $uri)
+    protected function createResource($uri)
     {
-        $repository = $this->createRepositoryMock();
-        $resource = new Resource($repository);
-
-        $resource->setAttributes(new Parameters($parameters));
+        $resource = new Resource();
+        $resource->setURI($uri);
         
-        $this->shouldReceiveGetResouceURI($repository, $resource, $uri);
-
         return $resource;
     }
 
