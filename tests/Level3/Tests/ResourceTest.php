@@ -16,8 +16,7 @@ class ResourceTest extends TestCase
 {
     public function setUp()
     {
-        $this->repository = $this->createRepositoryMock();
-        $this->resource = new Resource($this->repository);
+        $this->resource = new Resource();
     }
 
     public function testAddLink()
@@ -32,13 +31,12 @@ class ResourceTest extends TestCase
     public function testLinkResource()
     {
         $linkedResource = new Resource($this->repository);
-        $this->repository->shouldReceive('getResourceURI')
-            ->once()->with($linkedResource, Resource::DEFAULT_INTERFACE_METHOD)
-            ->andReturn('foo');
+        $linkedResource->setURI('foo');
 
         $this->resource->linkResource('foo', $linkedResource);
         $links = $this->resource->getLinks();
         $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][0]);
+        $this->assertSame('foo', $links['foo'][0]->getHref());
     }
 
     public function testAddResource()
@@ -56,11 +54,11 @@ class ResourceTest extends TestCase
         $this->assertSame(array('foo' => 'bar'), $this->resource->getData());
     }
 
-    public function testSetAtributes()
+    public function testSetURI()
     {
-        $attributes = $this->createParametersMock();
+        $uri = 'foo';
 
-        $this->resource->setAttributes($attributes);
-        $this->assertSame($attributes, $this->resource->getAttributes());
+        $this->resource->setURI($uri);
+        $this->assertSame($uri, $this->resource->getURI());
     }
 }
