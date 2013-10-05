@@ -54,11 +54,13 @@ abstract class Repository
         return $description;
     }
 
-    public function createResource(Parameters $attributes)
+    public function createResource(Parameters $attributes = null)
     {
         $uri = $this->getURI($attributes);
 
         $resource = new Resource();
         $resource->setURI($uri);
+
+        return $resource;
     }
 }

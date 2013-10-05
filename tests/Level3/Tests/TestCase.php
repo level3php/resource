@@ -95,7 +95,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createParametersMock()
     {
-        return m::mock('Level3\Resource\Parameters');
+        $parameters = m::mock('Level3\Resource\Parameters');
+        $parameters->shouldReceive('getIterator');
+
+        return $parameters;
     }
 
     protected function createWrapperMock()
