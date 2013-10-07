@@ -13,10 +13,8 @@ use Level3\Tests\TestCase;
 use Mockery as m;
 use stdClass;
 
-class RoleAuthenticationProcessorTest extends TestCase
+class RoleAuthorizationWrapperTest extends TestCase
 {
-    const IRRELEVANT_RESPONSE = 'X';
-
     private $configParser;
     private $wrapper;
 
