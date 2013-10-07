@@ -6,6 +6,8 @@ use Level3\Exceptions\Forbidden;
 use Level3\Messages\Request;
 use Level3\Processor\Wrapper;
 
+use Closure;
+
 abstract class AbstractAuthorizationWrapper extends Wrapper
 {
     public final function processRequest(Closure $execution, Request $request, $method)
