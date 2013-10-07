@@ -33,11 +33,11 @@ class CrossOriginResourceSharing extends Wrapper
         self::HEADER_ALLOW_METHODS => array('options'),
     );
 
-    protected $allowOrigin;
+    protected $allowOrigin = self::ALLOW_ORIGIN_WILDCARD;
     protected $exposeHeaders;
     protected $maxAge;
     protected $allowCredentials;
-    protected $allowMethods;
+    protected $allowMethods = true;
     protected $allowHeaders = array(
         Request::HEADER_RANGE,
         Request::HEADER_SORT
@@ -120,8 +120,12 @@ class CrossOriginResourceSharing extends Wrapper
         return $this->allowCredentials;
     }
 
-    public function setAllowMethods(Array $allowMethods = null)
+    public function setAllowMethods($allowMethods)
     {
+        if ($allowMethods !== true && $allowMethods !== false) {
+            throw new RuntimeException('Malformed allow-methods, must be a boolean'); 
+        }
+
         $this->allowMethods = $allowMethods;
     }
 
@@ -140,12 +144,21 @@ class CrossOriginResourceSharing extends Wrapper
         return $this->allowHeaders;
     }
 
+    public function options(Closure $execution, Request $request)
+    {
+        $response = new Response();
+        $response->setStatusCode(StatusCode::NO_CONTENT);
+        $this->applyResponseHeaders($request, $response, 'options');
+
+        return $response;
+    }
+
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $this->readRequestHeaders($request, $method);
 
         $response = $execution($request);
-        $this->applyResponseHeaders($response, $method);
+        $this->applyResponseHeaders($request, $response, $method);
 
         return $response;
     }
@@ -175,17 +188,17 @@ class CrossOriginResourceSharing extends Wrapper
         throw new Forbidden();
     }
 
-    protected function applyResponseHeaders(Response $response, $method)
+    protected function applyResponseHeaders(Request $request, Response $response, $method)
     {
-        $this->applyAllowOriginHeader($response, $method);
-        $this->applyAllowMethods($response, $method);
-        $this->applyAllowHeaders($response, $method);
-        $this->applyMaxAge($response, $method);
-        $this->applyExposeHeaders($response, $method);
-        $this->applyAllowCredentials($response, $method);
+        $this->applyAllowOriginHeader($request, $response, $method);
+        $this->applyAllowMethods($request, $response, $method);
+        $this->applyAllowHeaders($request, $response, $method);
+        $this->applyMaxAge($request, $response, $method);
+        $this->applyExposeHeaders($request, $response, $method);
+        $this->applyAllowCredentials($request, $response, $method);
     }
 
-    protected function applyAllowOriginHeader(Response $response, $method)
+    protected function applyAllowOriginHeader(Request $request, Response $response, $method)
     {
         if ($this->allowOrigin === null) {
             return;
@@ -200,7 +213,7 @@ class CrossOriginResourceSharing extends Wrapper
         }
     }
 
-    protected function applyExposeHeaders(Response $response, $method)
+    protected function applyExposeHeaders(Request $request, Response $response, $method)
     {
         if (!$this->isHeaderEnabled(self::HEADER_EXPOSE_HEADERS, $method)) {
             return;
@@ -223,8 +236,8 @@ class CrossOriginResourceSharing extends Wrapper
     protected function getNonSimpleResponseHeaders(Response $response)
     {
         $simpleHeaders = array(
-            'cache-control', 'content-language', 'content-type',
-            'expires' , 'last-modified', 'pragma', 'status', 'date',
+            'Cache-control', 'Content-Language', 'Content-Type',
+            'Expires' , 'Last-Modified', 'Pragma', 'Status', 'Date',
             self::HEADER_ALLOW_ORIGIN, self::HEADER_EXPOSE_HEADERS, 
             self::HEADER_MAX_AGE, self::HEADER_ALLOW_CRENDENTIALS, 
             self::HEADER_ALLOW_METHODS, self::HEADER_ALLOW_HEADERS
@@ -236,7 +249,7 @@ class CrossOriginResourceSharing extends Wrapper
         return array_diff($allHeaders, $simpleHeaders);
     }
 
-    protected function applyMaxAge(Response $response, $method)
+    protected function applyMaxAge(Request $request, Response $response, $method)
     {
         if ($this->maxAge === null) {
             return;
@@ -249,7 +262,7 @@ class CrossOriginResourceSharing extends Wrapper
         $response->addHeader(self::HEADER_MAX_AGE, $this->maxAge);
     }
 
-    protected function applyAllowCredentials(Response $response, $method)
+    protected function applyAllowCredentials(Request $request, Response $response, $method)
     {
         if ($this->allowCredentials === null) {
             return;
@@ -267,9 +280,9 @@ class CrossOriginResourceSharing extends Wrapper
         $response->addHeader(self::HEADER_ALLOW_CRENDENTIALS, $header);
     }
 
-    protected function applyAllowMethods(Response $response, $method)
+    protected function applyAllowMethods(Request $request, Response $response, $method)
     {
-        if ($this->allowMethods === null) {
+        if (!$this->allowMethods) {
             return;
         }
 
@@ -277,11 +290,20 @@ class CrossOriginResourceSharing extends Wrapper
             return;
         }
 
-        $header = implode(', ',$this->allowMethods);
+        $methods = $this->getAvailableMethods($request);
+
+        $header = implode(', ',$methods);
         $response->addHeader(self::HEADER_ALLOW_METHODS, $header);
     }
 
-    protected function applyAllowHeaders(Response $response, $method)
+    protected function getAvailableMethods(Request $request)
+    {
+        $key = $request->getKey();
+        $repository = $this->getLevel3()->getHub()->get($key);
+        return $this->getLevel3()->getMapper()->getMethods($repository);
+    }
+
+    protected function applyAllowHeaders(Request $request, Response $response, $method)
     {
         if ($this->allowHeaders === null) {
             return;

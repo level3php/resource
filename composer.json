@@ -20,11 +20,8 @@
     "require": {
         "php": ">=5.3.0",
         "shrikeh/teapot": "dev-master",
-        "pimple/pimple": "v1.0.2",
-        "nocarrier/hal": "dev-develop",
         "symfony/http-foundation": "*",
-        "psr/log": "~1.0",
-        "symfony/yaml": "*"
+        "psr/log": "~1.0"
     },
     "require-dev": {
         "mockery/mockery": "*",

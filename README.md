@@ -14,11 +14,8 @@ Requirements
 
 * PHP 5.3.x
 * shrikeh/teapot
-* pimple/pimple
-* nocarrier/hal
 * symfony/http-foundation
 * psr/log: ~1.0
-* symfony/yaml
 
 Installation
 ------------

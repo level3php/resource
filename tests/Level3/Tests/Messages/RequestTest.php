@@ -34,13 +34,6 @@ class RequestTest extends TestCase
         $this->assertInstanceOf('Level3\Formatter', $formatter);
     }
 
-    public function testGetRepository()
-    {
-        $repository = $this->createRepositoryMock();
-        $this->request->setRepository($repository);
-        $this->assertSame($repository, $this->request->getRepository());
-    }
-
     public function testGetKey()
     {
         $key = $this->request->getKey();

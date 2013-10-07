@@ -46,7 +46,6 @@ class Hub
         return array_keys($this->repositoryDefinitions);
     }
 
-
     private function instanceDefinition($key)
     {
         $repository = $this->repositoryDefinitions[$key]();

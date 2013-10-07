@@ -11,25 +11,28 @@
 namespace Level3;
 
 use Level3\Resource\Link;
-use Level3\Resource\Parameters;
+use InvalidArgumentException;
 
 class Resource
 {
-    const DEFAULT_INTERFACE_METHOD = 'Level3\Repository\Getter';
-
-    protected $repository;
+    protected $uri;
     protected $formatter;
-
     protected $resources = array();
     protected $links = array();
     protected $data;
     protected $parameters;
 
-
-    public function __construct(Repository $repository)
+    public function setURI($uri)
     {
-        $this->repository = $repository;
-    }
+        $this->uri = $uri;
+
+        return $this;
+    } 
+
+    public function getURI()
+    {
+        return $this->uri;
+    } 
 
     public function addLink($rel, Link $link)
     {
@@ -40,7 +43,14 @@ class Resource
 
     public function linkResource($rel, Resource $resource)
     {
-        $this->addLink($rel, $resource->getSelfLink());
+        $link = $resource->getSelfLink();
+        if (!$link) {
+            throw new InvalidArgumentException(
+                'This resource not contains a valid URI'
+            );
+        }
+
+        $this->addLink($rel, $link);
 
         return $this;
     }
@@ -74,25 +84,12 @@ class Resource
         return $this->data;
     }
 
-    public function setParameters(Parameters $parameters)
-    {
-        $this->parameters = $parameters;
-
-        return $this;
-    }
-
-    public function getParameters()
-    {
-        return $this->parameters;
-    }
-
-    public function getURI($interface = self::DEFAULT_INTERFACE_METHOD)
-    {
-        return $this->repository->getResourceURI($this, $interface);
-    } 
-
     public function getSelfLink()
     {
+        if (!$this->uri) {
+            return null;
+        } 
+
         return new Link($this->getURI());
     }
 }

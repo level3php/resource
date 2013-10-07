@@ -108,6 +108,28 @@ class MapperTest extends TestCase
             )
         );
     }
+
+    public function testGetMethods()
+    {
+        $repository = $this->createDeleterMock();
+   
+        $mapper = $this->getMapperMock();
+        $this->assertSame(
+            array('DELETE'), 
+            $mapper->getMethods($repository)
+        );
+    }
+
+    public function testGetMethodsAll()
+    {
+        $repository = new RepositoryMock($this->createLevel3Mock());
+   
+        $mapper = $this->getMapperMock();
+        $this->assertSame(
+            array('DELETE', 'GET', 'PATCH', 'POST', 'PUT'), 
+            $mapper->getMethods($repository)
+        );
+    }
 }
 
 

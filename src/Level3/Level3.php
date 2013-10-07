@@ -62,7 +62,7 @@ class Level3
         return $this->hub->get($repositoryKey);
     }
 
-    public function getURI($repositoryKey, $interface, Parameters $parameters = null)
+    public function getURI($repositoryKey, $interface = null, Parameters $parameters = null)
     {
         return $this->mapper->getURI($repositoryKey, $interface, $parameters);
     }
@@ -75,6 +75,12 @@ class Level3
     public function addProcessorWrapper(Wrapper $wrapper, $priority = self::PRIORITY_NORMAL)
     {
         $this->wrappers[$priority][] = $wrapper;
+        $this->setLevel3ToWrapper($wrapper);
+    }
+
+    protected function setLevel3ToWrapper(Wrapper $wrapper)
+    {
+        $wrapper->setLevel3($this);
     }
 
     public function getProcessorWrappers()

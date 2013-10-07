@@ -23,6 +23,14 @@ class Level3Test extends TestCase
         $this->level3 = new Level3($this->mapperMock, $this->hubMock, $this->processorMock);
     }
 
+    protected function createWrapperMock()
+    {
+        $wrapper = parent::createWrapperMock();
+        $wrapper->shouldReceive('setLevel3')->with($this->level3)->once()->andReturn(null);
+
+        return $wrapper;
+    }
+
     public function testGetDebug()
     {
         $this->level3->setDebug(true);

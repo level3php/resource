@@ -16,6 +16,7 @@ use Level3\Resource\Parameters;
 abstract class Mapper
 {
     const SLASH_CHARACTER = '/';
+    const DEFAULT_INTERFACE = 'Level3\Repository\Getter';
 
     protected $baseURI = self::SLASH_CHARACTER;
     protected $interfacesWithOutParams = array(
@@ -120,23 +121,23 @@ abstract class Mapper
         $this->$method($repositoryKey, $curieURI);
     }
 
-    public function getURI($repositoryKey, $interface, Parameters $parameters = null)
+    public function getURI($repositoryKey, $interface = self::DEFAULT_INTERFACE, Parameters $parameters = null)
     {
         $curieURI = $this->getCurieURI($repositoryKey, $interface);
 
         return $this->transformCurieURI($curieURI, $parameters);
     }
 
-    public function getCurieURI($repositoryKey, $requestedInterface)
+    public function getCurieURI($repositoryKey, $interface = self::DEFAULT_INTERFACE)
     {
-        foreach ($this->interfacesWithOutParams as $interface => $method) {
-            if ($interface == $requestedInterface) {
+        foreach ($this->interfacesWithOutParams as $interfaceName => $method) {
+            if ($interface == $interfaceName) {
                 return $this->getCurieURIWithOutParams($repositoryKey);
             }
         }
 
-        foreach ($this->interfacesWithParams as $interface => $method) {
-            if ($interface == $requestedInterface) {
+        foreach ($this->interfacesWithParams as $interfaceName => $method) {
+            if ($interface == $interfaceName) {
                 return $this->getCurieURIWithParams($repositoryKey);
             }
         }
@@ -150,6 +151,26 @@ abstract class Mapper
     protected function getCurieURIWithParams($repositoryKey)
     {
         return $this->getCurieURIWithOutParams($repositoryKey) . '/{id}';
+    }
+
+    public function getMethods($repository)
+    {
+        $interfaces = array_merge(
+            $this->interfacesWithOutParams, 
+            $this->interfacesWithParams
+        );
+
+        $methods = array();
+        foreach ($interfaces as $interface => $method) {
+            if ($repository instanceOf $interface) {
+                $methods[] = $method;
+            }
+        }
+
+        $methods = array_unique($methods);
+        sort($methods);
+        
+        return $methods;
     }
 
     abstract public function mapFinder($repositoryKey, $uri);
