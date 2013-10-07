@@ -4,7 +4,7 @@ namespace Level3\Tests\Security\Authorization;
 
 use Level3\Resources\YamlConfigParser;
 use Level3\Processor\Wrapper\Authorization\AclAuthorizationProcessor;
-use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
+use Level3\Tests\Processor\Wrapper\Authentication\AuthenticatedCredentialsBuilder;
 use Mockery as m;
 
 class AclAuthorizationTest extends \PHPUnit_Framework_TestCase

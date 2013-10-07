@@ -1,51 +1,45 @@
 <?php
 
-namespace Level3\Tests\Security\Authentication;
+namespace Level3\Tests\Processor\Wrapper\Authentication;
 
-use Level3\Messages\RequestFactory;
 use Level3\Processor\Wrapper\Authentication\Exceptions\InvalidCredentials;
 use Level3\Processor\Wrapper\Authentication\Methods\HMAC;
+use Level3\Processor\Wrapper\Authorization\Role;
+use Level3\Tests\TestCase;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\Request;
 
-class HMACTest extends \PHPUnit_Framework_TestCase
+class HMACTest extends TestCase
 {
     const IRRELEVANT_SIGNATURE = 'X';
     const IRRELEVANT_RESPONSE = 'XX';
 
-    private $credentialsRespositoryMock;
+    private $credentialsRepositoryMock;
     private $responseFactoryMock;
-    private $requestFactory;
     private $headers;
     private $request;
     private $authenticatedUser;
 
     public function setUp()
     {
-        $this->markTestSkipped(
-          'The MySQLi extension is not available.'
-        );
-    
-        $this->credentialsRespositoryMock = m::mock('Level3\Processor\Wrapper\Authentication\CredentialsRepository');
-        $this->requestFactory = new RequestFactory();
-        $this->headers = $this->createHeaders();
+        parent::setUp();
+        $this->credentialsRepositoryMock = m::mock('Level3\Processor\Wrapper\Authentication\CredentialsRepository');
         $this->authenticatedUser = AuthenticatedCredentialsBuilder::anAuthenticatedUser()->build();
 
-        $this->method = new HMAC($this->credentialsRespositoryMock);
+        $this->method = new HMAC($this->credentialsRepositoryMock);
     }
 
-    private function createHeaders()
+    private function getAuthorizationHeader($useUppercaseSignature)
     {
-        return array(
-            'Authorization' => sprintf(
-                '%s%s%s%s%s',
-                'Token',
-                ' ',
-                AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
-                ':',
-                $this->createSignatureForNullContent()
-            )
-        );
+        $signature = $this->createSignatureForNullContent();
+        if ($useUppercaseSignature) $signature = strtoupper($signature);
+        return sprintf( 'Token %s:%s',
+            AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY, $signature);
+    }
+
+    private function createAuthenticatedCredentials()
+    {
+        return AuthenticatedCredentialsBuilder::withIrrelevantFields()->build();
     }
 
     private function createSignatureForNullContent()
@@ -53,145 +47,58 @@ class HMACTest extends \PHPUnit_Framework_TestCase
         return hash_hmac(HMAC::HASH_ALGORITHM, null, AuthenticatedCredentialsBuilder::IRRELEVANT_SECRET_KEY);
     }
 
-    /**
-     * @expectedException Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials
-     */
     public function testAuthenticateRequestShouldThrowMissingCredentials()
     {
-        $this->headerShouldBeMissing(HMAC::AUTHORIZATION_HEADER);
-        $request = $this->method->authenticateRequest($this->request);
+        $this->setExpectedException(
+            'Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials'
+        );
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')->with(HMAC::AUTHORIZATION_HEADER)->andReturn(null);
+        $this->method->authenticateRequest($request);
     }
 
-    private function headerShouldBeMissing($headerName)
-    {
-        unset($this->headers[$headerName]);
-        $this->initRequest();
-    }
-
-    private function initRequest()
-    {
-        $this->request = $this->requestFactory->clear()
-            ->withSymfonyRequest(new Request())
-            ->create();
-
-        $this->request->headers->add($this->headers);
-    }
-
-    /**
-     * @expectedException Level3\Exceptions\Forbidden
-     */
     public function testAuthenticateRequestShouldThrowInvalidCredentials()
     {
-        $this->extractAuthContentShouldThrowInvalidCredentials();
+        $this->setExpectedException('Level3\Exceptions\Forbidden');
 
-        $this->method->authenticateRequest($this->request);
-    }
-
-    private function extractAuthContentShouldThrowInvalidCredentials()
-    {
-        $this->initRequest();
-        $this->request->headers->add(
-            array('Authorization' =>
-                sprintf(
-                    '%s%s%s%s%s',
-                    'XXX',
-                    ' ',
-                    AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
-                    ':',
-                    $this->createSignatureForNullContent()
-                )
-            )
-        );
-    }
-
-    /**
-     * @expectedException Level3\Exceptions\Forbidden
-     */
-    public function testAuthenticateRequestShouldThrowBadCredentials()
-    {
-        $this->extractAuthContentShouldThrowBadCredentials();
-
-        $this->method->authenticateRequest($this->request);
-    }
-
-    private function extractAuthContentShouldThrowBadCredentials()
-    {
-        $this->initRequest();
-        $this->credentialsRepositoryShouldHaveUser();
-        $this->request->headers->add(
-            array('Authorization' =>
-            sprintf(
-                '%s%s%s%s%s',
-                'Token',
-                ' ',
-                AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
-                ':',
-                'asdfasd'
-            )
-            )
-        );
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')->with('Authorization')->andReturn('Foo');
+        $this->method->authenticateRequest($request);
     }
 
     public function testAuthenticateRequest()
     {
-        $this->shouldAuthenticateRequest();
-
-        $request = $this->method->authenticateRequest($this->request);
-
-        $this->assertInstanceOf(
-            'Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials',
-            $request->getCredentials()
-        );
+        $this->doTestAuthenticateRequest(false);
     }
 
     public function testAuthenticateRequestWithUppercaseSignature()
     {
-        $this->shouldAuthenticateRequest();
-
-        $this->request->headers->add(
-            array('Authorization' =>
-            sprintf(
-                '%s%s%s%s%s',
-                'Token',
-                ' ',
-                AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY,
-                ':',
-                strtoupper($this->createSignatureForNullContent())
-            )
-            )
-        );
-
-        $request = $this->method->authenticateRequest($this->request);
-
-        $this->assertInstanceOf(
-            'Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials',
-            $request->getCredentials()
-        );
+        $this->doTestAuthenticateRequest(true);
     }
 
-    private function shouldAuthenticateRequest()
+    private function doTestAuthenticateRequest($useUppercaseSignature)
     {
-        $this->initRequest();
-        $this->credentialsRepositoryShouldHaveUser();
+        $header = $this->getAuthorizationHeader($useUppercaseSignature);
+        $authenticatedCredentials = $this->createAuthenticatedCredentials();
+
+        $request = $this->createRequestWithHeaderAndCredentials($header, $authenticatedCredentials);
+
+        $this->credentialsRepositoryMock
+            ->shouldReceive('findByApiKey')
+            ->with(AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY)
+            ->andReturn($authenticatedCredentials);
+
+        $request = $this->method->authenticateRequest($request);
     }
 
-    private function headerShouldBePresent($headerName, $headerValue)
+    private function createRequestWithHeaderAndCredentials($header, $credentials)
     {
-        $this->headers[$headerName] = $headerValue;
-        $this->initRequest();
-    }
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')->with('Authorization')->andReturn($header);
 
-    private function requestFactoryShouldCreateForbiddenResponse()
-    {
-        $this->responseFactoryMock->shouldReceive('createResponse')->once()->with(null, StatusCode::FORBIDDEN)
-            ->andReturn(self::IRRELEVANT_RESPONSE);
-    }
-
-    private function credentialsRepositoryShouldHaveUser()
-    {
-        $this->credentialsRespositoryMock->shouldReceive('findByApiKey')->with(
-            AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY
-        )->once()
-            ->andReturn($this->authenticatedUser);
+        $request->shouldReceive('setCredentials')->with($credentials)->once();
+        $request->shouldReceive('getContent')->andReturn('');
+        return $request;
     }
 }

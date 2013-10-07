@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3\Tests\Security\Authentication;
+namespace Level3\Tests\Processor\Wrapper\Authentication;
 
 use Level3\Processor\Wrapper\Authentication\AuthenticatedUser;
 use Level3\Processor\Wrapper\Authorization\Role;

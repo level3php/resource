@@ -8,7 +8,7 @@ use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
 use Level3\Processor\Wrapper\Authentication\AnonymousCredentials;
 use Level3\Processor\Wrapper\Authorization\Role;
 use Level3\Processor\Wrapper\Authorization\RoleAuthorizationProcessor;
-use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
+use Level3\Tests\Processor\Wrapper\Authentication\AuthenticatedCredentialsBuilder;
 use Mockery as m;
 
 class RoleAuthenticationProcessorTest extends \PHPUnit_Framework_TestCase

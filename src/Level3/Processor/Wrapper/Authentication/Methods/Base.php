@@ -25,7 +25,7 @@ abstract class Base implements AuthenticationMethod
 
     protected function hasAuthorizationHeader(Request $request)
     {
-        return $request->headers->has(static::AUTHORIZATION_HEADER);
+        return $request->getHeader(static::AUTHORIZATION_HEADER) !== null;
     }
 
     private final function getAndVerifyCredentials(Request $request)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3\Tests\Security\Authentication;
+namespace Level3\Tests\Processor\Wrapper\Authentication;
 
 use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
 use Level3\Processor\Wrapper\Authorization\Role;
@@ -27,7 +27,17 @@ class AuthenticatedCredentialsBuilder
 
     public static function anAuthenticatedUser()
     {
-        return new self(new Role());
+        return new static(new Role());
+    }
+
+    public static function withIrrelevantFields()
+    {
+        return static::anAuthenticatedUser()
+            ->withId(static::IRRELEVANT_ID)
+            ->withLogin(static::IRRELEVANT_LOGIN)
+            ->withFullName(static::IRRELEVANT_FULL_NAME)
+            ->withSecretKey(static::IRRELEVANT_SECRET_KEY)
+            ->withApiKey(static::IRRELEVANT_API_KEY);
     }
 
     public function build()
