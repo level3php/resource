@@ -1,18 +1,12 @@
 <?php
 
-namespace Level3\Tests\Security\Authorization;
+namespace Level3\Tests\Processor\Wrapper\Authorization;
 
 use Level3\Processor\Wrapper\Authorization\Role;
+use Level3\Tests\TestCase;
 
-class RoleTest extends \PHPUnit_Framework_TestCase
+class RoleTest extends TestCase
 {
-    public function setUp()
-    {
-        $this->markTestSkipped(
-            'The MySQLi extension is not available.'
-        );
-    }
-
     /**
      * @dataProvider accessLevels
      */
