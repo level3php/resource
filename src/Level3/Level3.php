@@ -30,6 +30,7 @@ class Level3
         $this->hub = $hub;
         $this->mapper = $mapper;
         $this->processor = $processor;
+        $this->processor->setLevel3($this);
     }
 
     public function setDebug($debug)
@@ -93,5 +94,10 @@ class Level3
         }
 
         return $result;
+    }
+
+    public function boot()
+    {
+        $this->mapper->boot($this->getHub());
     }
 }

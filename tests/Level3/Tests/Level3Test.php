@@ -19,6 +19,7 @@ class Level3Test extends TestCase
         $this->mapperMock = $this->createMapperMock();
         $this->hubMock = $this->createHubMock();
         $this->processorMock = $this->createProcessorMock();
+        $this->processorMock->shouldReceive('setLevel3')->once()->andReturn(null);
 
         $this->level3 = new Level3($this->mapperMock, $this->hubMock, $this->processorMock);
     }
@@ -124,5 +125,12 @@ class Level3Test extends TestCase
         $this->level3->clearProcessWrappers();
         $result = $this->level3->getProcessorWrappers();
         $this->assertCount(0, $result);
+    }
+
+    public function testBoot()
+    {
+        $this->mapperMock->shouldReceive('boot')->with($this->hubMock)->once()->andReturn(null);
+
+        $this->level3->boot();
     }
 }

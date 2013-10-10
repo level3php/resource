@@ -25,7 +25,8 @@ class ProcessorTest extends TestCase
                 new WrapperMock('2', '/')
             ));
 
-        $this->processor = new Processor($this->level3);
+        $this->processor = new Processor();
+        $this->processor->setLevel3($this->level3);
     }
 
     /**
