@@ -1,12 +1,12 @@
 <?php
 
-namespace Level3\Security\Authentication\Methods;
+namespace Level3\Processor\Wrapper\Authentication\Methods;
 
-use Level3\Security\Authentication\AuthenticationMethod;
+use Level3\Processor\Wrapper\Authentication\AuthenticationMethod;
 use Level3\Exceptions\Forbidden;
 use Level3\Messages\Request;
-use Level3\Security\Authentication\Credentials;
-use Level3\Security\Authentication\Exceptions\MissingCredentials;
+use Level3\Processor\Wrapper\Authentication\Credentials;
+use Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials;
 
 abstract class Base implements AuthenticationMethod
 {
@@ -25,7 +25,7 @@ abstract class Base implements AuthenticationMethod
 
     protected function hasAuthorizationHeader(Request $request)
     {
-        return $request->headers->has(static::AUTHORIZATION_HEADER);
+        return $request->getHeader(static::AUTHORIZATION_HEADER) !== null;
     }
 
     private final function getAndVerifyCredentials(Request $request)

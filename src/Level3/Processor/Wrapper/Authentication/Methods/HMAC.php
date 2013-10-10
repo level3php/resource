@@ -1,11 +1,11 @@
 <?php
 
-namespace Level3\Security\Authentication\Methods;
+namespace Level3\Processor\Wrapper\Authentication\Methods;
 
 use Level3\Exceptions\Forbidden;
 use Level3\Messages\Request;
-use Level3\Security\Authentication\CredentialsRepository;
-use Level3\Security\Authentication\Credentials;
+use Level3\Processor\Wrapper\Authentication\CredentialsRepository;
+use Level3\Processor\Wrapper\Authentication\Credentials;
 
 class HMAC extends Base
 {

@@ -3,8 +3,8 @@
 namespace Level3\Tests;
 
 use Level3\Messages\Request;
-use Level3\Security\Authorization\Role;
-use Level3\Tests\Security\Authentication\AuthenticatedCredentialsBuilder;
+use Level3\Processor\Wrapper\Authorization\Role;
+use Level3\Tests\Processor\Wrapper\Authentication\AuthenticatedCredentialsBuilder;
 use Mockery as m;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 

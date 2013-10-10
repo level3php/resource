@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3\Security\Authentication;
+namespace Level3\Processor\Wrapper\Authentication;
 
 class AnonymousCredentials extends Credentials
 {

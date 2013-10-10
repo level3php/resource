@@ -3,10 +3,10 @@
 namespace Level3\Messages;
 
 use Level3\FormatterFactory;
-use Level3\Security\Authentication\AuthenticatedCredentials;
-use Level3\Security\Authentication\AnonymousCredentials;
-use Level3\Security\Authentication\Credentials;
-use Level3\Security\Authentication\User;
+use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
+use Level3\Processor\Wrapper\Authentication\AnonymousCredentials;
+use Level3\Processor\Wrapper\Authentication\Credentials;
+use Level3\Processor\Wrapper\Authentication\User;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 use Level3\Resource\Parameters;

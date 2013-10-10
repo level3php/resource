@@ -1,11 +1,11 @@
 <?php
 
-namespace Level3\Tests\Security\Authentication;
+namespace Level3\Tests\Processor\Wrapper\Authentication;
 
-use Level3\Security\Authentication\AuthenticatedCredentials;
-use Level3\Security\Authorization\Role;
+use Level3\Processor\Wrapper\Authentication\AuthenticatedUser;
+use Level3\Processor\Wrapper\Authorization\Role;
 
-class AuthenticatedCredentialsBuilder
+class AuthenticatedUserBuilder
 {
     const IRRELEVANT_ID = 'X';
     const IRRELEVANT_LOGIN = 'XX';
@@ -32,7 +32,7 @@ class AuthenticatedCredentialsBuilder
 
     public function build()
     {
-        return new AuthenticatedCredentials($this->id, $this->login, $this->fullName, $this->role, $this->secretKey, $this->apiKey);
+        return new AuthenticatedUser($this->id, $this->login, $this->fullName, $this->role, $this->secretKey, $this->apiKey);
     }
 
     public function withId($id)

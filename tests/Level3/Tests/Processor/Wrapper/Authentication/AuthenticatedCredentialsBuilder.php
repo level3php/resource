@@ -1,11 +1,11 @@
 <?php
 
-namespace Level3\Tests\Security\Authentication;
+namespace Level3\Tests\Processor\Wrapper\Authentication;
 
-use Level3\Security\Authentication\AuthenticatedUser;
-use Level3\Security\Authorization\Role;
+use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
+use Level3\Processor\Wrapper\Authorization\Role;
 
-class AuthenticatedUserBuilder
+class AuthenticatedCredentialsBuilder
 {
     const IRRELEVANT_ID = 'X';
     const IRRELEVANT_LOGIN = 'XX';
@@ -27,12 +27,22 @@ class AuthenticatedUserBuilder
 
     public static function anAuthenticatedUser()
     {
-        return new self(new Role());
+        return new static(new Role());
+    }
+
+    public static function withIrrelevantFields()
+    {
+        return static::anAuthenticatedUser()
+            ->withId(static::IRRELEVANT_ID)
+            ->withLogin(static::IRRELEVANT_LOGIN)
+            ->withFullName(static::IRRELEVANT_FULL_NAME)
+            ->withSecretKey(static::IRRELEVANT_SECRET_KEY)
+            ->withApiKey(static::IRRELEVANT_API_KEY);
     }
 
     public function build()
     {
-        return new AuthenticatedUser($this->id, $this->login, $this->fullName, $this->role, $this->secretKey, $this->apiKey);
+        return new AuthenticatedCredentials($this->id, $this->login, $this->fullName, $this->role, $this->secretKey, $this->apiKey);
     }
 
     public function withId($id)
