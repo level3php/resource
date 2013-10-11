@@ -24,6 +24,11 @@ class Hub
     private $repositoryDefinitions = array();
     private $instancedRepositories = array();
 
+    public function setLevel3(Level3 $level3)
+    {
+        $this->level3 = $level3;
+    }
+
     public function registerDefinition($key, Closure $definition)
     {
         if ($this->isValidKey($key)) {
@@ -48,7 +53,7 @@ class Hub
 
     private function instanceDefinition($key)
     {
-        $repository = $this->repositoryDefinitions[$key]();
+        $repository = $this->repositoryDefinitions[$key]($this->level3);
         if (!$repository instanceOf Repository) {
             throw new \RuntimeException(
                 sprintf('Invalid definition for "%s", must return a Repository instance', $key)

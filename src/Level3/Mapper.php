@@ -19,6 +19,8 @@ abstract class Mapper
     const DEFAULT_INTERFACE = 'Level3\Repository\Getter';
 
     protected $baseURI = '';
+    protected $skipCurieSegments = 0;
+
     protected $interfacesWithOutParams = array(
         'Level3\Repository\Putter' => 'PUT',
         'Level3\Repository\Finder' => 'GET'
@@ -40,8 +42,17 @@ abstract class Mapper
         $this->baseURI = $uri;
     }
 
+    public function setSkipCurieSegments($skip)
+    {
+        $this->skipCurieSegments = $skip;
+    }
+
     private function doesNotEndInSlash($uri)
     {
+        if (!strlen($uri)) {
+            return false;
+        }
+        
         return $uri[strlen($uri) - 1] != self::SLASH_CHARACTER;
     }
 
@@ -151,7 +162,7 @@ abstract class Mapper
         $max = count($names);
         for ($i=0;$i<$max;$i++) { 
             $uri .= self::SLASH_CHARACTER . $names[$i];
-            if ($specific || $max > $i+1) {
+            if (($specific || $max > $i+1) && $i >= $this->skipCurieSegments)  {
                 $uri .= self::SLASH_CHARACTER . $this->createCurieParamFromName($names[$i]);
             }
         }

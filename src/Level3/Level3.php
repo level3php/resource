@@ -30,7 +30,9 @@ class Level3
         $this->hub = $hub;
         $this->mapper = $mapper;
         $this->processor = $processor;
-        $this->processor->setLevel3($this);
+
+        $this->setLevel3ToObject($processor);
+        $this->setLevel3ToObject($hub);
     }
 
     public function setDebug($debug)
@@ -76,12 +78,12 @@ class Level3
     public function addProcessorWrapper(Wrapper $wrapper, $priority = self::PRIORITY_NORMAL)
     {
         $this->wrappers[$priority][] = $wrapper;
-        $this->setLevel3ToWrapper($wrapper);
+        $this->setLevel3ToObject($wrapper);
     }
 
-    protected function setLevel3ToWrapper(Wrapper $wrapper)
+    protected function setLevel3ToObject($object)
     {
-        $wrapper->setLevel3($this);
+        $object->setLevel3($this);
     }
 
     public function getProcessorWrappers()
