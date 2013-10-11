@@ -18,7 +18,7 @@ abstract class Mapper
     const SLASH_CHARACTER = '/';
     const DEFAULT_INTERFACE = 'Level3\Repository\Getter';
 
-    protected $baseURI = self::SLASH_CHARACTER;
+    protected $baseURI = '';
     protected $interfacesWithOutParams = array(
         'Level3\Repository\Putter' => 'PUT',
         'Level3\Repository\Finder' => 'GET'
@@ -102,10 +102,10 @@ abstract class Mapper
     {
         $repositoryKey = $repository->getKey();
 
-        $curieURIWithOutParams = $this->getCurieURIWithOutParams($repositoryKey);
+        $curieURIWithOutParams = $this->generateCurieURI($repositoryKey);
         $this->mapOptions($repositoryKey, $curieURIWithOutParams);  
 
-        $curieURIWithParams = $this->getCurieURIWithParams($repositoryKey);
+        $curieURIWithParams = $this->generateCurieURI($repositoryKey, true);
         $this->mapOptions($repositoryKey, $curieURIWithParams);  
     }
 
@@ -132,25 +132,36 @@ abstract class Mapper
     {
         foreach ($this->interfacesWithOutParams as $interfaceName => $method) {
             if ($interface == $interfaceName) {
-                return $this->getCurieURIWithOutParams($repositoryKey);
+                return $this->generateCurieURI($repositoryKey);
             }
         }
 
         foreach ($this->interfacesWithParams as $interfaceName => $method) {
             if ($interface == $interfaceName) {
-                return $this->getCurieURIWithParams($repositoryKey);
+                return $this->generateCurieURI($repositoryKey, true);
             }
         }
     }
 
-    protected function getCurieURIWithOutParams($repositoryKey)
+    protected function generateCurieURI($repositoryKey, $specific = false)
     {
-        return $this->baseURI . $repositoryKey;
+        $uri = $this->baseURI;
+
+        $names = explode(self::SLASH_CHARACTER, $repositoryKey);
+        $max = count($names);
+        for ($i=0;$i<$max;$i++) { 
+            $uri .= self::SLASH_CHARACTER . $names[$i];
+            if ($specific || $max > $i+1) {
+                $uri .= self::SLASH_CHARACTER . $this->createCurieParamFromName($names[$i]);
+            }
+        }
+
+        return $uri;
     }
 
-    protected function getCurieURIWithParams($repositoryKey)
+    protected function createCurieParamFromName($name)
     {
-        return $this->getCurieURIWithOutParams($repositoryKey) . '/{id}';
+        return sprintf('{%sId}', $name);
     }
 
     public function getMethods($repository)

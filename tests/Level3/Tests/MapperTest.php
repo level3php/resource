@@ -55,14 +55,14 @@ class MapperTest extends TestCase
 
         $repositoryKey = $repository->getKey();
         $mapper = $this->getMapperMock();
-        $mapper->shouldReceive('mapGetter')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapGetter')->once()->with($repositoryKey, '/foo/{fooId}');
         $mapper->shouldReceive('mapPutter')->once()->with($repositoryKey, '/foo');
-        $mapper->shouldReceive('mapPoster')->once()->with($repositoryKey, '/foo/{id}');
-        $mapper->shouldReceive('mapDeleter')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapPoster')->once()->with($repositoryKey, '/foo/{fooId}');
+        $mapper->shouldReceive('mapDeleter')->once()->with($repositoryKey, '/foo/{fooId}');
         $mapper->shouldReceive('mapFinder')->once()->with($repositoryKey, '/foo');
-        $mapper->shouldReceive('mapPatcher')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapPatcher')->once()->with($repositoryKey, '/foo/{fooId}');
         $mapper->shouldReceive('mapOptions')->once()->with($repositoryKey, '/foo');
-        $mapper->shouldReceive('mapOptions')->once()->with($repositoryKey, '/foo/{id}');
+        $mapper->shouldReceive('mapOptions')->once()->with($repositoryKey, '/foo/{fooId}');
 
         $mapper->boot($hub);
     }
@@ -71,8 +71,33 @@ class MapperTest extends TestCase
     {
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            '/foo/{id}', 
+            '/foo', 
+            $mapper->getCurieURI('foo', 'Level3\Repository\Finder')
+        );
+
+        $this->assertSame(
+            '/foo/{fooId}', 
             $mapper->getCurieURI('foo', 'Level3\Repository\Deleter')
+        );
+
+        $this->assertSame(
+            '/foo/{fooId}/bar', 
+            $mapper->getCurieURI('foo/bar', 'Level3\Repository\Finder')
+        );
+
+        $this->assertSame(
+            '/foo/{fooId}/bar/{barId}', 
+            $mapper->getCurieURI('foo/bar', 'Level3\Repository\Deleter')
+        );
+
+        $this->assertSame(
+            '/foo/{fooId}/bar/{barId}/qux', 
+            $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Finder')
+        );
+        
+        $this->assertSame(
+            '/foo/{fooId}/bar/{barId}/qux/{quxId}', 
+            $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Deleter')
         );
     }
 
@@ -92,7 +117,7 @@ class MapperTest extends TestCase
             $mapper->getURI(
                 'foo', 
                 'Level3\Repository\Deleter', 
-                new Parameters(array('id' => 1))
+                new Parameters(array('fooId' => 1))
             )
         );
     }
