@@ -12,13 +12,46 @@ namespace Level3\Messages;
 
 use Level3\Resource;
 use Level3\Formatter;
+use Level3\Exceptions\HTTPException;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Teapot\StatusCode;
+use Exception;
 
 class Response extends SymfonyResponse
 {
     protected $resource;
     protected $formatter;
+
+    static public function createFromResource(Request $request, Resource $resource)
+    {
+        $response = new static();
+        $response->setStatusCode(StatusCode::OK);
+        $response->setResource($resource);
+        $response->setFormatter($request->getFormatter());
+
+        return $response;
+    }
+
+    static public function createFromException(Request $request, Exception $exception)
+    {
+        $code = StatusCode::INTERNAL_SERVER_ERROR;
+        if ($exception instanceOf HTTPException) {
+            $code = $exception->getCode();
+        }
+
+        $exceptionClass = explode('\\', get_class($exception));
+        $resource = new Resource();
+        $resource->setData(array(
+            'type' => end($exceptionClass),
+            'message' => $exception->getMessage()
+        ));
+
+        $response = static::createFromResource($request, $resource);
+        $response->setStatusCode($code);
+
+        return $response;
+    }
 
     public function setResource(Resource $resource)
     {

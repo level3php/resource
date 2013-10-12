@@ -11,16 +11,30 @@
 namespace Level3;
 
 use Level3\Resource\Link;
+use DateTime;
 use InvalidArgumentException;
 
 class Resource
 {
+    protected $id;
     protected $uri;
-    protected $formatter;
     protected $resources = array();
     protected $links = array();
     protected $data;
-    protected $parameters;
+    protected $lastUpdate;
+    protected $cache;
+
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    } 
+
+    public function getId()
+    {
+        return $this->id;
+    } 
 
     public function setURI($uri)
     {
@@ -79,6 +93,13 @@ class Resource
         return $this;
     }
 
+    public function addData($key, $value)
+    {
+        $this->data[$key] = $value;
+
+        return $this;
+    }
+
     public function getData()
     {
         return $this->data;
@@ -91,5 +112,29 @@ class Resource
         } 
 
         return new Link($this->getURI());
+    }
+
+    public function setLastUpdate(DateTime $date)
+    {
+        $this->lastUpdate = $date;
+
+        return $this;
+    }
+
+    public function getLastUpdate()
+    {
+        return $this->lastUpdate;
+    }
+
+    public function setCache($secs)
+    {
+        $this->cache = $secs;
+
+        return $this;
+    }
+
+    public function getCache()
+    {
+        return $this->cache;
     }
 }

@@ -35,7 +35,7 @@ class Processor
             $filters = $request->getFilters();
             $resource = $repository->find($attributes, $filters);
 
-            return $self->createResponse($request, $resource);
+            return Response::createFromResource($request, $resource);
         });
     }
 
@@ -50,7 +50,7 @@ class Processor
             $attributes = $request->getAttributes();
             $resource = $repository->get($attributes);
 
-            return $self->createResponse($request, $resource);
+            return Response::createFromResource($request, $resource);
         });
     }
 
@@ -66,7 +66,7 @@ class Processor
             $content = $request->getContent();
             $resource = $repository->post($attributes, $content);
 
-            $response = $self->createResponse($request, $resource);
+            $response = Response::createFromResource($request, $resource);
             $response->setStatusCode(StatusCode::CREATED);
 
             return $response;
@@ -85,7 +85,7 @@ class Processor
             $content = $request->getContent();
             $resource = $repository->patch($attributes, $content);
 
-            return $self->createResponse($request, $resource);
+            return Response::createFromResource($request, $resource);
         });
     }
 
@@ -101,7 +101,7 @@ class Processor
             $content = $request->getContent();
             $resource = $repository->put($attributes, $content);
 
-            return $self->createResponse($request, $resource);
+            return Response::createFromResource($request, $resource);
         });
     }
 
@@ -116,7 +116,7 @@ class Processor
             $attributes = $request->getAttributes();
             $resource = $repository->delete($attributes);
 
-            return $self->createResponse($request);
+            return new Response(null, StatusCode::NO_CONTENT);
         });
     }
 
@@ -129,10 +129,8 @@ class Processor
 
     public function error(Request $request, Exception $exception)
     {
-        $self = $this;
-
-        return $this->execute('error', $request, function(Request $request) use ($self, $exception) { 
-            return $self->createExceptionResponse($request, $exception);
+        return $this->execute('error', $request, function(Request $request) use ($exception) { 
+            return Response::createFromException($request, $exception);
         });
     }
 
@@ -146,46 +144,6 @@ class Processor
         }
     
         return $execution($request);
-    }
-
-    /**
-     * @protected 5.3
-     */
-    public function createResponse(Request $request, Resource $resource = null)
-    {
-        $response = new Response();
-        if ($resource) {
-            $response->setStatusCode(StatusCode::OK);
-            $response->setResource($resource);
-            $response->setFormatter($request->getFormatter());
-        } else {
-            $response->setStatusCode(StatusCode::NO_CONTENT);
-        }
-
-        return $response;
-    }
-
-    /**
-     * @protected 5.3
-     */
-    public function createExceptionResponse(Request $request, Exception $exception)
-    {
-        $code = StatusCode::INTERNAL_SERVER_ERROR;
-        if ($exception instanceOf HTTPException) {
-            $code = $exception->getCode();
-        }
-
-        $resource = new Resource();
-        $resource->setData(array(
-            'message' => $exception->getMessage()
-        ));
-
-        $response = new Response();
-        $response->setStatusCode($code);
-        $response->setFormatter($request->getFormatter());
-        $response->setResource($resource);
-        
-        return $response;
     }
 
     /**

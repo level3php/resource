@@ -13,11 +13,70 @@ namespace Level3\Tests;
 use Level3\Resource;
 use Level3\Messages\Response;
 use Level3\Formatter\JsonFormatter;
+use Level3\Exceptions\NotAcceptable;
+
 use Teapot\StatusCode;
 use Mockery as m;
 
 class ResponseTest extends TestCase
-{    
+{   
+    public function testCreateFromResource()
+    {
+        $formatter = $this->createFormatterMock();
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getFormatter')
+                ->withNoArgs()->once()->andReturn($formatter);
+
+        $resource = $this->createResourceMock();
+        $response = Response::createFromResource($request, $resource);
+
+        $this->assertSame(StatusCode::OK, $response->getStatusCode());
+        $this->assertSame($resource, $response->getResource());
+        $this->assertSame($formatter, $response->getFormatter());
+    }
+
+    public function testCreateFromException()
+    {
+        $formatter = $this->createFormatterMock();
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getFormatter')
+                ->withNoArgs()->once()->andReturn($formatter);
+
+        $exception = new \Exception('foo');
+        $response = Response::createFromException($request, $exception);
+
+        $this->assertSame(StatusCode::INTERNAL_SERVER_ERROR, $response->getStatusCode());
+
+        $resource = $response->getResource();
+        $this->assertInstanceOf('Level3\Resource', $resource);
+        $this->assertSame($formatter, $response->getFormatter());
+
+        $data = $resource->getData();
+        $this->assertSame('Exception', $data['type']);
+        $this->assertSame('foo', $data['message']);
+    }
+
+    public function testCreateFromHTTPException()
+    {
+        $formatter = $this->createFormatterMock();
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getFormatter')
+                ->withNoArgs()->once()->andReturn($formatter);
+
+        $exception = new NotAcceptable('foo');
+        $response = Response::createFromException($request, $exception);
+
+        $this->assertSame(StatusCode::NOT_ACCEPTABLE, $response->getStatusCode());
+
+        $resource = $response->getResource();
+        $this->assertInstanceOf('Level3\Resource', $resource);
+        $this->assertSame($formatter, $response->getFormatter());
+
+        $data = $resource->getData();
+        $this->assertSame('NotAcceptable', $data['type']);
+        $this->assertSame('foo', $data['message']);
+    }
+
     public function testSetResource()
     {
         $resource = $this->createResourceMock();

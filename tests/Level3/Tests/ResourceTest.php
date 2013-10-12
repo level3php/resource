@@ -11,12 +11,21 @@
 namespace Level3\Tests;
 use Level3\Resource;
 use Mockery as m;
+use DateTime;
 
 class ResourceTest extends TestCase
 {
     public function setUp()
     {
         $this->resource = new Resource();
+    }
+
+    public function testSetId()
+    {
+        $id = 'foo';
+
+        $this->assertSame($this->resource, $this->resource->setId($id));
+        $this->assertSame($id, $this->resource->getId());
     }
 
     public function testAddLink()
@@ -63,7 +72,13 @@ class ResourceTest extends TestCase
 
     public function testSetData()
     {
-        $this->resource->setData(array('foo' => 'bar'));
+        $this->assertSame($this->resource, $this->resource->setData(array('foo' => 'bar')));
+        $this->assertSame(array('foo' => 'bar'), $this->resource->getData());
+    }
+
+    public function testAddData()
+    {
+        $this->assertSame($this->resource, $this->resource->addData('foo', 'bar'));
         $this->assertSame(array('foo' => 'bar'), $this->resource->getData());
     }
 
@@ -71,7 +86,23 @@ class ResourceTest extends TestCase
     {
         $uri = 'foo';
 
-        $this->resource->setURI($uri);
+        $this->assertSame($this->resource, $this->resource->setURI($uri));
         $this->assertSame($uri, $this->resource->getURI());
+    }
+
+    public function testSetLastUpdate()
+    {
+        $date = new DateTime();
+
+        $this->assertSame($this->resource, $this->resource->setLastUpdate($date));
+        $this->assertSame($date, $this->resource->getLastUpdate());
+    }
+
+    public function testSetCache()
+    {
+        $cache = 10;
+
+        $this->assertSame($this->resource, $this->resource->setCache($cache));
+        $this->assertSame($cache, $this->resource->getCache());
     }
 }
