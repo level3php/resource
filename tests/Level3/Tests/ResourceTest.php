@@ -39,6 +39,19 @@ class ResourceTest extends TestCase
         $this->assertSame('foo', $links['foo'][0]->getHref());
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testLinkResourceInvalid()
+    {
+        $linkedResource = new Resource($this->repository);
+
+        $this->resource->linkResource('foo', $linkedResource);
+        $links = $this->resource->getLinks();
+        $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][0]);
+        $this->assertSame('foo', $links['foo'][0]->getHref());
+    }
+
     public function testAddResource()
     {
         $resource = new Resource($this->repository);

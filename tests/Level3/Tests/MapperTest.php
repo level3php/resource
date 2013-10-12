@@ -34,6 +34,16 @@ class MapperTest extends TestCase
         $this->assertSame($expected, $mapper->getBaseURI());
     }
 
+    public function testSetBaseURIEmpty()
+    {
+        $mapper = $this->getMapperMock();
+
+        $expected = '';
+        $mapper->setBaseURI('');
+
+        $this->assertSame($expected, $mapper->getBaseURI());
+    }
+
     public function testSetBaseURIWithoutTrallingSlash()
     {
         $mapper = $this->getMapperMock();
@@ -71,6 +81,11 @@ class MapperTest extends TestCase
     {
         $mapper = $this->getMapperMock();
         $this->assertSame(
+            '/foo/{fooId}', 
+            $mapper->getCurieURI('foo')
+        );
+
+        $this->assertSame(
             '/foo', 
             $mapper->getCurieURI('foo', 'Level3\Repository\Finder')
         );
@@ -97,6 +112,12 @@ class MapperTest extends TestCase
         
         $this->assertSame(
             '/foo/{fooId}/bar/{barId}/qux/{quxId}', 
+            $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Deleter')
+        );
+
+        $mapper->setSkipCurieSegments(1);
+        $this->assertSame(
+            '/foo/bar/{barId}/qux/{quxId}', 
             $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Deleter')
         );
     }

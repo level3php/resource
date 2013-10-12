@@ -7,6 +7,7 @@ use Level3\Processor;
 use Level3\Processor\Wrapper;
 use Level3\Messages\Request;
 use Level3\Messages\Response;
+use Level3\Exceptions\NotFound;
 
 use Closure;
 use RuntimeException;
@@ -20,9 +21,9 @@ class ProcessorTest extends TestCase
         $this->level3 = $this->createLevel3Mock();
         $this->level3->shouldReceive('getProcessorWrappers')
             ->withNoArgs()->andReturn(array(
-                new WrapperMock('4', '*'),
-                new WrapperMock('2', '/'),
-                new WrapperMock('2', '/')
+                new WrapperMock(),
+                new WrapperMock(),
+                new WrapperMock()
             ));
 
         $this->processor = new Processor();
@@ -55,30 +56,38 @@ class ProcessorTest extends TestCase
     /**
      * @dataProvider provider
      */
-    public function testMethods($method, $repositoryMock, $attributes, $filters, $content, $resource, $formatter, $statusCode)
+    public function testMethods($method, $repositoryMock, $attributes, $filters, $content, $resource, $formatter, $statusCode, $exception = null)
     {
         $repository = $this->$repositoryMock();
-        $this->level3ShouldHavePair(self::IRRELEVANT_KEY, $repository);
 
-        $request = $this->createRequestMock($attributes, $filters, $formatter, $repository, $content);
-
-        if ($filters) {
-            $repository->shouldReceive($method)
-                ->with($attributes, $filters)->once()->andReturn($resource);
-        } else if ($content) {
-            $repository->shouldReceive($method)
-                ->with($attributes, $content)->once()->andReturn($resource);
+        if ($exception) {
+            $request = $this->createRequestMock($attributes, $filters, $formatter, $repository, $content, false);
+            $response = $this->processor->$method($request, $exception);
         } else {
-            $repository->shouldReceive($method)
-                ->with($attributes)->once()->andReturn($resource);
+            $request = $this->createRequestMock($attributes, $filters, $formatter, $repository, $content);
+
+            $this->level3ShouldHavePair(self::IRRELEVANT_KEY, $repository);
+
+            if ($filters) {
+                $repository->shouldReceive($method)
+                    ->with($attributes, $filters)->once()->andReturn($resource);
+            } else if ($content) {
+                $repository->shouldReceive($method)
+                    ->with($attributes, $content)->once()->andReturn($resource);
+            } else {
+                $repository->shouldReceive($method)
+                    ->with($attributes)->once()->andReturn($resource);
+            }
+
+            $response = $this->processor->$method($request);
         }
-       
-        $response = $this->processor->$method($request);
 
         $this->assertSame($statusCode, $response->getStatusCode());
         if ($statusCode != StatusCode::NO_CONTENT) {
-            $this->assertSame($resource, $response->getResource());
             $this->assertSame($formatter, $response->getFormatter());
+            if ($resource) {
+                $this->assertSame($resource, $response->getResource());
+            }
         }
     }
 
@@ -120,6 +129,18 @@ class ProcessorTest extends TestCase
                 $this->createParametersMock(), null, null,
                 null, null, 
                 StatusCode::NO_CONTENT
+            ),
+            array(
+                'error', 'createDeleterMock', 
+                null, null, null,
+                null, $this->createFormatterMock(), 
+                StatusCode::INTERNAL_SERVER_ERROR, new \Exception
+            ),
+            array(
+                'error', 'createDeleterMock', 
+                null, null, null,
+                null, $this->createFormatterMock(), 
+                StatusCode::NOT_FOUND, new NotFound
             )
         );
     }
@@ -136,24 +157,10 @@ class WrapperMock extends Wrapper
     private $id;
     private $sign;
 
-    public function __construct($id, $sign)
-    {
-        $this->id = $id;
-        $this->sign = $sign;
-    }
-
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $response = $execution($request);
-        $base = $response->getStatusCode() - 200;
-
-        if ($this->sign == '*') $code = $base * $this->id;
-        if ($this->sign == '+') $code = $base + $this->id;
-        if ($this->sign == '-') $code = $base - $this->id;
-        if ($this->sign == '/') $code = $base / $this->id;  
-    
-
-        $response->setStatusCode($code + 200);
+        
         return $response;
     }
 }
