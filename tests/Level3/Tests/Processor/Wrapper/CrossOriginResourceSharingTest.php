@@ -22,11 +22,13 @@ class CrossOriginResourceSharingTest extends TestCase
         return $wrapper;
     }
 
-    protected function createRequestMockWithGetHeader($header, $value)
+    protected function createRequestMockWithGetHeader($header = null, $value = null)
     {
         $request = $this->createRequestMockSimple();
-        $request->shouldReceive('getHeader')
+        if ($header) {
+            $request->shouldReceive('getHeader')
             ->with($header)->once()->andReturn($value);
+        }
 
         return $request;
     }
@@ -57,7 +59,7 @@ class CrossOriginResourceSharingTest extends TestCase
 
         $this->assertSame(CORS::ALLOW_ORIGIN_WILDCARD, $wrapper->getAllowOrigin());
 
-        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $url);
+        $request = $this->createRequestMockWithGetHeader();
         $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
         $this->assertSame(CORS::ALLOW_ORIGIN_WILDCARD, $response->getHeader(CORS::HEADER_ALLOW_ORIGIN));
     }
@@ -90,9 +92,6 @@ class CrossOriginResourceSharingTest extends TestCase
         $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
     }
 
-    /**
-     * @expectedException Level3\Exceptions\Forbidden
-     */
     public function testReadOriginNone()
     {
         $allowOrigin = '*';
@@ -100,8 +99,9 @@ class CrossOriginResourceSharingTest extends TestCase
         $wrapper = $this->createWrapper();
         $wrapper->setAllowOrigin($allowOrigin);
 
-        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, null);
+        $request = $this->createRequestMockWithGetHeader();
         $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
+        $this->assertSame($allowOrigin, $response->getHeader(CORS::HEADER_ALLOW_ORIGIN));
     }
 
     /**

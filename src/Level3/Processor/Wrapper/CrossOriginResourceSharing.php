@@ -170,19 +170,16 @@ class CrossOriginResourceSharing extends Wrapper
 
     protected function readOrigin(Request $request)
     {
-        if ($this->allowOrigin === null) {
+        if (
+            $this->allowOrigin === null || 
+            $this->allowOrigin == self::ALLOW_ORIGIN_WILDCARD
+        ) {
             return;
         }
 
         $header = $request->getHeader(self::HEADER_ORIGIN);
-        if ($header) {
-            if ($this->allowOrigin == self::ALLOW_ORIGIN_WILDCARD) {
-                return;
-            }
-
-            if (in_array($header, (array) $this->allowOrigin)) {
-                return;
-            }    
+        if ($header && in_array($header, (array) $this->allowOrigin)) {
+            return;
         }
 
         throw new Forbidden();
