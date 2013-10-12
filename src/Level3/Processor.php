@@ -127,6 +127,13 @@ class Processor
         });
     }
 
+    public function error(Request $request, Exception $exception)
+    {
+        return $this->execute('error', $request, function() use ($exception) { 
+            throw $exception;
+        });
+    }
+
     protected function execute($method, Request $request, Closure $execution)
     {
         $wrappers = $this->level3->getProcessorWrappers();

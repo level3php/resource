@@ -55,5 +55,10 @@ abstract class Wrapper
         return $this->processRequest($execution, $request, __FUNCTION__);
     }
     
+    public function error(Closure $execution, Request $request)
+    {
+        return $this->processRequest($execution, $request, __FUNCTION__);
+    }
+
     abstract protected function processRequest(Closure $execution, Request $request, $method);
 }
