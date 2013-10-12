@@ -139,8 +139,12 @@ abstract class Mapper
         return $this->transformCurieURI($curieURI, $parameters);
     }
 
-    public function getCurieURI($repositoryKey, $interface = self::DEFAULT_INTERFACE)
+    public function getCurieURI($repositoryKey, $interface = null)
     {
+        if (!$interface) {
+            $interface = self::DEFAULT_INTERFACE;
+        }
+
         foreach ($this->interfacesWithOutParams as $interfaceName => $method) {
             if ($interface == $interfaceName) {
                 return $this->generateCurieURI($repositoryKey);

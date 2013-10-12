@@ -18,6 +18,8 @@ class Level3Test extends TestCase
     {
         $this->mapperMock = $this->createMapperMock();
         $this->hubMock = $this->createHubMock();
+        $this->hubMock->shouldReceive('setLevel3')->once()->andReturn(null);
+
         $this->processorMock = $this->createProcessorMock();
         $this->processorMock->shouldReceive('setLevel3')->once()->andReturn(null);
 

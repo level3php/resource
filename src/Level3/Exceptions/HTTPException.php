@@ -2,4 +2,4 @@
 
 namespace Level3\Exceptions;
 
-abstract class HTTPException extends \RuntimeException {}
+class HTTPException extends \RuntimeException {}

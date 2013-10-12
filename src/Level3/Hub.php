@@ -21,6 +21,7 @@ class Hub
 {
     const MIN_KEY_LENGHT = 1;
 
+    private $level3;
     private $repositoryDefinitions = array();
     private $instancedRepositories = array();
 
