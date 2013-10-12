@@ -12,7 +12,13 @@ class ExceptionHandlerTest extends TestCase
 
     public function setUp()
     {
+        $this->processor = $this->createProcessorMock();
+
+        $this->level3 = $this->createLevel3Mock();
+        $this->level3->shouldReceive('getProcessor')->andReturn($this->processor);
+
         $this->wrapper = new ExceptionHandler();
+        $this->wrapper->setLevel3($this->level3);
     }
 
     /**
@@ -20,23 +26,15 @@ class ExceptionHandlerTest extends TestCase
      */
     public function testExceptionHandling($method, $code, $exception)
     {
-        $formatter = $this->createFormatterMock();
         $attributes = $this->createParametersMock();
-        $request = $this->createRequestMock(null, null, $formatter);
-        
+        $request = $this->createRequestMock(null, null, null);
+        $this->processor->shouldReceive('error')
+            ->once()->with($request, $exception);
+
         $response = $this->wrapper->$method(function($request) use ($exception) {
             $request->getKey();
             throw $exception;
         }, $request);
-
-        $this->assertSame($code, $response->getStatusCode());
-        $this->assertSame($formatter, $response->getFormatter());
-
-        $resource = $response->getResource();
-        $this->assertInstanceOf('Level3\Resource', $resource);
-
-        $data = $resource->getData();
-        $this->assertTrue(isset($data['message']));
     }
 
     public function provider()

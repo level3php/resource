@@ -8,6 +8,6 @@ class NoContent extends HTTPException
 {
     public function __construct($message = '')
     {
-        parent::__construct($message, StatusCode::NO_CONTENT);
+        parent::__construct($message, StatusCode::TOO_MANY_REQUESTS);
     }
 }

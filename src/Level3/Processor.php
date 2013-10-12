@@ -129,8 +129,10 @@ class Processor
 
     public function error(Request $request, Exception $exception)
     {
-        return $this->execute('error', $request, function() use ($exception) { 
-            throw $exception;
+        $self = $this;
+
+        return $this->execute('error', $request, function(Request $request) use ($self, $exception) { 
+            return $self->createExceptionResponse($request, $exception);
         });
     }
 
@@ -160,6 +162,29 @@ class Processor
             $response->setStatusCode(StatusCode::NO_CONTENT);
         }
 
+        return $response;
+    }
+
+    /**
+     * @protected 5.3
+     */
+    public function createExceptionResponse(Request $request, Exception $exception)
+    {
+        $code = StatusCode::INTERNAL_SERVER_ERROR;
+        if ($exception instanceOf HTTPException) {
+            $code = $exception->getCode();
+        }
+
+        $resource = new Resource();
+        $resource->setData(array(
+            'message' => $exception->getMessage()
+        ));
+
+        $response = new Response();
+        $response->setStatusCode($code);
+        $response->setFormatter($request->getFormatter());
+        $response->setResource($resource);
+        
         return $response;
     }
 

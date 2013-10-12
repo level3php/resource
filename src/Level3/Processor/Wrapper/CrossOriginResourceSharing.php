@@ -155,7 +155,7 @@ class CrossOriginResourceSharing extends Wrapper
 
     protected function processRequest(Closure $execution, Request $request, $method)
     {
-        $this->readRequestHeaders($request, $method);
+        $this->readAndCheckRequestHeaders($request, $method);
 
         $response = $execution($request);
         $this->applyResponseHeaders($request, $response, $method);
@@ -163,12 +163,12 @@ class CrossOriginResourceSharing extends Wrapper
         return $response;
     }
 
-    protected function readRequestHeaders(Request $request, $method)
+    protected function readAndCheckRequestHeaders(Request $request, $method)
     {
-        $this->readOrigin($request);
+        $this->readOriginAndValidate($request, $method);
     }
 
-    protected function readOrigin(Request $request)
+    protected function readOriginAndValidate(Request $request, $method)
     {
         if (
             $this->allowOrigin === null || 
@@ -182,7 +182,9 @@ class CrossOriginResourceSharing extends Wrapper
             return;
         }
 
-        throw new Forbidden();
+        if ($method != 'error') {
+            throw new Forbidden();
+        }
     }
 
     protected function applyResponseHeaders(Request $request, Response $response, $method)

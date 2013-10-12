@@ -19,27 +19,11 @@ class ExceptionHandler extends Wrapper
         try {
             return $execution($request);
         } catch (Exception $exception) {
-            return $this->createExceptionResponse($request, $exception);
+            if ($method != 'error') {
+                return $this->getLevel3()->getProcessor()->error($request, $exception);
+            }
+
+            throw $exception;
         }
-    }
-
-    protected function createExceptionResponse(Request $request, Exception $exception)
-    {
-        $code = StatusCode::INTERNAL_SERVER_ERROR;
-        if ($exception instanceOf HTTPException) {
-            $code = $exception->getCode();
-        }
-
-        $resource = new Resource();
-        $resource->setData(array(
-            'message' => $exception->getMessage()
-        ));
-
-        $response = new Response();
-        $response->setStatusCode($code);
-        $response->setFormatter($request->getFormatter());
-        $response->setResource($resource);
-        
-        return $response;
     }
 }

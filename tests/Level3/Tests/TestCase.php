@@ -113,12 +113,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
     
     protected function createRequestMock(
         $attributes = null, $filters = null, $formatter = null, 
-        $repository = null, $content = null
+        $repository = null, $content = null, $key = self::IRRELEVANT_KEY
     )
     {
         $request = $this->createRequestMockSimple();
-        $request->shouldReceive('getKey')
-            ->withNoArgs()->once()->andReturn(self::IRRELEVANT_KEY);
+        if ($key) {
+            $request->shouldReceive('getKey')
+                ->withNoArgs()->once()->andReturn($key);
+        }
         
         if ($attributes) {
             $request->shouldReceive('getAttributes')
