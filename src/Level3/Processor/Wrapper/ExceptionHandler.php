@@ -2,9 +2,9 @@
 
 namespace Level3\Processor\Wrapper;
 
+use Level3\Resource;
 use Level3\Messages\Request;
 use Level3\Messages\Response;
-
 use Level3\Processor\Wrapper;
 use Level3\Exceptions\HTTPException;
 
@@ -30,10 +30,16 @@ class ExceptionHandler extends Wrapper
             $code = $exception->getCode();
         }
 
+        $resource = new Resource();
+        $resource->setData(array(
+            'message' => $exception->getMessage()
+        ));
+
         $response = new Response();
         $response->setStatusCode($code);
         $response->setFormatter($request->getFormatter());
-
+        $response->setResource($resource);
+        
         return $response;
     }
 }

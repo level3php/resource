@@ -31,6 +31,12 @@ class ExceptionHandlerTest extends TestCase
 
         $this->assertSame($code, $response->getStatusCode());
         $this->assertSame($formatter, $response->getFormatter());
+
+        $resource = $response->getResource();
+        $this->assertInstanceOf('Level3\Resource', $resource);
+
+        $data = $resource->getData();
+        $this->assertTrue(isset($data['message']));
     }
 
     public function provider()
