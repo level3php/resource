@@ -245,7 +245,13 @@ class CrossOriginResourceSharing extends Wrapper
         array_walk($simpleHeaders, function(&$value) { $value = strtolower($value); });
 
         $allHeaders = $response->headers->keys();
-        return array_diff($allHeaders, $simpleHeaders);
+        
+        $headers = array_diff($allHeaders, $simpleHeaders);
+        array_walk($headers, function(&$value) {
+            $value = implode('-', array_map('ucfirst', explode('-', $value)));
+        });
+
+        return $headers;
     }
 
     protected function applyMaxAge(Request $request, Response $response, $method)
