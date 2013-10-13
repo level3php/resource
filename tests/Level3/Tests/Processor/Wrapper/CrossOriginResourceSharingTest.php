@@ -133,18 +133,20 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetExposeHeaders()
     {
-        $headers = array('Bar', 'Foo');
+        $headers = array('bar', 'Foo');
 
         $wrapper = $this->createWrapper();
         $wrapper->setExposeHeaders($headers);
 
-        $this->assertSame($headers, $wrapper->getExposeHeaders());
+        $this->assertSame(array_map('strtolower', $headers), $wrapper->getExposeHeaders());
 
         $response = new Response();
-        $response->addHeader('Foo', 'qux');
+        $response->addHeader('foo', 'qux');
+        $response->addHeader('Bar', 'qux');
+        $response->addHeader('Qux', 'qux');
 
         $this->callGetInWrapperAndGetResponse('get', $wrapper, null, $response);
-        $this->assertSame('Foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
+        $this->assertSame('Bar, Foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
     }
 
     public function testSetExposeHeadersDefault()
@@ -153,7 +155,7 @@ class CrossOriginResourceSharingTest extends TestCase
 
         $response = new Response();
         $response->addHeader('foo', 'qux');
-        $response->addHeader('bar', 'baz');
+            $response->addHeader('bar', 'baz');
 
         $this->callGetInWrapperAndGetResponse('get', $wrapper, null, $response);
         $this->assertSame('Foo, Bar', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));

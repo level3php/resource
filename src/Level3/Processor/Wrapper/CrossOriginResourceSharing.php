@@ -80,7 +80,7 @@ class CrossOriginResourceSharing extends Wrapper
 
     public function setExposeHeaders(Array $exposeHeaders)
     {
-        $this->exposeHeaders = $exposeHeaders;
+        $this->exposeHeaders = array_map('strtolower', $exposeHeaders);
     }
 
     public function getExposeHeaders()
@@ -227,6 +227,10 @@ class CrossOriginResourceSharing extends Wrapper
         } else {
             $exposeHeaders = $nonBasicHeaders;
         }
+        
+        array_walk($exposeHeaders, function(&$value) {
+            $value = implode('-', array_map('ucfirst', explode('-', $value)));
+        });
 
         $header = implode(', ', $exposeHeaders);
         $response->addHeader(self::HEADER_EXPOSE_HEADERS, $header);
@@ -247,10 +251,6 @@ class CrossOriginResourceSharing extends Wrapper
         $allHeaders = $response->headers->keys();
         
         $headers = array_diff($allHeaders, $simpleHeaders);
-        array_walk($headers, function(&$value) {
-            $value = implode('-', array_map('ucfirst', explode('-', $value)));
-        });
-
         return $headers;
     }
 
