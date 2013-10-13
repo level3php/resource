@@ -20,19 +20,71 @@ use Mockery as m;
 
 class ResponseTest extends TestCase
 {   
-    public function testCreateFromResource()
+    public function testCreateFromResourceBasic()
+    {
+        $resource = $this->createResourceMock();
+        $resource->shouldReceive('getId')->once()->andReturn(null);
+        $resource->shouldReceive('getCache')->once()->andReturn(null);
+        $resource->shouldReceive('getLastUpdate')->once()->andReturn(null);
+
+        $this->testCreateFromResource($resource);
+    }
+
+    public function testCreateFromResourceWithId()
+    {
+        $resource = $this->createResourceMock();
+        $resource->shouldReceive('getId')->once()->andReturn('foo');
+        $resource->shouldReceive('getCache')->once()->andReturn(null);
+        $resource->shouldReceive('getLastUpdate')->once()->andReturn(null);
+
+        $response = $this->testCreateFromResource($resource);
+
+        $this->assertSame('"foo"', $response->getEtag());
+    }
+
+    public function testCreateFromResourceWithLastUpdate()
+    {
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone('UTC'));
+
+        $resource = $this->createResourceMock();
+        $resource->shouldReceive('getId')->once()->andReturn(null);
+        $resource->shouldReceive('getCache')->once()->andReturn(null);
+        $resource->shouldReceive('getLastUpdate')->once()->andReturn($date);
+
+        $response = $this->testCreateFromResource($resource);
+
+        $this->assertSame($date->format('D, d M Y H:i:s').' GMT', $response->getLastModified()->format('D, d M Y H:i:s').' GMT');
+    }
+
+    public function testCreateFromResourceWithCache()
+    {
+        $cache = 100;
+
+        $resource = $this->createResourceMock();
+        $resource->shouldReceive('getId')->once()->andReturn(null);
+        $resource->shouldReceive('getCache')->once()->andReturn($cache);
+        $resource->shouldReceive('getLastUpdate')->once()->andReturn(null);
+
+        $response = $this->testCreateFromResource($resource);
+
+        $this->assertSame(time()+100, $response->getExpires()->getTimestamp());
+    }
+
+    protected function testCreateFromResource($resource)
     {
         $formatter = $this->createFormatterMock();
         $request = $this->createRequestMockSimple();
         $request->shouldReceive('getFormatter')
                 ->withNoArgs()->once()->andReturn($formatter);
 
-        $resource = $this->createResourceMock();
         $response = Response::createFromResource($request, $resource);
 
         $this->assertSame(StatusCode::OK, $response->getStatusCode());
         $this->assertSame($resource, $response->getResource());
         $this->assertSame($formatter, $response->getFormatter());
+
+        return $response;
     }
 
     public function testCreateFromException()

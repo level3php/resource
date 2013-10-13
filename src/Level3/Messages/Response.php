@@ -17,6 +17,8 @@ use Level3\Exceptions\HTTPException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Teapot\StatusCode;
 use Exception;
+use DateTime;
+use DateInterval;
 
 class Response extends SymfonyResponse
 {
@@ -29,6 +31,22 @@ class Response extends SymfonyResponse
         $response->setStatusCode(StatusCode::OK);
         $response->setResource($resource);
         $response->setFormatter($request->getFormatter());
+
+        if ($cache = $resource->getCache()) {
+            $date = new DateTime();
+            $date->add(new DateInterval(sprintf('PT%dS', $cache)));
+
+            $response->setExpires($date);
+            $response->setTTL($cache);
+        }
+
+        if ($id = $resource->getId()) {
+            $response->setEtag($id);
+        }
+   
+        if ($date = $resource->getLastUpdate()) {
+            $response->setLastModified($date);
+        }     
 
         return $response;
     }
