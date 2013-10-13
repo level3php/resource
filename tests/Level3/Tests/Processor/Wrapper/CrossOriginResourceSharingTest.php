@@ -133,7 +133,7 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetExposeHeaders()
     {
-        $headers = array('bar', 'foo');
+        $headers = array('Bar', 'Foo');
 
         $wrapper = $this->createWrapper();
         $wrapper->setExposeHeaders($headers);
@@ -141,10 +141,10 @@ class CrossOriginResourceSharingTest extends TestCase
         $this->assertSame($headers, $wrapper->getExposeHeaders());
 
         $response = new Response();
-        $response->addHeader('foo', 'qux');
+        $response->addHeader('Foo', 'qux');
 
         $this->callGetInWrapperAndGetResponse('get', $wrapper, null, $response);
-        $this->assertSame('foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
+        $this->assertSame('Foo', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
     }
 
     public function testSetExposeHeadersDefault()
@@ -156,7 +156,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $response->addHeader('bar', 'baz');
 
         $this->callGetInWrapperAndGetResponse('get', $wrapper, null, $response);
-        $this->assertSame('foo, bar', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
+        $this->assertSame('Foo, Bar', $response->getHeader(CORS::HEADER_EXPOSE_HEADERS));
     }
 
     public function testSetMaxAge()

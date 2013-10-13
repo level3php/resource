@@ -22,22 +22,22 @@ class ResponseTest extends TestCase
 {   
     public function testCreateFromResourceBasic()
     {
-        $resource = $this->createResourceMock();
+        $resource = $this->createResourceMock(false);
         $resource->shouldReceive('getId')->once()->andReturn(null);
         $resource->shouldReceive('getCache')->once()->andReturn(null);
         $resource->shouldReceive('getLastUpdate')->once()->andReturn(null);
 
-        $this->testCreateFromResource($resource);
+        $this->helperTestCreateFromResource($resource);
     }
 
     public function testCreateFromResourceWithId()
     {
-        $resource = $this->createResourceMock();
+        $resource = $this->createResourceMock(false);
         $resource->shouldReceive('getId')->once()->andReturn('foo');
         $resource->shouldReceive('getCache')->once()->andReturn(null);
         $resource->shouldReceive('getLastUpdate')->once()->andReturn(null);
 
-        $response = $this->testCreateFromResource($resource);
+        $response = $this->helperTestCreateFromResource($resource);
 
         $this->assertSame('"foo"', $response->getEtag());
     }
@@ -47,12 +47,12 @@ class ResponseTest extends TestCase
         $date = new \DateTime();
         $date->setTimezone(new \DateTimeZone('UTC'));
 
-        $resource = $this->createResourceMock();
+        $resource = $this->createResourceMock(false);
         $resource->shouldReceive('getId')->once()->andReturn(null);
         $resource->shouldReceive('getCache')->once()->andReturn(null);
         $resource->shouldReceive('getLastUpdate')->once()->andReturn($date);
 
-        $response = $this->testCreateFromResource($resource);
+        $response = $this->helperTestCreateFromResource($resource);
 
         $this->assertSame($date->format('D, d M Y H:i:s').' GMT', $response->getLastModified()->format('D, d M Y H:i:s').' GMT');
     }
@@ -61,20 +61,20 @@ class ResponseTest extends TestCase
     {
         $cache = 100;
 
-        $resource = $this->createResourceMock();
+        $resource = $this->createResourceMock(false);
         $resource->shouldReceive('getId')->once()->andReturn(null);
         $resource->shouldReceive('getCache')->once()->andReturn($cache);
         $resource->shouldReceive('getLastUpdate')->once()->andReturn(null);
 
-        $response = $this->testCreateFromResource($resource);
+        $response = $this->helperTestCreateFromResource($resource);
 
         $this->assertSame(time()+100, $response->getExpires()->getTimestamp());
     }
 
-    protected function testCreateFromResource($resource)
+    protected function helperTestCreateFromResource($resource)
     {
         $formatter = $this->createFormatterMock();
-        $request = $this->createRequestMockSimple();
+        $request = $this->createRequestMockSimple(false);
         $request->shouldReceive('getFormatter')
                 ->withNoArgs()->once()->andReturn($formatter);
 

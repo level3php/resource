@@ -26,8 +26,8 @@ class Logger extends Wrapper
         $log = $this->getLogMessage($request, $response, $method);
         
         $this->logger->$level($log, array(
-            'attributes' => $request->getAttributes()->all(),
-            'filters' => $request->getFilters()->all(),
+            //'attributes' => $request->getAttributes()->all(),
+            //'filters' => $request->getFilters()->all(),
             'headers' => $response->headers->all()
         ));
 

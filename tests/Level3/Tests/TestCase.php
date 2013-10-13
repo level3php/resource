@@ -75,9 +75,17 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository');
     }
 
-    protected function createResourceMock()
+    protected function createResourceMock($mockMethods = true)
     {
-        return m::mock('Level3\Resource');
+        $resource = m::mock('Level3\Resource');
+
+        if ($mockMethods) {
+            $resource->shouldReceive('getCache')->andReturn(null);
+            $resource->shouldReceive('getId')->andReturn(null);
+            $resource->shouldReceive('getLastUpdate')->andReturn(null);
+        }
+
+        return $resource;
     }
 
     protected function createProcessorMock()
