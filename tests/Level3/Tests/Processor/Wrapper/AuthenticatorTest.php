@@ -24,9 +24,9 @@ class AuthenticatorTest extends TestCase
      */
     public function testAuthentication($method)
     {
-        $self = $this;
-        $execution = function($request) use ($self) { 
-            return $self->createResponseMock(); 
+        $request = $this->createResponseMock(); ;
+        $execution = function($request) use ($request) { 
+            return $request;
         };
 
         $wrapper = $this->createWrapper();
@@ -47,11 +47,11 @@ class AuthenticatorTest extends TestCase
 
     public function testErrorAuthentication()
     {
-        $self = $this;
-
-        $execution = function($request) use ($self) { 
-            return $self->createResponseMock(); 
+        $request = $this->createResponseMock(); ;
+        $execution = function($request) use ($request) { 
+            return $request;
         };
+
 
         $request = $this->createRequestMockSimple();
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
