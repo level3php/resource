@@ -82,10 +82,21 @@ class RequestTest extends TestCase
         $this->assertTrue($this->request->isAuthenticated());
     }
 
+    public function testIsAuthenticatedNonCredentials()
+    {
+        $this->assertNull($this->request->isAuthenticated());
+    }
+
     public function testgetContent()
     {
         $content = $this->request->getContent();
         $this->assertSame(array('foo' => 'bar'), $content);
+    }
+
+    public function testgetRawContent()
+    {
+        $content = $this->request->getRawContent();
+        $this->assertSame('{"foo":"bar"}', $content);
     }
 
     public function testGetRange()
@@ -134,6 +145,17 @@ class RequestTest extends TestCase
 
         $this->assertEquals(
             array('foo' => 1, 'bar' => 1, 'baz' => -1),
+            $this->request->getSort());
+    }
+
+    public function testGetSortEmpty()
+    {
+        $this->request->headers->add(
+            array(Request::HEADER_SORT => '')
+        );
+
+        $this->assertEquals(
+            array(),
             $this->request->getSort());
     }
 
