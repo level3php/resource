@@ -62,8 +62,5 @@ abstract class HMAC extends HeaderBased
         $this->lastVerification = null;
     }
 
-    protected function getPrivateKey($apiKey)
-    {
-        if ($apiKey == 'foo') return 'bar';
-    }
+    abstract protected function getPrivateKey($apiKey);
 }

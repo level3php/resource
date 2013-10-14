@@ -92,6 +92,18 @@ class CrossOriginResourceSharingTest extends TestCase
         $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
     }
 
+    public function testReadOriginInvalidWithErrorMethod()
+    {
+        $url = 'http://foo.bar';
+        $requestUrl = 'http://baz.qux';
+
+        $wrapper = $this->createWrapper();
+        $wrapper->setAllowOrigin($url);
+
+        $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $requestUrl);
+        $response = $this->callGetInWrapperAndGetResponse('error', $wrapper, $request);
+    }
+
     public function testReadOriginNone()
     {
         $allowOrigin = '*';
@@ -253,6 +265,16 @@ class CrossOriginResourceSharingTest extends TestCase
         $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
         $this->assertNull($response->getHeader(CORS::HEADER_ALLOW_METHODS));
     }
+
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testSetAllowMethodsInvalid()
+    {
+        $wrapper = $this->createWrapper();
+        $wrapper->setAllowMethods(1);
+    }
+
 
     public function testSetAllowHeaders()
     {

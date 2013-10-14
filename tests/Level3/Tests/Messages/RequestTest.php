@@ -40,6 +40,9 @@ class RequestTest extends TestCase
         $this->assertThat($key, $this->equalTo(self::IRRELEVANT_KEY));
     }
 
+    /**
+     * @covers Level3\Resource\Parameters
+     */
     public function testGetParameters()
     {
         $attributes = $this->request->getAttributes();

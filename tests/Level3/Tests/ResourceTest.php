@@ -44,6 +44,8 @@ class ResourceTest extends TestCase
 
         $links = $this->resource->getLinksByRel('foo');
         $this->assertSame($link, $links[0]);
+
+        $this->assertNull($this->resource->getLinksByRel('bar'));
     }
 
     public function testLinkResource()
@@ -86,6 +88,8 @@ class ResourceTest extends TestCase
         $this->resource->addResource('foo', $resource);
         $resources = $this->resource->getResourcesByRel('foo');
         $this->assertSame($resource, $resources[0]);
+
+        $this->assertNull($this->resource->getResourcesByRel('bar'));
     }
 
     public function testSetData()

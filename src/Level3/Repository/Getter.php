@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This file is part of the Level3 package.
  *
  * (c) Máximo Cuadros <maximo@yunait.com>

@@ -14,6 +14,14 @@ use Mockery as m;
 
 class HubTest extends TestCase
 {
+    public function testSetLevel3()
+    {
+        $level3 = m::mock('Level3\Level3');
+
+        $hub = new Hub();
+        $hub->setLevel3($level3);
+    }
+
     public function testRegisterDefinition()
     {
         $repository = m::mock('Level3\Repository');

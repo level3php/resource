@@ -40,6 +40,7 @@ class HeaderBasedTest extends TestCase
 
         $response = $this->createResponseMock();
         $method->authenticate($request);
+        $method->modifyResponse($response);
     }
 
     public function testAuthenticateRequest()
@@ -53,6 +54,23 @@ class HeaderBasedTest extends TestCase
 
         $request->shouldReceive('mustBeCalledSetCredentials')
             ->once()->andReturn(null);
+
+        $response = $this->createResponseMock();
+        $method->authenticate($request);
+    }
+
+    /**
+     * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\InvalidScheme
+     */
+    public function testAuthenticateRequestInvalidScheme()
+    {
+        $method = new HeaderBasedMock();
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')
+            ->with(HeaderBased::AUTHORIZATION_HEADER)
+            ->twice()->andReturn('Authorization: Foo QWxhZGRpbjpvcGVuHNlc2FtZQ==');
+
 
         $response = $this->createResponseMock();
         $method->authenticate($request);

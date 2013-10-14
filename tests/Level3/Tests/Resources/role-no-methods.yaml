@@ -1,5 +1,0 @@
-role:
-  routes:
-    - path: /.*/
-      policies:
-        default: false
