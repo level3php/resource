@@ -127,7 +127,7 @@ class BasicIpFirewall extends Wrapper
         list($network, $mask) = $this->getCIDRComponents($cidr);
 
         $length = $this->getCIDRLength($cidr);
-        $range = [];
+        $range = array();
 
         $start = ip2long($network);
         for ($i=0;$i < $length;$i++) {
