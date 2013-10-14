@@ -37,6 +37,15 @@ class ResourceTest extends TestCase
         $this->assertSame($link, $links['foo'][0]);
     }
 
+    public function testGetLinkResource()
+    {
+        $link = $this->createLinkMock();
+        $this->resource->addLink('foo', $link);
+
+        $links = $this->resource->getLinksByRel('foo');
+        $this->assertSame($link, $links[0]);
+    }
+
     public function testLinkResource()
     {
         $linkedResource = new Resource($this->repository);
@@ -68,6 +77,15 @@ class ResourceTest extends TestCase
         $this->resource->addResource('foo', $resource);
         $resources = $this->resource->getResources();
         $this->assertSame($resource, $resources['foo'][0]);
+    }
+
+    public function testGetResourceByRel()
+    {
+        $resource = new Resource($this->repository);
+
+        $this->resource->addResource('foo', $resource);
+        $resources = $this->resource->getResourcesByRel('foo');
+        $this->assertSame($resource, $resources[0]);
     }
 
     public function testSetData()

@@ -74,6 +74,15 @@ class Resource
         return $this->links;
     }
 
+    public function getLinksByRel($rel)
+    {
+        if (isset($this->links[$rel])) {
+            return $this->links[$rel];
+        }
+        
+        return null;
+    }
+
     public function addResource($rel, Resource $resource)
     {
         $this->resources[$rel][] = $resource;
@@ -84,6 +93,15 @@ class Resource
     public function getResources()
     {
         return $this->resources;
+    }
+
+    public function getResourcesByRel($rel)
+    {
+        if (isset($this->resources[$rel])) {
+            return $this->resources[$rel];
+        }
+
+        return null;
     }
 
     public function setData(Array $data)
