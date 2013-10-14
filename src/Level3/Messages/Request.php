@@ -3,10 +3,7 @@
 namespace Level3\Messages;
 
 use Level3\FormatterFactory;
-use Level3\Processor\Wrapper\Authentication\AuthenticatedCredentials;
-use Level3\Processor\Wrapper\Authentication\AnonymousCredentials;
-use Level3\Processor\Wrapper\Authentication\Credentials;
-use Level3\Processor\Wrapper\Authentication\User;
+use Level3\Processor\Wrapper\Authenticator\Credentials;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 use Level3\Resource\Parameters;
@@ -40,7 +37,6 @@ class Request extends SymfonyRequest
         if ($origin->server) $server = $origin->server->all();
 
         $this->initialize($query, $request, $attributes, $cookies, $files, $server, $content);
-        $this->credentials = new AnonymousCredentials();
     }
 
     public function getKey()
@@ -123,7 +119,9 @@ class Request extends SymfonyRequest
 
     public function isAuthenticated()
     {
-        return $this->credentials->isAuthenticated();
+        if ($this->credentials) {
+            return $this->credentials->isAuthenticated();
+        }
     }
 
     public function getHeader($header)

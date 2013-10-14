@@ -1,104 +1,119 @@
 <?php
 
-namespace Level3\Tests\Processor\Wrapper\Authentication;
+namespace Level3\Tests\Processor\Wrapper\Authenticator;
 
-use Level3\Processor\Wrapper\Authentication\Exceptions\InvalidCredentials;
-use Level3\Processor\Wrapper\Authentication\Methods\HMAC;
-use Level3\Processor\Wrapper\Authorization\Role;
+use Level3\Processor\Wrapper\Authenticator\Methods\HMAC;
+
 use Level3\Tests\TestCase;
 use Mockery as m;
-use Symfony\Component\HttpFoundation\Request;
 
 class HMACTest extends TestCase
 {
-    const IRRELEVANT_SIGNATURE = 'X';
-    const IRRELEVANT_RESPONSE = 'XX';
-
-    private $credentialsRepositoryMock;
-    private $responseFactoryMock;
-    private $headers;
-    private $request;
-    private $authenticatedUser;
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->credentialsRepositoryMock = m::mock('Level3\Processor\Wrapper\Authentication\CredentialsRepository');
-        $this->authenticatedUser = AuthenticatedCredentialsBuilder::anAuthenticatedUser()->build();
-
-        $this->method = new HMAC($this->credentialsRepositoryMock);
-    }
-
-    private function getAuthorizationHeader($useUppercaseSignature)
-    {
-        $signature = $this->createSignatureForNullContent();
-        if ($useUppercaseSignature) $signature = strtoupper($signature);
-        return sprintf( 'Token %s:%s',
-            AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY, $signature);
-    }
-
-    private function createAuthenticatedCredentials()
-    {
-        return AuthenticatedCredentialsBuilder::withIrrelevantFields()->build();
-    }
-
-    private function createSignatureForNullContent()
-    {
-        return hash_hmac(HMAC::HASH_ALGORITHM, null, AuthenticatedCredentialsBuilder::IRRELEVANT_SECRET_KEY);
-    }
-
-    public function testAuthenticateRequestShouldThrowMissingCredentials()
-    {
-        $this->setExpectedException(
-            'Level3\Processor\Wrapper\Authentication\Exceptions\MissingCredentials'
-        );
-
-        $request = $this->createRequestMockSimple();
-        $request->shouldReceive('getHeader')->with(HMAC::AUTHORIZATION_HEADER)->andReturn(null);
-        $this->method->authenticateRequest($request);
-    }
-
-    public function testAuthenticateRequestShouldThrowInvalidCredentials()
-    {
-        $this->setExpectedException('Level3\Exceptions\Forbidden');
-
-        $request = $this->createRequestMockSimple();
-        $request->shouldReceive('getHeader')->with('Authorization')->andReturn('Foo');
-        $this->method->authenticateRequest($request);
-    }
+    const VALID_TOKEN_MD5 = 'foo:f197feb7989b7e3284550e9818dfc87d';
+    const VALID_TOKEN_SHA256 = 'foo:2ca3a2e99ee58316b7dc7abdb4a914f28701f81dcf94b374472df36f8765c1fa';
+    const INVALID_TOKEN = 'foo:qux';
+    const MALFORMED_TOKEN = 'foux';
+    CONST INVALID_ALGORITHM = 'foo';
 
     public function testAuthenticateRequest()
     {
-        $this->doTestAuthenticateRequest(false);
-    }
+        $method = new HMACMock();
 
-    public function testAuthenticateRequestWithUppercaseSignature()
-    {
-        $this->doTestAuthenticateRequest(true);
-    }
-
-    private function doTestAuthenticateRequest($useUppercaseSignature)
-    {
-        $header = $this->getAuthorizationHeader($useUppercaseSignature);
-        $authenticatedCredentials = $this->createAuthenticatedCredentials();
-
-        $request = $this->createRequestWithHeaderAndCredentials($header, $authenticatedCredentials);
-
-        $this->credentialsRepositoryMock
-            ->shouldReceive('findByApiKey')
-            ->with(AuthenticatedCredentialsBuilder::IRRELEVANT_API_KEY)
-            ->andReturn($authenticatedCredentials);
-
-        $request = $this->method->authenticateRequest($request);
-    }
-
-    private function createRequestWithHeaderAndCredentials($header, $credentials)
-    {
         $request = $this->createRequestMockSimple();
-        $request->shouldReceive('getHeader')->with('Authorization')->andReturn($header);
+        $request->shouldReceive('getHeader')
+            ->with(HMAC::AUTHORIZATION_HEADER)
+            ->twice()->andReturn('Authorization: HMAC '. self::VALID_TOKEN_SHA256);
 
-        $request->shouldReceive('setCredentials')->with($credentials)->once();
-        $request->shouldReceive('getContent')->andReturn('');
-        return $request;
+        $request->shouldReceive('getContent')
+            ->withNoArgs()
+            ->once()->andReturn('qux');
+
+        $request->shouldReceive('setCredentials')
+            ->once()
+            ->with(m::on(function($credentials) {
+                return $credentials->isAuthenticated();
+            }));
+            
+        $response = $this->createResponseMock();
+        $method->authenticate($request, $response);
+    }
+
+    public function testSetHashAlgorithm()
+    {
+        $method = new HMACMock();
+        $method->setHashAlgorithm('md5');
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')
+            ->with(HMAC::AUTHORIZATION_HEADER)
+            ->twice()->andReturn('Authorization: HMAC '. self::VALID_TOKEN_MD5);
+
+        $request->shouldReceive('getContent')
+            ->withNoArgs()
+            ->once()->andReturn('qux');
+
+        $request->shouldReceive('setCredentials')
+            ->once()
+            ->with(m::on(function($credentials) {
+                return $credentials->isAuthenticated();
+            }));
+            
+        $response = $this->createResponseMock();
+        $method->authenticate($request, $response);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testSetHashAlgorithmInvalid()
+    {
+        $method = new HMACMock();
+        $method->setHashAlgorithm(self::INVALID_ALGORITHM);
+    }
+
+    /**
+     * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\MalformedCredentials
+     */
+    public function testAuthenticateRequestMalformed()
+    {
+        $method = new HMACMock();
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')
+            ->with(HMAC::AUTHORIZATION_HEADER)
+            ->twice()->andReturn('Authorization: HMAC '. self::MALFORMED_TOKEN);
+
+        $response = $this->createResponseMock();
+        $method->authenticate($request, $response);
+    }
+
+    /**
+     * @expectedException Level3\Exceptions\Forbidden
+     */
+    public function testAuthenticateRequestInvalid()
+    {
+        $method = new HMACMock();
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')
+            ->with(HMAC::AUTHORIZATION_HEADER)
+            ->twice()->andReturn('Authorization: HMAC '. self::INVALID_TOKEN);
+
+        $request->shouldReceive('getContent')
+            ->withNoArgs()
+            ->once()->andReturn('qux');
+
+        $response = $this->createResponseMock();
+        $method->authenticate($request, $response);
+    }
+}
+
+
+
+class HMACMock extends HMAC
+{
+    protected function getPrivateKey($apiKey)
+    {
+        if ($apiKey == 'foo') return 'bar';
     }
 }

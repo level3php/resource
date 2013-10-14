@@ -67,44 +67,19 @@ class RequestTest extends TestCase
 
     public function testGetCredentials()
     {
-        $credentials = $this->request->getCredentials();
-
-        $this->assertFalse($credentials->isAuthenticated());
-    }
-
-    public function testSetAndGetCredentials()
-    {
-        $credentials = $this->createIrrelevantCredentials();
+        $credentials = m::mock('Level3\Processor\Wrapper\Authenticator\Credentials');
 
         $this->request->setCredentials($credentials);
-        $returnedCredentials = $this->request->getCredentials();
-
-        $this->assertThat($returnedCredentials, $this->equalTo($credentials));
+        $this->assertSame($credentials, $this->request->getCredentials());
     }
 
     public function testIsAuthenticated()
     {
-        $this->assertFalse($this->request->isAuthenticated());
-    }
-
-    public function testIsAuthenticatedAfterSettingCredentials()
-    {
-        $credentials = $this->createIrrelevantCredentials();
+        $credentials = m::mock('Level3\Processor\Wrapper\Authenticator\Credentials');
+        $credentials->shouldReceive('isAuthenticated')->once()->andReturn(true);
 
         $this->request->setCredentials($credentials);
-
         $this->assertTrue($this->request->isAuthenticated());
-    }
-
-    private function createIrrelevantCredentials()
-    {
-        return AuthenticatedCredentialsBuilder::anAuthenticatedUser()
-            ->withApiKey('Irrelevant API Key')
-            ->withSecretKey('Ireelevant Secret Key')
-            ->withLogin('someLogin')
-            ->withId('anId')
-            ->withFullName('Irrelevant Full Name')
-            ->build();
     }
 
     public function testgetContent()

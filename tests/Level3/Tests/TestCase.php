@@ -119,6 +119,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Messages\Request');
     }
     
+    protected function createResponseMock()
+    {
+        return m::mock('Level3\Messages\Response');
+    }
+    
     protected function createRequestMock(
         $attributes = null, $filters = null, $formatter = null, 
         $repository = null, $content = null, $key = self::IRRELEVANT_KEY
