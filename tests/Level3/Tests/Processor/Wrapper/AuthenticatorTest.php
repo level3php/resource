@@ -16,7 +16,10 @@ class AuthenticatorTest extends TestCase
         $this->request = $this->createRequestMockSimple();
 
         $this->method = $this->makeAuthenticationMethodMock($this->request);
-        return new Authenticator($this->method);
+        $authenticator = new Authenticator();
+        $authenticator->addMethod($this->method);
+
+        return $authenticator;
     }
 
     /**
@@ -55,7 +58,8 @@ class AuthenticatorTest extends TestCase
 
         $request = $this->createRequestMockSimple();
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
-        $wrapper = new Authenticator($method);
+        $wrapper = new Authenticator();
+        $wrapper->addMethod($method);
 
         $this->assertInstanceOf(
             'Level3\Messages\Response', 
@@ -73,5 +77,53 @@ class AuthenticatorTest extends TestCase
             ->with(m::type('Level3\Messages\Response'))->once();
 
         return $mock;
+    }
+
+    public function testAddProcessorWrapperDefault()
+    {
+        $methodA = $this->createMethodMock();
+        $methodB = $this->createMethodMock();
+
+        $wrapper = new Authenticator();
+
+        $wrapper->addMethod($methodA);
+        $wrapper->addMethod($methodB);
+
+        $result = $wrapper->getMethods();
+        $this->assertSame($methodA, $result[0]);
+        $this->assertSame($methodB, $result[1]);
+        $this->assertCount(2, $result);
+    }
+
+    public function testAddProcessorWrapperBoth()
+    {
+        $methodA = $this->createMethodMock();
+        $methodB = $this->createMethodMock();
+
+        $wrapper = new Authenticator();
+
+        $wrapper->addMethod($methodA, Authenticator::PRIORITY_LOW);
+        $wrapper->addMethod($methodB, Authenticator::PRIORITY_HIGH);
+
+        $result = $wrapper->getMethods();
+        $this->assertSame($methodA, $result[0]);
+        $this->assertSame($methodB, $result[1]);
+        $this->assertCount(2, $result);
+    }
+
+    public function testAddProcessorWrapperOne()
+    {
+        $methodA = $this->createMethodMock();
+        $methodB = $this->createMethodMock();
+
+        $wrapper = new Authenticator();
+
+        $wrapper->addMethod($methodA);
+        $wrapper->addMethod($methodB, Authenticator::PRIORITY_LOW);
+
+        $result = $wrapper->getMethods();
+        $this->assertSame($methodA, $result[1]);
+        $this->assertSame($methodB, $result[0]);
+        $this->assertCount(2, $result);
     }
 }

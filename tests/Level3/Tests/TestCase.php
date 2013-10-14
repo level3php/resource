@@ -75,6 +75,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return m::mock('Level3\Repository');
     }
 
+    protected function createMethodMock()
+    {
+        return m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+    }
+
     protected function createResourceMock($mockMethods = true)
     {
         $resource = m::mock('Level3\Resource');
