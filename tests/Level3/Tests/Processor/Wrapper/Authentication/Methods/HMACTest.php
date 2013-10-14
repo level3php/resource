@@ -24,7 +24,7 @@ class HMACTest extends TestCase
             ->with(HMAC::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: HMAC '. self::VALID_TOKEN_SHA256);
 
-        $request->shouldReceive('getContent')
+        $request->shouldReceive('getRawContent')
             ->withNoArgs()
             ->once()->andReturn('qux');
 
@@ -48,7 +48,7 @@ class HMACTest extends TestCase
             ->with(HMAC::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: HMAC '. self::VALID_TOKEN_MD5);
 
-        $request->shouldReceive('getContent')
+        $request->shouldReceive('getRawContent')
             ->withNoArgs()
             ->once()->andReturn('qux');
 
@@ -99,7 +99,7 @@ class HMACTest extends TestCase
             ->with(HMAC::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: HMAC '. self::INVALID_TOKEN);
 
-        $request->shouldReceive('getContent')
+        $request->shouldReceive('getRawContent')
             ->withNoArgs()
             ->once()->andReturn('qux');
 

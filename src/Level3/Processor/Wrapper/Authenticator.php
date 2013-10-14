@@ -17,14 +17,17 @@ class Authenticator extends Wrapper
         $this->method = $method;
     }
 
-    protected function processRequest(Closure $execution, Request $request, $method)
+    public function error(Closure $execution, Request $request)
     {
-        $this->authenticateRequest($request);
-        $response = $execution($request);
+        return $execution($request);
     }
 
-    protected function authenticateRequest(Request $request)
+    protected function processRequest(Closure $execution, Request $request, $method)
     {
-        $this->method->authenticateRequest($request);
+        $this->method->authenticate($request);
+
+        $response = $execution($request);
+        $this->method->modifyResponse($response);
+        return $response;
     }
 }

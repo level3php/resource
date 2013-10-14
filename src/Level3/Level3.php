@@ -15,9 +15,9 @@ use Level3\Processor\Wrapper;
 
 class Level3
 {
-    const PRIORITY_LOW = 30;
+    const PRIORITY_LOW = 10;
     const PRIORITY_NORMAL = 20;
-    const PRIORITY_HIGH = 10;
+    const PRIORITY_HIGH = 30;
 
     private $debug;
     private $hub;

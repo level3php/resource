@@ -23,7 +23,7 @@ abstract class HeaderBased implements Method
         $this->continueWithoutAuthentication = $continue;
     }
 
-    public function authenticate(Request $request, Response $response)
+    public function authenticate(Request $request)
     {
         if (!$this->hasAuthorizationHeader($request)) {
             if (!$this->continueWithoutAuthentication) {
@@ -34,8 +34,7 @@ abstract class HeaderBased implements Method
         }
 
         $this->verifyAuthorizationHeader($request);
-        $this->applyToRequest($request);
-        $this->applyToResponse($response);
+        $this->modifyRequest($request);
 
     }
 
@@ -61,8 +60,8 @@ abstract class HeaderBased implements Method
     {
         $header = $request->getHeader(static::AUTHORIZATION_HEADER);
 
-        preg_match_all('/authorization: (?P<scheme>[a-z]+) (?P<token>.*)$/i', $header, $data);
-            
+        preg_match_all('/(?P<scheme>[a-z]+) (?P<token>.*)$/i', $header, $data);
+
         if (count($data['scheme']) == 0 || count($data['token']) == 0) {
             throw new MalformedCredentials();
         }
@@ -75,12 +74,12 @@ abstract class HeaderBased implements Method
         return strtolower($this->scheme) == strtolower($scheme);
     }
 
-    protected function applyToResponse(Response $response)
+    public function modifyResponse(Response $response)
     {
 
     }
 
     abstract protected function verifyToken(Request $request, $token);
-    abstract protected function applyToRequest(Request $request);
+    abstract protected function modifyRequest(Request $request);
 
 }

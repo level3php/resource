@@ -24,7 +24,7 @@ class HeaderBasedTest extends TestCase
 
 
         $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticate($request);
     }
 
     public function testAuthenticateRequestWithOutHeaderAllowed()
@@ -39,7 +39,7 @@ class HeaderBasedTest extends TestCase
 
 
         $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticate($request);
     }
 
     public function testAuthenticateRequest()
@@ -55,7 +55,7 @@ class HeaderBasedTest extends TestCase
             ->once()->andReturn(null);
 
         $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticate($request);
     }
 
     /**
@@ -72,7 +72,7 @@ class HeaderBasedTest extends TestCase
 
 
         $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticate($request);
     }
 }
 
@@ -90,7 +90,7 @@ class HeaderBasedMock extends HeaderBased
         return false;
     }
 
-    protected function applyToRequest(Request $request)
+    protected function modifyRequest(Request $request)
     {
         $request->mustBeCalledSetCredentials();
     }

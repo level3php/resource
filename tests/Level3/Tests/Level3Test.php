@@ -80,8 +80,8 @@ class Level3Test extends TestCase
         $this->level3->addProcessorWrapper($wrapperB, Level3::PRIORITY_HIGH);
 
         $result = $this->level3->getProcessorWrappers();
-        $this->assertSame($wrapperA, $result[1]);
-        $this->assertSame($wrapperB, $result[0]);
+        $this->assertSame($wrapperA, $result[0]);
+        $this->assertSame($wrapperB, $result[1]);
         $this->assertCount(2, $result);
     }
 
@@ -108,8 +108,8 @@ class Level3Test extends TestCase
         $this->level3->addProcessorWrapper($wrapperB, Level3::PRIORITY_HIGH);
 
         $result = $this->level3->getProcessorWrappers();
-        $this->assertSame($wrapperA, $result[1]);
-        $this->assertSame($wrapperB, $result[0]);
+        $this->assertSame($wrapperA, $result[0]);
+        $this->assertSame($wrapperB, $result[1]);
         $this->assertCount(2, $result);
     }
 

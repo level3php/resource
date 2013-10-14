@@ -6,5 +6,6 @@ use Level3\Messages\Response;
 
 interface Method
 {
-    public function authenticate(Request $request, Response $response);
+    public function authenticate(Request $request);
+    public function modifyResponse(Response $response);
 }

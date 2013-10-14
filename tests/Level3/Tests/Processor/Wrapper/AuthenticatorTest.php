@@ -11,13 +11,12 @@ class AuthenticatorTest extends TestCase
 {
     private $wrapper;
 
-    public function setUp()
+    public function createWrapper()
     {
-        parent::setUp();
         $this->request = $this->createRequestMockSimple();
 
         $this->method = $this->makeAuthenticationMethodMock($this->request);
-        $this->wrapper = new Authenticator($this->method);
+        return new Authenticator($this->method);
     }
 
     /**
@@ -26,10 +25,11 @@ class AuthenticatorTest extends TestCase
     public function testAuthentication($method)
     {
         $execution = function($request) { 
-            return true; 
+            return $this->createResponseMock(); 
         };
 
-        $this->wrapper->$method($execution, $this->request);
+        $wrapper = $this->createWrapper();
+        $wrapper->$method($execution, $this->request);
     }
 
     public function provider()
@@ -40,15 +40,34 @@ class AuthenticatorTest extends TestCase
             array('post'), 
             array('patch'), 
             array('put'), 
-            array('delete')
+            array('delete'),
+        );
+    }
+
+    public function testErrorAuthentication()
+    {
+        $execution = function($request) { 
+            return $this->createResponseMock(); 
+        };
+
+        $request = $this->createRequestMockSimple();
+        $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+        $wrapper = new Authenticator($method);
+
+        $this->assertInstanceOf(
+            'Level3\Messages\Response', 
+            $wrapper->error($execution, $request)
         );
     }
 
     private function makeAuthenticationMethodMock($request)
     {
         $mock = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
-        $mock->shouldReceive('authenticateRequest')
+        $mock->shouldReceive('authenticate')
             ->with($request)->once();
+
+        $mock->shouldReceive('modifyResponse')
+            ->with(m::type('Level3\Messages\Response'))->once();
 
         return $mock;
     }

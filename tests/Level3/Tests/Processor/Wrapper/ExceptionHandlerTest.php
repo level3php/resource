@@ -21,6 +21,21 @@ class ExceptionHandlerTest extends TestCase
         $this->wrapper->setLevel3($this->level3);
     }
 
+    public function testErrorAuthentication()
+    {
+        $execution = function($request) { 
+            return $this->createResponseMock(); 
+        };
+
+        $request = $this->createRequestMockSimple();
+        $wrapper = new ExceptionHandler();
+
+        $this->assertInstanceOf(
+            'Level3\Messages\Response', 
+            $wrapper->error($execution, $request)
+        );
+    }
+
     /**
      * @dataProvider provider
      */

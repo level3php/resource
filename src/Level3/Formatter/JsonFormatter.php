@@ -21,6 +21,10 @@ class JsonFormatter extends Formatter
 
     public function fromRequest($string)
     {
+        if (strlen($string) == 0) {
+            return Array();
+        }
+        
         $array = json_decode($string, true);
 
         if (!is_array($array)) {

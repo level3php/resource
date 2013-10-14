@@ -80,6 +80,11 @@ class Request extends SymfonyRequest
         ));
     }
 
+    public function getRawContent($none = false)
+    {
+        return parent::getContent();
+    }
+
     public function getContent($none = false)
     {
         $content = parent::getContent();

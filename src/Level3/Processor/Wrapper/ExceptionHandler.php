@@ -14,16 +14,17 @@ use Teapot\StatusCode;
 
 class ExceptionHandler extends Wrapper
 {
+    public function error(Closure $execution, Request $request)
+    {
+        return $execution($request);
+    }
+
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         try {
             return $execution($request);
         } catch (Exception $exception) {
-            if ($method != 'error') {
-                return $this->getLevel3()->getProcessor()->error($request, $exception);
-            }
-
-            throw $exception;
+            return $this->getLevel3()->getProcessor()->error($request, $exception);
         }
     }
 }

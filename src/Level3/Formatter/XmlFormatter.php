@@ -24,6 +24,10 @@ class XmlFormatter extends Formatter
 
     public function fromRequest($string)
     {
+        if (strlen($string) == 0) {
+            return Array();
+        }
+        
         try {
             return $this->xmlToArray(new SimpleXMLElement($string));
         } catch (Exception $e) {
