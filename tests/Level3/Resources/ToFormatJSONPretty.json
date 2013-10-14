@@ -9,7 +9,18 @@
             "name": "name",
             "lang": "lang",
             "title": "title"
-        }
+        },
+        "foo": [
+            {
+                "href": "foo",
+                "name": "name",
+                "lang": "lang",
+                "title": "title"
+            },
+            {
+                "href": "qux"
+            }
+        ]
     },
     "_embedded": {
         "baz": [

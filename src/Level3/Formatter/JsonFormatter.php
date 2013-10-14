@@ -77,7 +77,9 @@ class JsonFormatter extends Formatter
         $data = array();
 
         foreach ($resources as $resource) {
-            $res = $this->arrayForJson($resource);
+            if ($resource) {
+                $res = $this->arrayForJson($resource);  
+            }
 
             if(!empty($res)){
                 $data[] = $res;
@@ -87,33 +89,9 @@ class JsonFormatter extends Formatter
         return $data;
     }
 
-    protected function stripAttributeMarker(array $data)
+    protected function arrayForJson(Resource $resource)
     {
-        foreach ($data as $key => $value) {
-            if (substr($key, 0, 5) == '@xml:') {
-                $data[substr($key, 5)] = $value;
-                unset ($data[$key]);
-            } elseif (substr($key, 0, 1) == '@') {
-                $data[substr($key, 1)] = $value;
-                unset ($data[$key]);
-            }
-
-            if (is_array($value)) {
-                $data[$key] = $this->stripAttributeMarker($value);
-            }
-        }
-
-        return $data;
-    }
-
-    protected function arrayForJson(Resource $resource = null)
-    {
-        if (!$resource){
-            return array();
-        }
-
         $data = (array) $resource->getData();
-        $data = $this->stripAttributeMarker($data);
 
         $links = $this->linksForJson($resource->getURI(), $resource->getLinks());
         if (count($links)) {

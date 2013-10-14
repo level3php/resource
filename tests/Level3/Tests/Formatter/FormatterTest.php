@@ -36,6 +36,12 @@ abstract class FormatterTest extends TestCase {
         $array = $formatter->fromRequest('foo');
     }
 
+    public function testFromRequestEmpty()
+    {
+        $formatter = new $this->class();
+        $this->assertSame(array(), $formatter->fromRequest(''));
+    }
+
     public function testToResponse()
     {
         $formatter = new $this->class();
@@ -51,6 +57,10 @@ abstract class FormatterTest extends TestCase {
         $link->isTemplated(true);
 
         $resource->addLink('quz', $link);
+
+        $resource->addLink('foo', $link);
+        $resource->addLink('foo', new Link('qux'));
+
         $resource->addResource('baz', 
             $this->createResource(self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
         );
