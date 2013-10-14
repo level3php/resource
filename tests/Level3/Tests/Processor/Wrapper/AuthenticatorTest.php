@@ -22,6 +22,21 @@ class AuthenticatorTest extends TestCase
         return $authenticator;
     }
 
+    public function testClearMethods()
+    {
+        $request = $this->createResponseMock(); ;
+        $execution = function($request) use ($request) { 
+            return $request;
+        };
+
+        $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+        $wrapper = new Authenticator();
+        $wrapper->addMethod($method);
+        $wrapper->clearMethods();
+
+        $this->assertCount(0, $wrapper->getMethods());
+    }
+
     /**
      * @dataProvider provider
      */

@@ -18,7 +18,7 @@ class Authenticator extends Wrapper
 
     protected $methods = array();
 
-    public function clearProcessWrappers()
+    public function clearMethods()
     {
         $this->methods = array();
     }

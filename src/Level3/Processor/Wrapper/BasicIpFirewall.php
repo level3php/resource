@@ -61,10 +61,15 @@ class BasicIpFirewall extends Wrapper
         throw new UnexpectedValueException('Malformed IP/CIDR');
     }
 
+    public function error(Closure $execution, Request $request)
+    {
+        return $execution($request);
+    }
+
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $ip = $request->getClientIp();
-        if ($this->isAuthorizedIp($ip)) {
+        if (!$this->isAuthorizedIp($ip)) {
             throw new Forbidden();
         }
 
@@ -74,11 +79,11 @@ class BasicIpFirewall extends Wrapper
     protected function isAuthorizedIp($ip)
     {
         if ($this->whitelist) {
-            return !$this->isIpInWhitelist($ip);
+            return $this->isIpInWhitelist($ip);
         }
 
         if ($this->blacklist) {
-            return $this->isIpInBlacklist($ip);
+            return !$this->isIpInBlacklist($ip);
         }
 
         return true;
@@ -134,12 +139,7 @@ class BasicIpFirewall extends Wrapper
 
     private function getCIDRComponents($cidr)
     {
-        $tmp = explode(self::CIDR_SEPARATOR, $cidr);
-        if (count($tmp) != 2) {
-            throw new Exception('Invalid CIDR format');
-        }
-
-        return $tmp;
+        return explode(self::CIDR_SEPARATOR, $cidr);
     }
 
     private function getCIDRLength($cidr)

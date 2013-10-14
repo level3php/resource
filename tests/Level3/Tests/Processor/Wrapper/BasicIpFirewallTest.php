@@ -23,6 +23,22 @@ class BasicIpFirewallTest extends TestCase
         return $wrapper;
     }
 
+    public function testError()
+    {
+        $request = $this->createResponseMock(); ;
+        $execution = function($request) use ($request) { 
+            return $request;
+        };
+
+        $request = $this->createRequestMockSimple();
+        $wrapper = new BasicIpFirewall();
+
+        $this->assertInstanceOf(
+            'Level3\Messages\Response', 
+            $wrapper->error($execution, $request)
+        );
+    }
+
     /**
      * @expectedException Level3\Exceptions\Forbidden
      */
@@ -72,6 +88,21 @@ class BasicIpFirewallTest extends TestCase
             return new Response();
         }, $request);    
     }
+
+    public function testDefault()
+    {
+        $wrapper = $this->createWrapper();
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getClientIp')->once()->andReturn(self::EXAMPLE_IP_B);
+
+        $expected = $wrapper->get(function($request) {
+            return new Response();
+        }, $request);    
+
+        $this->assertInstanceOf('Level3\Messages\Response', $expected);
+    }
+
 
     public function testNotIsInBlacklist()
     {
