@@ -19,8 +19,8 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "shrikeh/teapot": "dev-master",
-        "symfony/http-foundation": "*",
+        "shrikeh/teapot": "0.2",
+        "symfony/http-foundation": "2.3.*@dev",
         "psr/log": "~1.0"
     },
     "require-dev": {

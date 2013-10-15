@@ -124,12 +124,12 @@ class BasicIpFirewall extends Wrapper
 
     private function getCIDRRange($cidr)
     {
-        list($network, $mask) = $this->getCIDRComponents($cidr);
+        $cidrParts = $this->getCIDRComponents($cidr);
 
         $length = $this->getCIDRLength($cidr);
         $range = array();
 
-        $start = ip2long($network);
+        $start = ip2long($cidrParts[0]);
         for ($i=0;$i < $length;$i++) {
             $range[] = long2ip($start + $i);
         }
@@ -144,8 +144,8 @@ class BasicIpFirewall extends Wrapper
 
     private function getCIDRLength($cidr)
     {
-        list($network, $mask) = $this->getCIDRComponents($cidr);
+        $cidrParts = $this->getCIDRComponents($cidr);
 
-        return 1 << (32 - $mask);
+        return 1 << (32 - $cidrParts[1]);
     }
 }

@@ -23,8 +23,7 @@ class LoggerTest extends TestCase
      */
     public function testExceptionHandling($method, $code, $level)
     {
-        $attributes = $this->createParametersMock();
-        $request = $this->createRequestMock($attributes);
+        $request = $this->createRequestMock();
 
         $this->loggerMock->shouldReceive($level)
             ->once()->andReturn(null);

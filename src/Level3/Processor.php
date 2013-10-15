@@ -15,7 +15,6 @@ use Closure;
 class Processor
 {
     private $level3;
-    private $lastException;
 
     public function setLevel3(Level3 $level3)
     {

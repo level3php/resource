@@ -50,7 +50,6 @@ class Logger extends Wrapper
     protected function getLogMessage(Request $request, Response $response, $method)
     {
         $key = $request->getKey();
-        $attributes = $request->getAttributes();
 
         return sprintf('%s::%s - %s', $key, $method, null);
     }

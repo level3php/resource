@@ -18,7 +18,6 @@ class Request extends SymfonyRequest
     protected $availableHeaders = array(self::HEADER_SORT, self::HEADER_SORT);
 
     private $credentials;
-    private $id;
     private $key;
 
     public function __construct($key, SymfonyRequest $origin)
