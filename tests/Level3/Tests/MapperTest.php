@@ -66,8 +66,8 @@ class MapperTest extends TestCase
         $repositoryKey = $repository->getKey();
         $mapper = $this->getMapperMock();
         $mapper->shouldReceive('mapGetter')->once()->with($repositoryKey, '/foo/{fooId}');
-        $mapper->shouldReceive('mapPutter')->once()->with($repositoryKey, '/foo');
-        $mapper->shouldReceive('mapPoster')->once()->with($repositoryKey, '/foo/{fooId}');
+        $mapper->shouldReceive('mapPutter')->once()->with($repositoryKey, '/foo/{fooId}');
+        $mapper->shouldReceive('mapPoster')->once()->with($repositoryKey, '/foo');
         $mapper->shouldReceive('mapDeleter')->once()->with($repositoryKey, '/foo/{fooId}');
         $mapper->shouldReceive('mapFinder')->once()->with($repositoryKey, '/foo');
         $mapper->shouldReceive('mapPatcher')->once()->with($repositoryKey, '/foo/{fooId}');
