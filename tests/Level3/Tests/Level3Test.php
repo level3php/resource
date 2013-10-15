@@ -128,6 +128,18 @@ class Level3Test extends TestCase
         $this->assertCount(0, $result);
     }
 
+    public function testGetProcessorWrappersByClass()
+    {
+        $wrapperA = $this->createWrapperMock();
+        $this->assertNull($this->level3->getProcessorWrappersByClass(get_class($wrapperA)));
+        
+        $this->level3->addProcessorWrapper($wrapperA);
+
+        $this->assertSame($wrapperA, 
+            $this->level3->getProcessorWrappersByClass(get_class($wrapperA))
+        );
+    }
+
     public function testBoot()
     {
         $this->mapperMock->shouldReceive('boot')->with($this->hubMock)->once()->andReturn(null);

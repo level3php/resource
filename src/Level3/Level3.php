@@ -98,6 +98,16 @@ class Level3
         return $result;
     }
 
+    public function getProcessorWrappersByClass($class)
+    {
+        foreach ($this->getProcessorWrappers() as $wrapper) {
+            if ($wrapper instanceOf $class) {
+                return $wrapper;
+            }
+        }
+    }
+
+
     public function boot()
     {
         $this->mapper->boot($this->getHub());
