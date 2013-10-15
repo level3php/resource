@@ -41,67 +41,6 @@ class JsonFormatter extends Formatter
             $options = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT;
         }
 
-        return json_encode($this->arrayForJson($resource), $options);
-    }
-
-    protected function linksForJson($uri, $links)
-    {
-        $data = array();
-        if (!is_null($uri)) {
-            $data['self'] = array('href' => $uri);
-        }
-
-        foreach ($links as $rel => $links) {
-            if (count($links) === 1 && $rel !== 'curies') {
-                $data[$rel] = array('href' => $links[0]->getHref());
-                foreach ($links[0]->getAttributes() as $attribute => $value) {
-                    $data[$rel][$attribute] = $value;
-                }
-            } else {
-                $data[$rel] = array();
-                foreach ($links as $link) {
-                    $item = array('href' => $link->getHref());
-                    foreach ($link->getAttributes() as $attribute => $value) {
-                        $item[$attribute] = $value;
-                    }
-                    $data[$rel][] = $item;
-                }
-            }
-        }
-
-        return $data;
-    }
-
-    protected function resourcesForJson($resources)
-    {
-        $data = array();
-
-        foreach ($resources as $resource) {
-            if ($resource) {
-                $res = $this->arrayForJson($resource);
-            }
-
-            if (!empty($res)) {
-                $data[] = $res;
-            }
-        }
-
-        return $data;
-    }
-
-    protected function arrayForJson(Resource $resource)
-    {
-        $data = (array) $resource->getData();
-
-        $links = $this->linksForJson($resource->getURI(), $resource->getLinks());
-        if (count($links)) {
-            $data['_links'] = $links;
-        }
-
-        foreach ($resource->getResources() as $rel => $resources) {
-            $data['_embedded'][$rel] = $this->resourcesForJson($resources);
-        }
-
-        return $data;
+        return json_encode($resource->toArray(), $options);
     }
 }

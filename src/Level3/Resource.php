@@ -20,7 +20,7 @@ class Resource
     protected $uri;
     protected $resources = array();
     protected $links = array();
-    protected $data;
+    protected $data = array();
     protected $lastUpdate;
     protected $cache;
 
@@ -48,9 +48,20 @@ class Resource
         return $this->uri;
     }
 
-    public function addLink($rel, Link $link)
+    public function setLink($rel, Link $link)
     {
         $this->links[$rel][] = $link;
+
+        return $this;
+    }
+
+    public function setLinks($rel, Array $links)
+    {
+        foreach ($links as $link) {
+            if ($link instanceOf Link) {
+                $this->links[$rel][] = $link;
+            }
+        }
 
         return $this;
     }
@@ -64,7 +75,21 @@ class Resource
             );
         }
 
-        $this->addLink($rel, $link);
+        $this->setLink($rel, $link);
+
+        return $this;
+    }
+
+
+    public function linkResources($rel, Resource $resource)
+    {
+        $links = array();
+
+        foreach ($resources as $resource) {
+            $links[] = $resource->getSelfLink();
+        }
+
+        $this->setLinks($rel, $links);
 
         return $this;
     }
@@ -89,6 +114,7 @@ class Resource
 
         return $this;
     }
+
 
     public function getResources()
     {
@@ -154,5 +180,27 @@ class Resource
     public function getCache()
     {
         return $this->cache;
+    }
+
+    public function toArray()
+    {
+        $base = $this->data;
+        foreach($this->links as $rel => $links) {
+            if ($links instanceOf Link) {
+                $base['_links'][$rel] = $links->toArray();
+            } else {
+                foreach($links as $link) {
+                    $base['_links'][$rel][] = $link->toArray();
+                }
+            }
+        }
+
+        foreach($this->resources as $rel => $resources) {
+            foreach($resources as $resource) {
+                $base['_embedded'][$rel][] = $resource->toArray();
+            }
+        }
+
+        return $base;
     }
 }

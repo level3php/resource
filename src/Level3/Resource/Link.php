@@ -13,10 +13,12 @@ namespace Level3\Resource;
 class Link
 {
     protected $href;
-    protected $name;
-    protected $lang;
-    protected $title;
     protected $templated;
+    protected $type;
+
+    protected $name;
+    protected $hreflang;
+    protected $title;
 
     public function __construct($href = null)
     {
@@ -35,6 +37,18 @@ class Link
         return $this->href;
     }
 
+    public function setTemplated($templated)
+    {
+        $this->templated = (boolean) $templated;
+
+        return $this;
+    }
+
+    public function isTemplated()
+    {
+        return $this->templated;
+    }
+
     public function setName($name)
     {
         $this->name = $name;
@@ -49,14 +63,14 @@ class Link
 
     public function setLang($lang)
     {
-        $this->lang = $lang;
+        $this->hreflang = $lang;
 
         return $this;
     }
 
     public function getLang()
     {
-        return $this->lang;
+        return $this->hreflang;
     }
 
     public function setTitle($title)
@@ -71,17 +85,6 @@ class Link
         return $this->title;
     }
 
-    public function setTemplated($templated)
-    {
-        $this->templated = (boolean) $templated;
-
-        return $this;
-    }
-
-    public function isTemplated()
-    {
-        return $this->templated;
-    }
 
     public function getAttributes()
     {
@@ -89,6 +92,15 @@ class Link
         unset($attr['href']);
 
         return array_filter($attr);
+    }
+
+    public function toArray()
+    {
+        $filter = function($value) {
+            return $value != null;
+        };
+
+        return array_filter(get_object_vars($this), $filter);
     }
 
     public function __toString()
