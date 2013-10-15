@@ -56,18 +56,15 @@ abstract class FormatterTest extends TestCase
         $link->setTitle('title');
         $link->isTemplated(true);
 
-        $resource->addLink('quz', $link);
+        $resource->setLink('quz', $link);
 
-        $resource->addLink('foo', $link);
-        $resource->addLink('foo', new Link('qux'));
+        $resource->setLinks('foo', array(
+            $link,
+            new Link('qux')
+        ));
 
         $resource->addResource('baz',
             $this->createResource(self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
-        );
-
-        $this->assertSame(
-            $this->readResource($this->toNonPretty),
-            $formatter->toResponse($resource)
         );
 
         if (
@@ -84,6 +81,11 @@ abstract class FormatterTest extends TestCase
                 $formatter->toResponse($resource, true)
             );
         }
+
+        $this->assertSame(
+            $this->readResource($this->toNonPretty),
+            $formatter->toResponse($resource)
+        );
     }
 
     protected function createResource($uri)

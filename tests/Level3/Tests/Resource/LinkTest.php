@@ -76,19 +76,38 @@ class LinkTest extends TestCase
     public function testGetAttributes()
     {
         $expected = array(
+            'templated' => true,
             'name' => 'foo',
-            'lang' => 'bar',
-            'title' => 'qux',
-            'templated' => true
+            'hreflang' => 'bar',
+            'title' => 'qux'
         );
 
         $link = new Link();
         $link->setName($expected['name']);
-        $link->setLang($expected['lang']);
+        $link->setLang($expected['hreflang']);
         $link->setTitle($expected['title']);
         $link->setTemplated($expected['templated']);
 
         $this->assertSame($expected, $link->getAttributes());
+    }
+
+    public function testToArray()
+    {
+        $expected = array(
+            'href' => 'fux',
+            'templated' => true,
+            'name' => 'foo',
+            'hreflang' => 'bar',
+            'title' => 'qux'
+        );
+
+        $link = new Link($expected['href']);
+        $link->setName($expected['name']);
+        $link->setLang($expected['hreflang']);
+        $link->setTitle($expected['title']);
+        $link->setTemplated($expected['templated']);
+
+        $this->assertSame($expected, $link->toArray());
     }
 
     public function testGetAttributesEmpty()

@@ -50,7 +50,7 @@ class Resource
 
     public function setLink($rel, Link $link)
     {
-        $this->links[$rel][] = $link;
+        $this->links[$rel] = $link;
 
         return $this;
     }
@@ -81,12 +81,14 @@ class Resource
     }
 
 
-    public function linkResources($rel, Resource $resource)
+    public function linkResources($rel, Array $resources)
     {
         $links = array();
 
         foreach ($resources as $resource) {
-            $links[] = $resource->getSelfLink();
+            if ($resource instanceOf Resource) {
+                $links[] = $resource->getSelfLink();
+            }
         }
 
         $this->setLinks($rel, $links);
@@ -185,6 +187,10 @@ class Resource
     public function toArray()
     {
         $base = $this->data;
+        if ($self = $this->getSelfLink()) {
+            $base['_links']['self'] = $self->toArray();
+        }
+        
         foreach($this->links as $rel => $links) {
             if ($links instanceOf Link) {
                 $base['_links'][$rel] = $links->toArray();

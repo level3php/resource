@@ -7,14 +7,14 @@
         "quz": {
             "href": "foo",
             "name": "name",
-            "lang": "lang",
+            "hreflang": "lang",
             "title": "title"
         },
         "foo": [
             {
                 "href": "foo",
                 "name": "name",
-                "lang": "lang",
+                "hreflang": "lang",
                 "title": "title"
             },
             {
