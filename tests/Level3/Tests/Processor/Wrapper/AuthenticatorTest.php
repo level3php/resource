@@ -139,4 +139,29 @@ class AuthenticatorTest extends TestCase
         $this->assertSame($methodB, $result[0]);
         $this->assertCount(2, $result);
     }
+
+    public function testSetAllowCredentialsIfNeeded()
+    {
+        $corsClass = 'Level3\Processor\Wrapper\CrossOriginResourceSharing';
+        $cors = m::mock($corsClass);
+        $cors->shouldReceive('setAllowCredentials')
+            ->once()->with(true);
+            
+        $level3 = $this->createLevel3Mock();
+        $level3->shouldReceive('getProcessorWrappersByClass')
+            ->once()->with($corsClass)->andReturn($cors);
+
+
+        $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+        $auth = new Authenticator();
+        $auth->addMethod($method);
+        $auth->setLevel3($level3);
+
+        $request = $this->createRequestMockSimple();
+        $execution = function($request) use ($request) {
+            return $request;
+        };
+
+        $auth->error($execution, $request);
+    }
 }

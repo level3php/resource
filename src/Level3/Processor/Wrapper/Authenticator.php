@@ -42,11 +42,15 @@ class Authenticator extends Wrapper
 
     public function error(Closure $execution, Request $request)
     {
+        $this->setAllowCredentialsIfNeeded();
+
         return $execution($request);
     }
 
     protected function processRequest(Closure $execution, Request $request, $httpMethod)
     {
+        $this->setAllowCredentialsIfNeeded();
+
         $this->authenticate($request);
         $response = $execution($request);
         $this->modifyResponse($response);
@@ -76,6 +80,20 @@ class Authenticator extends Wrapper
     protected function modifyResponseWithMethod(Method $method, Response $response)
     {
         $method->modifyResponse($response);
+    }
+
+    protected function setAllowCredentialsIfNeeded()
+    {
+        if (!$level3 = $this->getLevel3()) {
+            return false;
+        }
+
+        $corsClass = 'Level3\Processor\Wrapper\CrossOriginResourceSharing';
+        $cors = $level3->getProcessorWrappersByClass($corsClass);
+
+        if ($cors) {
+            $cors->setAllowCredentials(true);
+        }
     }
 
 }
