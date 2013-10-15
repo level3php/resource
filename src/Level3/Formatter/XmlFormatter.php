@@ -76,7 +76,7 @@ class XmlFormatter extends Formatter
     {
         foreach ($links as $rel => $links) {
             if (!is_array($links)) $links = array($links);
-            
+
             foreach ($links as $link) {
                 $element = $doc->addChild('link');
                 $element->addAttribute('rel', $rel);

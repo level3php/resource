@@ -85,7 +85,6 @@ class Link
         return $this->title;
     }
 
-
     public function getAttributes()
     {
         $attr = get_object_vars($this);

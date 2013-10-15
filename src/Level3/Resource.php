@@ -80,7 +80,6 @@ class Resource
         return $this;
     }
 
-
     public function linkResources($rel, Array $resources)
     {
         $links = array();
@@ -116,7 +115,6 @@ class Resource
 
         return $this;
     }
-
 
     public function getResources()
     {
@@ -190,19 +188,19 @@ class Resource
         if ($self = $this->getSelfLink()) {
             $base['_links']['self'] = $self->toArray();
         }
-        
-        foreach($this->links as $rel => $links) {
+
+        foreach ($this->links as $rel => $links) {
             if ($links instanceOf Link) {
                 $base['_links'][$rel] = $links->toArray();
             } else {
-                foreach($links as $link) {
+                foreach ($links as $link) {
                     $base['_links'][$rel][] = $link->toArray();
                 }
             }
         }
 
-        foreach($this->resources as $rel => $resources) {
-            foreach($resources as $resource) {
+        foreach ($this->resources as $rel => $resources) {
+            foreach ($resources as $resource) {
                 $base['_embedded'][$rel][] = $resource->toArray();
             }
         }

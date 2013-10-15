@@ -80,7 +80,6 @@ class ResourceTest extends TestCase
         $linkedResourceB = new Resource($this->repository);
         $linkedResourceB->setURI('bar');
 
-
         $this->resource->linkResources('foo', array(
             $linkedResourceA,
             $linkedResourceB
