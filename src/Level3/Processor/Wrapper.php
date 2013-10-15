@@ -24,7 +24,7 @@ abstract class Wrapper
     {
         return $this->processRequest($execution, $request, __FUNCTION__);
     }
-    
+
     public function get(Closure $execution, Request $request)
     {
         return $this->processRequest($execution ,$request, __FUNCTION__);
@@ -54,7 +54,7 @@ abstract class Wrapper
     {
         return $this->processRequest($execution, $request, __FUNCTION__);
     }
-    
+
     public function error(Closure $execution, Request $request)
     {
         return $this->processRequest($execution, $request, __FUNCTION__);

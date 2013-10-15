@@ -17,14 +17,14 @@ class Logger extends Wrapper
     {
         $this->logger = $logger;
     }
-    
+
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $response = $execution($request);
-        
+
         $level = $this->getLogLevel($request, $response, $method);
         $log = $this->getLogMessage($request, $response, $method);
-        
+
         $this->logger->$level($log, array(
             //'attributes' => $request->getAttributes()->all(),
             //'filters' => $request->getFilters()->all(),
@@ -40,7 +40,7 @@ class Logger extends Wrapper
 
         if ($code >= 200 && $code < 400) {
             return LogLevel::INFO;
-        } else if ($code >= 400 && $code < 500) {
+        } elseif ($code >= 400 && $code < 500) {
             return LogLevel::WARNING;
         } else {
             return LogLevel::ERROR;

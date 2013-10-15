@@ -68,6 +68,6 @@ class HubTest extends TestCase
         $hub = new Hub();
         $hub->registerDefinition('foo', function() {});
 
-        $this->assertSame(array('foo'), $hub->getKeys());   
+        $this->assertSame(array('foo'), $hub->getKeys());
     }
 }

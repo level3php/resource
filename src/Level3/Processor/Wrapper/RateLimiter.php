@@ -7,7 +7,6 @@ use Level3\Messages\Response;
 use Level3\Processor\Wrapper;
 use Level3\Exceptions\TooManyRequest;
 
-use Teapot\StatusCode;
 use Redis;
 use Closure;
 
@@ -71,7 +70,7 @@ class RateLimiter extends Wrapper
         return sprintf(self::KEY_PATTERN, $request->getClientIp());
     }
 
-    protected function isLimitReached($key) 
+    protected function isLimitReached($key)
     {
         $current = $this->redis->get($key);
         if ((int) $current > $this->limit) {

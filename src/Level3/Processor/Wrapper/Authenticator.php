@@ -31,7 +31,7 @@ class Authenticator extends Wrapper
     public function getMethods()
     {
         $result = array();
-        
+
         ksort($this->methods);
         foreach ($this->methods as $priority => $methods) {
             $result = array_merge($result, $methods);
@@ -56,8 +56,8 @@ class Authenticator extends Wrapper
 
     protected function authenticate(Request $request)
     {
-        foreach($this->getMethods() as $method) {
-            $this->authenticateWithMethod($method, $request);   
+        foreach ($this->getMethods() as $method) {
+            $this->authenticateWithMethod($method, $request);
         }
     }
 
@@ -68,8 +68,8 @@ class Authenticator extends Wrapper
 
     protected function modifyResponse(Response $response)
     {
-        foreach($this->getMethods() as $method) {
-            $this->modifyResponseWithMethod($method, $response);   
+        foreach ($this->getMethods() as $method) {
+            $this->modifyResponseWithMethod($method, $response);
         }
     }
 

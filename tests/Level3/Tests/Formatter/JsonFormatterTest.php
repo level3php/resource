@@ -10,7 +10,8 @@
 
 namespace Level3\Tests\Formatter;
 
-class JsonFormatterTest extends FormatterTest {
+class JsonFormatterTest extends FormatterTest
+{
     protected $class = 'Level3\Formatter\JsonFormatter';
     protected $toNonPretty = 'ToFormatJSONNonPretty.json';
     protected $toPretty = 'ToFormatJSONPretty.json';

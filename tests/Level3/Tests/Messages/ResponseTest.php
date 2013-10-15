@@ -19,7 +19,7 @@ use Teapot\StatusCode;
 use Mockery as m;
 
 class ResponseTest extends TestCase
-{   
+{
     public function testCreateFromResourceBasic()
     {
         $resource = $this->createResourceMock(false);
@@ -203,7 +203,7 @@ class ResponseTest extends TestCase
         $resource = $this->createResourceMock();
         $formatter = $this->createFormatterMock();
         $formatter->shouldReceive('toResponse')->with($resource)->twice()->andReturn('Irrelevant Content');
-        
+
         $response = new Response();
         $response->setResource($resource);
         $this->assertSame($response->getContent(), '');

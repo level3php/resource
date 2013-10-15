@@ -23,7 +23,7 @@ class FormatterFactory
         }
 
         foreach ($contentTypes as $contentType) {
-            switch($contentType){
+            switch ($contentType) {
                 case XmlFormatter::CONTENT_TYPE:
                     return new XmlFormatter();
                 case JsonFormatter::CONTENT_TYPE:

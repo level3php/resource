@@ -71,13 +71,13 @@ class RepositoryTest extends TestCase
  * foo bar
  */
 class RepositoryTestMock
-    extends 
-        \Level3\Repository 
-    implements 
-        \Level3\Repository\Getter, 
-        \Level3\Repository\Finder, 
-        \Level3\Repository\Putter, 
-        \Level3\Repository\Poster, 
+    extends
+        \Level3\Repository
+    implements
+        \Level3\Repository\Getter,
+        \Level3\Repository\Finder,
+        \Level3\Repository\Putter,
+        \Level3\Repository\Poster,
         \Level3\Repository\Deleter,
         \Level3\Repository\Patcher
 {

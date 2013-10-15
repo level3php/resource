@@ -10,7 +10,8 @@
 
 namespace Level3\Tests\Formatter;
 
-class XmlFormatterTest extends FormatterTest {
+class XmlFormatterTest extends FormatterTest
+{
     protected $class = 'Level3\Formatter\XmlFormatter';
     protected $toNonPretty = 'ToFormatXMLNonPretty.xml';
     protected $toPretty = 'ToFormatXMLPretty.xml';

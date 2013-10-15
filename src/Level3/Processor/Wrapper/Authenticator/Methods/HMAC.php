@@ -18,7 +18,7 @@ abstract class HMAC extends HeaderBased
     {
         if (!in_array($algorithm, hash_algos())) {
             throw new Exception(sprintf(
-                'The given algorithm "%s" not is supported', 
+                'The given algorithm "%s" not is supported',
                 $algorithm
             ));
         }

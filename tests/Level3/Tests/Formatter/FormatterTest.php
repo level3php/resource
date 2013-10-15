@@ -13,9 +13,9 @@ namespace Level3\Tests\Formatter;
 use Level3\Tests\TestCase;
 use Level3\Resource;
 use Level3\Resource\Link;
-use Level3\Resource\Parameters;
 
-abstract class FormatterTest extends TestCase {
+abstract class FormatterTest extends TestCase
+{
     const EXAMPLE_URI = '/test';
 
     public function testFromRequest()
@@ -61,19 +61,17 @@ abstract class FormatterTest extends TestCase {
         $resource->addLink('foo', $link);
         $resource->addLink('foo', new Link('qux'));
 
-        $resource->addResource('baz', 
+        $resource->addResource('baz',
             $this->createResource(self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
         );
-
 
         $this->assertSame(
             $this->readResource($this->toNonPretty),
             $formatter->toResponse($resource)
         );
 
-
         if (
-            version_compare(PHP_VERSION, '5.4' , '>=') || 
+            version_compare(PHP_VERSION, '5.4' , '>=') ||
             $this->class != 'Level3\Formatter\JsonFormatter'
         ) {
             $this->assertSame(
@@ -92,12 +90,12 @@ abstract class FormatterTest extends TestCase {
     {
         $resource = new Resource();
         $resource->setURI($uri);
-        
+
         return $resource;
     }
 
     protected function shouldReceiveGetResouceURI($repository, Resource $resource, $uri)
-    {  
+    {
         $repository->shouldReceive('getResourceURI')
             ->with($resource, Resource::DEFAULT_INTERFACE_METHOD)
             ->twice()

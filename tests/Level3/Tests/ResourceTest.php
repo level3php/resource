@@ -10,7 +10,6 @@
 
 namespace Level3\Tests;
 use Level3\Resource;
-use Mockery as m;
 use DateTime;
 
 class ResourceTest extends TestCase

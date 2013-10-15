@@ -99,7 +99,7 @@ class BasicIpFirewall extends Wrapper
     protected function isIpInBlacklist($ip)
     {
         $list = array_flip($this->blacklist);
-        
+
         return isset($list[$ip]);
     }
 
@@ -115,10 +115,10 @@ class BasicIpFirewall extends Wrapper
 
     private function isValidIPv4($ip)
     {
-        if(!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return false;
-        } 
-        
+        }
+
         return true;
     }
 

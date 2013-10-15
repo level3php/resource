@@ -7,7 +7,6 @@ use Level3\Processor\Wrapper\Authenticator\Credentials;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 use Level3\Resource\Parameters;
-use Level3\Repository;
 
 class Request extends SymfonyRequest
 {
@@ -23,7 +22,7 @@ class Request extends SymfonyRequest
     private $key;
 
     public function __construct($key, SymfonyRequest $origin)
-    {           
+    {
         $query = $request = $attributes = $cookies = $files = $server = null;
 
         $this->key = $key;
@@ -119,6 +118,7 @@ class Request extends SymfonyRequest
         $range = $range[1];
 
         $range = explode(self::HEADER_RANGE_SEPARATOR, $range);
+
         return $range;
     }
 
@@ -147,6 +147,7 @@ class Request extends SymfonyRequest
         if (!$this->headers->has(self::HEADER_SORT)) return null;
 
         $sortHeader = $this->headers->get(self::HEADER_SORT);
+
         return $this->parseSortHeader($sortHeader);
     }
 
@@ -158,6 +159,7 @@ class Request extends SymfonyRequest
             list($field, $direction) = $this->parseSortPart($part);
             if ($field) $sort[$field] = $direction;
         }
+
         return $sort;
     }
 
@@ -170,6 +172,7 @@ class Request extends SymfonyRequest
         $/x';
         preg_match($pattern, $part, $match);
         list($field, $direction) = $this->extractFieldAndDirectionFromRegexMatch($match);
+
         return array($field, $direction);
     }
 

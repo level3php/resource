@@ -24,16 +24,15 @@ class ExceptionHandlerTest extends TestCase
     public function testErrorAuthentication()
     {
         $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) { 
+        $execution = function($request) use ($request) {
             return $request;
         };
-
 
         $request = $this->createRequestMockSimple();
         $wrapper = new ExceptionHandler();
 
         $this->assertInstanceOf(
-            'Level3\Messages\Response', 
+            'Level3\Messages\Response',
             $wrapper->error($execution, $request)
         );
     }

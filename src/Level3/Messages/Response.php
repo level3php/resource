@@ -25,7 +25,7 @@ class Response extends SymfonyResponse
     protected $resource;
     protected $formatter;
 
-    static public function createFromResource(Request $request, Resource $resource)
+    public static function createFromResource(Request $request, Resource $resource)
     {
         $response = new static();
         $response->setStatusCode(StatusCode::OK);
@@ -43,15 +43,15 @@ class Response extends SymfonyResponse
         if ($id = $resource->getId()) {
             $response->setEtag($id);
         }
-   
+
         if ($date = $resource->getLastUpdate()) {
             $response->setLastModified($date);
-        }     
+        }
 
         return $response;
     }
 
-    static public function createFromException(Request $request, Exception $exception)
+    public static function createFromException(Request $request, Exception $exception)
     {
         $code = StatusCode::INTERNAL_SERVER_ERROR;
         if ($exception instanceOf HTTPException) {
@@ -93,7 +93,7 @@ class Response extends SymfonyResponse
     }
 
     public function addHeader($header, $value)
-    {   
+    {
         $this->headers->set($header, $value, false);
     }
 

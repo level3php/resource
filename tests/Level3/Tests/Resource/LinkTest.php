@@ -11,7 +11,8 @@
 namespace Level3\Tests;
 use Level3\Resource\Link;
 
-class LinkTest extends TestCase {
+class LinkTest extends TestCase
+{
     public function testConstructor()
     {
         $href = '/test';
@@ -32,8 +33,8 @@ class LinkTest extends TestCase {
 
         $link = new Link();
         $this->assertSame($link, $link->setHref($href));
-        $this->assertSame($href, $link->getHref()); 
-        $this->assertSame($href, (string) $link); 
+        $this->assertSame($href, $link->getHref());
+        $this->assertSame($href, (string) $link);
     }
 
     public function testSetAndGetName()
@@ -42,7 +43,7 @@ class LinkTest extends TestCase {
 
         $link = new Link();
         $this->assertSame($link, $link->setName($name));
-        $this->assertSame($name, $link->getName()); 
+        $this->assertSame($name, $link->getName());
     }
 
     public function testSetAndGetLang()
@@ -51,7 +52,7 @@ class LinkTest extends TestCase {
 
         $link = new Link();
         $this->assertSame($link, $link->setLang($lang));
-        $this->assertSame($lang, $link->getLang()); 
+        $this->assertSame($lang, $link->getLang());
     }
 
     public function testSetAndGetTitle()
@@ -60,7 +61,7 @@ class LinkTest extends TestCase {
 
         $link = new Link();
         $this->assertSame($link, $link->setTitle($title));
-        $this->assertSame($title, $link->getTitle()); 
+        $this->assertSame($title, $link->getTitle());
     }
 
     public function testIsTemplatedAndSetTemplated()
@@ -69,7 +70,7 @@ class LinkTest extends TestCase {
 
         $link = new Link();
         $this->assertSame($link, $link->setTemplated($templated));
-        $this->assertSame($templated, $link->isTemplated()); 
+        $this->assertSame($templated, $link->isTemplated());
     }
 
     public function testGetAttributes()

@@ -24,7 +24,7 @@ class JsonFormatter extends Formatter
         if (strlen($string) == 0) {
             return Array();
         }
-        
+
         $array = json_decode($string, true);
 
         if (!is_array($array)) {
@@ -51,7 +51,7 @@ class JsonFormatter extends Formatter
             $data['self'] = array('href' => $uri);
         }
 
-        foreach($links as $rel => $links) {
+        foreach ($links as $rel => $links) {
             if (count($links) === 1 && $rel !== 'curies') {
                 $data[$rel] = array('href' => $links[0]->getHref());
                 foreach ($links[0]->getAttributes() as $attribute => $value) {
@@ -78,10 +78,10 @@ class JsonFormatter extends Formatter
 
         foreach ($resources as $resource) {
             if ($resource) {
-                $res = $this->arrayForJson($resource);  
+                $res = $this->arrayForJson($resource);
             }
 
-            if(!empty($res)){
+            if (!empty($res)) {
                 $data[] = $res;
             }
         }
@@ -98,7 +98,7 @@ class JsonFormatter extends Formatter
             $data['_links'] = $links;
         }
 
-        foreach($resource->getResources() as $rel => $resources) {
+        foreach ($resource->getResources() as $rel => $resources) {
             $data['_embedded'][$rel] = $this->resourcesForJson($resources);
         }
 

@@ -2,7 +2,6 @@
 
 namespace Level3;
 
-use Level3\Exceptions\HTTPException;
 use Level3\Exceptions\NotFound;
 use Level3\Exceptions\NotImplemented;
 use Level3\Messages\Response;
@@ -27,7 +26,7 @@ class Processor
     {
         $self = $this;
 
-        return $this->execute('find', $request, function(Request $request) use ($self) { 
+        return $this->execute('find', $request, function(Request $request) use ($self) {
             $key = $request->getKey();
             $repository = $self->getRepository($key);
 
@@ -43,7 +42,7 @@ class Processor
     {
         $self = $this;
 
-        return $this->execute('get', $request, function(Request $request) use ($self) { 
+        return $this->execute('get', $request, function(Request $request) use ($self) {
             $key = $request->getKey();
             $repository = $self->getRepository($key);
 
@@ -58,7 +57,7 @@ class Processor
     {
         $self = $this;
 
-        return $this->execute('post', $request, function(Request $request) use ($self) { 
+        return $this->execute('post', $request, function(Request $request) use ($self) {
             $key = $request->getKey();
             $repository = $self->getRepository($key);
 
@@ -77,7 +76,7 @@ class Processor
     {
         $self = $this;
 
-        return $this->execute('patch', $request, function(Request $request) use ($self) { 
+        return $this->execute('patch', $request, function(Request $request) use ($self) {
             $key = $request->getKey();
             $repository = $self->getRepository($key);
 
@@ -93,7 +92,7 @@ class Processor
     {
         $self = $this;
 
-        return $this->execute('put', $request, function(Request $request) use ($self) { 
+        return $this->execute('put', $request, function(Request $request) use ($self) {
             $key = $request->getKey();
             $repository = $self->getRepository($key);
 
@@ -109,7 +108,7 @@ class Processor
     {
         $self = $this;
 
-        return $this->execute('delete', $request, function(Request $request) use ($self) { 
+        return $this->execute('delete', $request, function(Request $request) use ($self) {
             $key = $request->getKey();
             $repository = $self->getRepository($key);
 
@@ -122,14 +121,14 @@ class Processor
 
     public function options(Request $request)
     {
-        return $this->execute('options', $request, function() { 
+        return $this->execute('options', $request, function() {
             throw new NotImplemented();
         });
     }
 
     public function error(Request $request, Exception $exception)
     {
-        return $this->execute('error', $request, function(Request $request) use ($exception) { 
+        return $this->execute('error', $request, function(Request $request) use ($exception) {
             return Response::createFromException($request, $exception);
         });
     }
@@ -142,7 +141,7 @@ class Processor
                 return $wrapper->$method($execution, $request);
             };
         }
-    
+
         return $execution($request);
     }
 
@@ -150,7 +149,7 @@ class Processor
      * @protected 5.3
      */
     public function getRepository($key)
-    {   
+    {
         try {
             return $this->level3->getRepository($key);
         } catch (RuntimeException $e) {

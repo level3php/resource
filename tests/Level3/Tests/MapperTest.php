@@ -81,43 +81,43 @@ class MapperTest extends TestCase
     {
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            '/foo/{fooId}', 
+            '/foo/{fooId}',
             $mapper->getCurieURI('foo')
         );
 
         $this->assertSame(
-            '/foo', 
+            '/foo',
             $mapper->getCurieURI('foo', 'Level3\Repository\Finder')
         );
 
         $this->assertSame(
-            '/foo/{fooId}', 
+            '/foo/{fooId}',
             $mapper->getCurieURI('foo', 'Level3\Repository\Deleter')
         );
 
         $this->assertSame(
-            '/foo/{fooId}/bar', 
+            '/foo/{fooId}/bar',
             $mapper->getCurieURI('foo/bar', 'Level3\Repository\Finder')
         );
 
         $this->assertSame(
-            '/foo/{fooId}/bar/{barId}', 
+            '/foo/{fooId}/bar/{barId}',
             $mapper->getCurieURI('foo/bar', 'Level3\Repository\Deleter')
         );
 
         $this->assertSame(
-            '/foo/{fooId}/bar/{barId}/qux', 
+            '/foo/{fooId}/bar/{barId}/qux',
             $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Finder')
         );
-        
+
         $this->assertSame(
-            '/foo/{fooId}/bar/{barId}/qux/{quxId}', 
+            '/foo/{fooId}/bar/{barId}/qux/{quxId}',
             $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Deleter')
         );
 
         $mapper->setSkipCurieSegments(1);
         $this->assertSame(
-            '/foo/bar/{barId}/qux/{quxId}', 
+            '/foo/bar/{barId}/qux/{quxId}',
             $mapper->getCurieURI('foo/bar/qux', 'Level3\Repository\Deleter')
         );
     }
@@ -125,7 +125,7 @@ class MapperTest extends TestCase
     public function testGetCurieURIUnknown()
     {
         $mapper = $this->getMapperMock();
-        $this->assertNull( 
+        $this->assertNull(
             $mapper->getCurieURI('foo', 'Level3\Repository\Foo')
         );
     }
@@ -134,10 +134,10 @@ class MapperTest extends TestCase
     {
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            '/foo/1', 
+            '/foo/1',
             $mapper->getURI(
-                'foo', 
-                'Level3\Repository\Deleter', 
+                'foo',
+                'Level3\Repository\Deleter',
                 new Parameters(array('fooId' => 1))
             )
         );
@@ -147,9 +147,9 @@ class MapperTest extends TestCase
     {
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            '/foo', 
+            '/foo',
             $mapper->getURI(
-                'foo', 
+                'foo',
                 'Level3\Repository\Finder'
             )
         );
@@ -158,10 +158,10 @@ class MapperTest extends TestCase
     public function testGetMethods()
     {
         $repository = $this->createDeleterMock();
-   
+
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            array('DELETE'), 
+            array('DELETE'),
             $mapper->getMethods($repository)
         );
     }
@@ -169,24 +169,23 @@ class MapperTest extends TestCase
     public function testGetMethodsAll()
     {
         $repository = new RepositoryMock($this->createLevel3Mock());
-   
+
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            array('DELETE', 'GET', 'PATCH', 'POST', 'PUT'), 
+            array('DELETE', 'GET', 'PATCH', 'POST', 'PUT'),
             $mapper->getMethods($repository)
         );
     }
 }
 
-
 class RepositoryMock
-    extends 
-        \Level3\Repository 
-    implements 
-        \Level3\Repository\Getter, 
-        \Level3\Repository\Finder, 
-        \Level3\Repository\Putter, 
-        \Level3\Repository\Poster, 
+    extends
+        \Level3\Repository
+    implements
+        \Level3\Repository\Getter,
+        \Level3\Repository\Finder,
+        \Level3\Repository\Putter,
+        \Level3\Repository\Poster,
         \Level3\Repository\Deleter,
         \Level3\Repository\Patcher
 {

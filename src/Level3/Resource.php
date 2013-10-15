@@ -29,24 +29,24 @@ class Resource
         $this->id = $id;
 
         return $this;
-    } 
+    }
 
     public function getId()
     {
         return $this->id;
-    } 
+    }
 
     public function setURI($uri)
     {
         $this->uri = $uri;
 
         return $this;
-    } 
+    }
 
     public function getURI()
     {
         return $this->uri;
-    } 
+    }
 
     public function addLink($rel, Link $link)
     {
@@ -79,7 +79,7 @@ class Resource
         if (isset($this->links[$rel])) {
             return $this->links[$rel];
         }
-        
+
         return null;
     }
 
@@ -127,7 +127,7 @@ class Resource
     {
         if (!$this->uri) {
             return null;
-        } 
+        }
 
         return new Link($this->getURI());
     }

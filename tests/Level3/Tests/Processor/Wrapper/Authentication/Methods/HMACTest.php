@@ -33,7 +33,7 @@ class HMACTest extends TestCase
             ->with(m::on(function($credentials) {
                 return $credentials->isAuthenticated();
             }));
-            
+
         $response = $this->createResponseMock();
         $method->authenticate($request, $response);
     }
@@ -57,7 +57,7 @@ class HMACTest extends TestCase
             ->with(m::on(function($credentials) {
                 return $credentials->isAuthenticated();
             }));
-            
+
         $response = $this->createResponseMock();
         $method->authenticate($request, $response);
     }
@@ -107,8 +107,6 @@ class HMACTest extends TestCase
         $method->authenticate($request, $response);
     }
 }
-
-
 
 class HMACMock extends HMAC
 {

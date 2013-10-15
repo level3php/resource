@@ -4,7 +4,6 @@ namespace Level3\Tests\Processor\Wrapper;
 use Level3\Tests\TestCase;
 use Level3\Processor\Wrapper\Authenticator;
 use Level3\Processor\Wrapper\Authenticator\Method;
-use Exception;
 use Mockery as m;
 
 class AuthenticatorTest extends TestCase
@@ -25,7 +24,7 @@ class AuthenticatorTest extends TestCase
     public function testClearMethods()
     {
         $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) { 
+        $execution = function($request) use ($request) {
             return $request;
         };
 
@@ -43,7 +42,7 @@ class AuthenticatorTest extends TestCase
     public function testAuthentication($method)
     {
         $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) { 
+        $execution = function($request) use ($request) {
             return $request;
         };
 
@@ -54,11 +53,11 @@ class AuthenticatorTest extends TestCase
     public function provider()
     {
         return array(
-            array('get'), 
-            array('find'), 
-            array('post'), 
-            array('patch'), 
-            array('put'), 
+            array('get'),
+            array('find'),
+            array('post'),
+            array('patch'),
+            array('put'),
             array('delete'),
         );
     }
@@ -66,10 +65,9 @@ class AuthenticatorTest extends TestCase
     public function testErrorAuthentication()
     {
         $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) { 
+        $execution = function($request) use ($request) {
             return $request;
         };
-
 
         $request = $this->createRequestMockSimple();
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
@@ -77,7 +75,7 @@ class AuthenticatorTest extends TestCase
         $wrapper->addMethod($method);
 
         $this->assertInstanceOf(
-            'Level3\Messages\Response', 
+            'Level3\Messages\Response',
             $wrapper->error($execution, $request)
         );
     }

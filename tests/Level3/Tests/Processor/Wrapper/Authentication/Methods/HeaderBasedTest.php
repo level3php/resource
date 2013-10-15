@@ -3,7 +3,6 @@
 namespace Level3\Tests\Processor\Wrapper\Authentication;
 
 use Level3\Tests\TestCase;
-use Mockery as m;
 
 use Level3\Processor\Wrapper\Authenticator\Methods\HeaderBased;
 use Level3\Messages\Request;
@@ -22,7 +21,6 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->once()->andReturn(null);
 
-
         $response = $this->createResponseMock();
         $method->authenticate($request);
     }
@@ -36,7 +34,6 @@ class HeaderBasedTest extends TestCase
         $request->shouldReceive('getHeader')
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->once()->andReturn(null);
-
 
         $response = $this->createResponseMock();
         $method->authenticate($request);
@@ -71,7 +68,6 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: Foo QWxhZGRpbjpvcGVuHNlc2FtZQ==');
 
-
         $response = $this->createResponseMock();
         $method->authenticate($request);
     }
@@ -88,12 +84,10 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: QWxhZGRpbjpvcGVuHNlc2FtZQ==');
 
-
         $response = $this->createResponseMock();
         $method->authenticate($request);
     }
 }
-
 
 class HeaderBasedMock extends HeaderBased
 {

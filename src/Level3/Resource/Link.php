@@ -23,9 +23,10 @@ class Link
         $this->href = $href;
     }
 
-    public function setHref($href) 
+    public function setHref($href)
     {
         $this->href = $href;
+
         return $this;
     }
 
@@ -34,9 +35,10 @@ class Link
         return $this->href;
     }
 
-    public function setName($name) 
+    public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -45,9 +47,10 @@ class Link
         return $this->name;
     }
 
-    public function setLang($lang) 
+    public function setLang($lang)
     {
         $this->lang = $lang;
+
         return $this;
     }
 
@@ -56,9 +59,10 @@ class Link
         return $this->lang;
     }
 
-    public function setTitle($title) 
+    public function setTitle($title)
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -67,9 +71,10 @@ class Link
         return $this->title;
     }
 
-    public function setTemplated($templated) 
+    public function setTemplated($templated)
     {
-        $this->templated = (boolean)$templated;
+        $this->templated = (boolean) $templated;
+
         return $this;
     }
 

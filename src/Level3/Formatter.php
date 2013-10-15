@@ -14,9 +14,9 @@ abstract class Formatter
 {
     const CONTENT_TYPE_ANY = '*/*';
 
-    public abstract function toResponse(Resource $resource, $pretty = false);
+    abstract public function toResponse(Resource $resource, $pretty = false);
 
-    public abstract function fromRequest($string);
+    abstract public function fromRequest($string);
 
     public function getContentType()
     {

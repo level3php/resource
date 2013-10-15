@@ -27,7 +27,7 @@ abstract class Repository
     {
         return $this->level3;
     }
-    
+
     public function setKey($repositoryKey)
     {
         $this->repositoryKey = $repositoryKey;
@@ -39,7 +39,7 @@ abstract class Repository
     }
 
     public function getURI(Parameters $attributes = null, $method = null)
-    {   
+    {
         $key = $this->getKey();
 
         return $this->level3->getURI($key, $method, $attributes);
@@ -51,6 +51,7 @@ abstract class Repository
 
         $description = substr($reflectionClass->getDocComment(), 3, -2);
         $description = trim(preg_replace('/\s*\*/', '', $description));
+
         return $description;
     }
 

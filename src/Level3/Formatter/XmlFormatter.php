@@ -27,7 +27,7 @@ class XmlFormatter extends Formatter
         if (strlen($string) == 0) {
             return Array();
         }
-        
+
         try {
             return $this->xmlToArray(new SimpleXMLElement($string));
         } catch (Exception $e) {
@@ -38,7 +38,7 @@ class XmlFormatter extends Formatter
     protected function xmlToArray(SimpleXMLElement $xml)
     {
         $data = (array) $xml;
-        foreach($data as $key => &$value) {
+        foreach ($data as $key => &$value) {
             if ($value instanceOf SimpleXMLElement) {
                 $value = $this->xmlToArray($value);
             }
@@ -48,7 +48,7 @@ class XmlFormatter extends Formatter
     }
 
     public function toResponse(Resource $resource, $pretty = false)
-    { 
+    {
         $doc = new SimpleXMLElement('<resource></resource>');
         if (!is_null($uri = $resource->getUri())) {
             $doc->addAttribute('href', $uri);
@@ -59,7 +59,7 @@ class XmlFormatter extends Formatter
             $this->arrayToXml($data, $doc);
         }
 
-        foreach($resource->getResources() as $rel => $resources) {
+        foreach ($resource->getResources() as $rel => $resources) {
             $this->resourcesForXml($doc, $rel, $resources);
         }
 
@@ -74,7 +74,7 @@ class XmlFormatter extends Formatter
 
     protected function linksForXml(SimpleXmlElement $doc, Array $links)
     {
-        foreach($links as $rel => $links) {
+        foreach ($links as $rel => $links) {
             foreach ($links as $link) {
                 $element = $doc->addChild('link');
                 $element->addAttribute('rel', $rel);
@@ -106,9 +106,9 @@ class XmlFormatter extends Formatter
                 if (!is_numeric($key)) {
                     if (substr($key, 0, 1) === '@') {
                         $element->addAttribute(substr($key, 1), $value);
-                    } elseif($key === 'value' and count($data) === 1) {
+                    } elseif ($key === 'value' and count($data) === 1) {
                         $element->{0} = $value;
-                    } elseif(is_bool($value)) {
+                    } elseif (is_bool($value)) {
                         $element->addChild($key, intval($value));
                     } else {
                         $element->addChild($key, htmlspecialchars($value, ENT_QUOTES));
@@ -122,7 +122,7 @@ class XmlFormatter extends Formatter
 
     protected function resourcesForXml(SimpleXmlElement $doc, $rel, array $resources)
     {
-        foreach($resources as $resource) {
+        foreach ($resources as $resource) {
 
             $element = $doc->addChild('resource');
             $element->addAttribute('rel', $rel);
@@ -134,7 +134,7 @@ class XmlFormatter extends Formatter
 
                 $this->linksForXml($element, $resource->getLinks());
 
-                foreach($resource->getResources() as $innerRel => $innerRes) {
+                foreach ($resource->getResources() as $innerRel => $innerRes) {
                     $this->resourcesForXml($element, $innerRel, $innerRes);
                 }
 

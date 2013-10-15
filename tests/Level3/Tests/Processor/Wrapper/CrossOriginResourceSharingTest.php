@@ -3,11 +3,7 @@ namespace Level3\Tests;
 
 use Level3\Processor\Wrapper\CrossOriginResourceSharing as CORS;
 use Level3\Messages\Response;
-use Psr\Log\LogLevel;
 use Teapot\StatusCode;
-use Exception;
-
-use Mockery as m;
 
 class CrossOriginResourceSharingTest extends TestCase
 {
@@ -37,17 +33,16 @@ class CrossOriginResourceSharingTest extends TestCase
     {
         if (!$request) $request = $this->createRequestMockSimple();
         if (!$response) $response = new Response();
-
         return $wrapper->$method(function($request) use ($response) {
             return $response;
-        }, $request); 
+        }, $request);
     }
 
     public function testOptions()
     {
         $wrapper = $this->createWrapper();
         $response = $this->callGetInWrapperAndGetResponse('options', $wrapper);
-   
+
         $this->assertSame(StatusCode::NO_CONTENT, $response->getStatusCode());
     }
 
@@ -254,7 +249,6 @@ class CrossOriginResourceSharingTest extends TestCase
         $hub->shouldReceive('get')->once()->with('X')->andReturn($repository);
         $mapper->shouldReceive('getMethods')->once()->with($repository)->andReturn($methods);
 
-
         $this->assertSame(true, $wrapper->getAllowMethods());
 
         $request = $this->createRequestMock();
@@ -274,7 +268,6 @@ class CrossOriginResourceSharingTest extends TestCase
         $wrapper = $this->createWrapper();
         $wrapper->setAllowMethods(1);
     }
-
 
     public function testSetAllowHeaders()
     {

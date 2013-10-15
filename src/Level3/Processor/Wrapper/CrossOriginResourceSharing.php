@@ -46,11 +46,11 @@ class CrossOriginResourceSharing extends Wrapper
     public function setAllowOrigin($allowOrigin)
     {
         if (
-            $allowOrigin && 
-            $allowOrigin != self::ALLOW_ORIGIN_WILDCARD && 
+            $allowOrigin &&
+            $allowOrigin != self::ALLOW_ORIGIN_WILDCARD &&
             !$this->isValidHost($allowOrigin)
         ) {
-            throw new RuntimeException('Malformed allow-origin, must be a host, null or *'); 
+            throw new RuntimeException('Malformed allow-origin, must be a host, null or *');
         }
 
         $this->allowOrigin = $allowOrigin;
@@ -60,7 +60,7 @@ class CrossOriginResourceSharing extends Wrapper
     {
         foreach ($allowOrigins as $host) {
             if (!$this->isValidHost($host)) {
-                throw new RuntimeException('Malformed allow-origin, must be a host'); 
+                throw new RuntimeException('Malformed allow-origin, must be a host');
             }
         }
 
@@ -70,6 +70,7 @@ class CrossOriginResourceSharing extends Wrapper
     protected function isValidHost($host)
     {
         $url = parse_url($host);
+
         return isset($url['scheme']) && isset($url['host']);
     }
 
@@ -91,7 +92,7 @@ class CrossOriginResourceSharing extends Wrapper
     public function setMaxAge($maxAge)
     {
         if ($maxAge && (int) $maxAge == 0) {
-            throw new RuntimeException('Malformed max-age, must be a number or null'); 
+            throw new RuntimeException('Malformed max-age, must be a number or null');
         }
 
         $this->maxAge = $maxAge;
@@ -105,11 +106,11 @@ class CrossOriginResourceSharing extends Wrapper
     public function setAllowCredentials($allowCredentials)
     {
         if (
-            $allowCredentials !== null && 
-            $allowCredentials !== true && 
+            $allowCredentials !== null &&
+            $allowCredentials !== true &&
             $allowCredentials !== false
         ) {
-            throw new RuntimeException('Malformed allow-credentials, must be a boolean or null'); 
+            throw new RuntimeException('Malformed allow-credentials, must be a boolean or null');
         }
 
         $this->allowCredentials = $allowCredentials;
@@ -123,7 +124,7 @@ class CrossOriginResourceSharing extends Wrapper
     public function setAllowMethods($allowMethods)
     {
         if ($allowMethods !== true && $allowMethods !== false) {
-            throw new RuntimeException('Malformed allow-methods, must be a boolean'); 
+            throw new RuntimeException('Malformed allow-methods, must be a boolean');
         }
 
         $this->allowMethods = $allowMethods;
@@ -171,7 +172,7 @@ class CrossOriginResourceSharing extends Wrapper
     protected function readOriginAndValidate(Request $request, $method)
     {
         if (
-            $this->allowOrigin === null || 
+            $this->allowOrigin === null ||
             $this->allowOrigin == self::ALLOW_ORIGIN_WILDCARD
         ) {
             return;
@@ -227,7 +228,7 @@ class CrossOriginResourceSharing extends Wrapper
         } else {
             $exposeHeaders = $nonBasicHeaders;
         }
-        
+
         array_walk($exposeHeaders, function(&$value) {
             $value = implode('-', array_map('ucfirst', explode('-', $value)));
         });
@@ -241,16 +242,17 @@ class CrossOriginResourceSharing extends Wrapper
         $simpleHeaders = array(
             'Cache-control', 'Content-Language', 'Content-Type',
             'Expires' , 'Last-Modified', 'Pragma', 'Status', 'Date',
-            self::HEADER_ALLOW_ORIGIN, self::HEADER_EXPOSE_HEADERS, 
-            self::HEADER_MAX_AGE, self::HEADER_ALLOW_CRENDENTIALS, 
+            self::HEADER_ALLOW_ORIGIN, self::HEADER_EXPOSE_HEADERS,
+            self::HEADER_MAX_AGE, self::HEADER_ALLOW_CRENDENTIALS,
             self::HEADER_ALLOW_METHODS, self::HEADER_ALLOW_HEADERS
         );
 
         array_walk($simpleHeaders, function(&$value) { $value = strtolower($value); });
 
         $allHeaders = $response->headers->keys();
-        
+
         $headers = array_diff($allHeaders, $simpleHeaders);
+
         return $headers;
     }
 
@@ -259,7 +261,7 @@ class CrossOriginResourceSharing extends Wrapper
         if ($this->maxAge === null) {
             return;
         }
-        
+
         if (!$this->isHeaderEnabled(self::HEADER_MAX_AGE, $method)) {
             return;
         }
@@ -305,6 +307,7 @@ class CrossOriginResourceSharing extends Wrapper
     {
         $key = $request->getKey();
         $repository = $this->getLevel3()->getHub()->get($key);
+
         return $this->getLevel3()->getMapper()->getMethods($repository);
     }
 

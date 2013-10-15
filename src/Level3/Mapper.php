@@ -52,7 +52,7 @@ abstract class Mapper
         if (!strlen($uri)) {
             return false;
         }
-        
+
         return $uri[strlen($uri) - 1] != self::SLASH_CHARACTER;
     }
 
@@ -81,7 +81,7 @@ abstract class Mapper
 
     public function boot(Hub $hub)
     {
-        foreach($hub->getKeys() as $resourceKey) {
+        foreach ($hub->getKeys() as $resourceKey) {
             $this->mapRepositoryToRoutes($hub, $resourceKey);
         }
     }
@@ -91,7 +91,7 @@ abstract class Mapper
         $repository = $hub->get($repositoryKey);
 
         $interfaces = array_merge(
-            $this->interfacesWithOutParams, 
+            $this->interfacesWithOutParams,
             $this->interfacesWithParams
         );
 
@@ -114,10 +114,10 @@ abstract class Mapper
         $repositoryKey = $repository->getKey();
 
         $curieURIWithOutParams = $this->generateCurieURI($repositoryKey);
-        $this->mapOptions($repositoryKey, $curieURIWithOutParams);  
+        $this->mapOptions($repositoryKey, $curieURIWithOutParams);
 
         $curieURIWithParams = $this->generateCurieURI($repositoryKey, true);
-        $this->mapOptions($repositoryKey, $curieURIWithParams);  
+        $this->mapOptions($repositoryKey, $curieURIWithParams);
     }
 
     private function callToMapMethod(Repository $repository, $interface)
@@ -164,9 +164,9 @@ abstract class Mapper
 
         $names = explode(self::SLASH_CHARACTER, $repositoryKey);
         $max = count($names);
-        for ($i=0;$i<$max;$i++) { 
+        for ($i=0;$i<$max;$i++) {
             $uri .= self::SLASH_CHARACTER . $names[$i];
-            if (($specific || $max > $i+1) && $i >= $this->skipCurieSegments)  {
+            if (($specific || $max > $i+1) && $i >= $this->skipCurieSegments) {
                 $uri .= self::SLASH_CHARACTER . $this->createCurieParamFromName($names[$i]);
             }
         }
@@ -182,7 +182,7 @@ abstract class Mapper
     public function getMethods($repository)
     {
         $interfaces = array_merge(
-            $this->interfacesWithOutParams, 
+            $this->interfacesWithOutParams,
             $this->interfacesWithParams
         );
 
@@ -195,7 +195,7 @@ abstract class Mapper
 
         $methods = array_unique($methods);
         sort($methods);
-        
+
         return $methods;
     }
 

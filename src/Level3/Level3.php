@@ -89,7 +89,7 @@ class Level3
     public function getProcessorWrappers()
     {
         $result = array();
-        
+
         ksort($this->wrappers);
         foreach ($this->wrappers as $priority => $wrappers) {
             $result = array_merge($result, $wrappers);

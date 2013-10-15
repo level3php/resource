@@ -39,7 +39,7 @@ class ProcessorTest extends TestCase
 
         $this->level3->shouldReceive('getRepository')
             ->with(self::IRRELEVANT_KEY)->once()->andThrow(new RuntimeException());
-        
+
         $response = $this->processor->get($request);
     }
 
@@ -71,7 +71,7 @@ class ProcessorTest extends TestCase
             if ($filters) {
                 $repository->shouldReceive($method)
                     ->with($attributes, $filters)->once()->andReturn($resource);
-            } else if ($content) {
+            } elseif ($content) {
                 $repository->shouldReceive($method)
                     ->with($attributes, $content)->once()->andReturn($resource);
             } else {
@@ -95,51 +95,51 @@ class ProcessorTest extends TestCase
     {
         return array(
             array(
-                'find', 'createFinderMock', 
+                'find', 'createFinderMock',
                 $this->createParametersMock(), $this->createParametersMock(), null,
-                $this->createResourceMock(), $this->createFormatterMock(), 
+                $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::OK
             ),
             array(
-                'get', 'createGetterMock', 
+                'get', 'createGetterMock',
                 $this->createParametersMock(), null, null,
-                $this->createResourceMock(), $this->createFormatterMock(), 
+                $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::OK
             ),
             array(
-                'post', 'createPosterMock', 
+                'post', 'createPosterMock',
                 $this->createParametersMock(), null, array(true),
-                $this->createResourceMock(), $this->createFormatterMock(), 
+                $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::CREATED
             ),
             array(
-                'put', 'createPutterMock', 
+                'put', 'createPutterMock',
                 $this->createParametersMock(), null, array(true),
-                $this->createResourceMock(), $this->createFormatterMock(), 
+                $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::OK
             ),
             array(
-                'patch', 'createPatcherMock', 
+                'patch', 'createPatcherMock',
                 $this->createParametersMock(), null, array(true),
-                $this->createResourceMock(), $this->createFormatterMock(), 
+                $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::OK
             ),
             array(
-                'delete', 'createDeleterMock', 
+                'delete', 'createDeleterMock',
                 $this->createParametersMock(), null, null,
-                null, null, 
+                null, null,
                 StatusCode::NO_CONTENT
             ),
             array(
-                'error', 'createDeleterMock', 
+                'error', 'createDeleterMock',
                 null, null, null,
-                null, $this->createFormatterMock(), 
+                null, $this->createFormatterMock(),
                 StatusCode::INTERNAL_SERVER_ERROR, new \Exception
             ),
             array(
-                'error', 'createDeleterMock', 
+                'error', 'createDeleterMock',
                 null, null, null,
-                null, $this->createFormatterMock(), 
+                null, $this->createFormatterMock(),
                 StatusCode::NOT_FOUND, new NotFound
             )
         );
@@ -160,7 +160,7 @@ class WrapperMock extends Wrapper
     protected function processRequest(Closure $execution, Request $request, $method)
     {
         $response = $execution($request);
-        
+
         return $response;
     }
 }

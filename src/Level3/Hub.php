@@ -10,12 +10,6 @@
 
 namespace Level3;
 use Closure;
-use Level3\Repository\Deleter;
-use Level3\Repository\Getter;
-use Level3\Repository\Finder;
-use Level3\Repository\Poster;
-use Level3\Repository\Putter;
-use Level3\Repository\Patcher;
 
 class Hub
 {
@@ -34,7 +28,7 @@ class Hub
     {
         if ($this->isValidKey($key)) {
             $this->repositoryDefinitions[$key] = $definition;
-        } 
+        }
     }
 
     public function get($key)

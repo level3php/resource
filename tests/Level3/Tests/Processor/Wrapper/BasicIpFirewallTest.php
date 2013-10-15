@@ -3,11 +3,6 @@ namespace Level3\Tests;
 
 use Level3\Processor\Wrapper\BasicIpFirewall;
 use Level3\Messages\Response;
-use Psr\Log\LogLevel;
-use Teapot\StatusCode;
-use Exception;
-
-use Mockery as m;
 
 class BasicIpFirewallTest extends TestCase
 {
@@ -26,7 +21,7 @@ class BasicIpFirewallTest extends TestCase
     public function testError()
     {
         $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) { 
+        $execution = function($request) use ($request) {
             return $request;
         };
 
@@ -34,7 +29,7 @@ class BasicIpFirewallTest extends TestCase
         $wrapper = new BasicIpFirewall();
 
         $this->assertInstanceOf(
-            'Level3\Messages\Response', 
+            'Level3\Messages\Response',
             $wrapper->error($execution, $request)
         );
     }
@@ -53,7 +48,7 @@ class BasicIpFirewallTest extends TestCase
 
         $wrapper->get(function($request) {
             return new Response();
-        }, $request);    
+        }, $request);
     }
 
     public function testIsInWhitelist()
@@ -67,7 +62,7 @@ class BasicIpFirewallTest extends TestCase
 
         $expected = $wrapper->get(function($request) {
             return new Response();
-        }, $request);    
+        }, $request);
 
         $this->assertInstanceOf('Level3\Messages\Response', $expected);
     }
@@ -86,7 +81,7 @@ class BasicIpFirewallTest extends TestCase
 
         $expected = $wrapper->get(function($request) {
             return new Response();
-        }, $request);    
+        }, $request);
     }
 
     public function testDefault()
@@ -98,11 +93,10 @@ class BasicIpFirewallTest extends TestCase
 
         $expected = $wrapper->get(function($request) {
             return new Response();
-        }, $request);    
+        }, $request);
 
         $this->assertInstanceOf('Level3\Messages\Response', $expected);
     }
-
 
     public function testNotIsInBlacklist()
     {
@@ -115,7 +109,7 @@ class BasicIpFirewallTest extends TestCase
 
         $expected = $wrapper->get(function($request) {
             return new Response();
-        }, $request);    
+        }, $request);
 
         $this->assertInstanceOf('Level3\Messages\Response', $expected);
     }
@@ -126,7 +120,7 @@ class BasicIpFirewallTest extends TestCase
         $wrapper->addIpToBlacklist(self::EXAMPLE_CIDR);
 
         $this->assertSame(array(
-            '178.32.79.60', 
+            '178.32.79.60',
             '178.32.79.61',
             '178.32.79.62',
             '178.32.79.63'
@@ -140,7 +134,7 @@ class BasicIpFirewallTest extends TestCase
         $wrapper->addIpToWhitelist(self::EXAMPLE_IP_B);
 
         $this->assertSame(array(
-            '178.32.79.60', 
+            '178.32.79.60',
             ), $wrapper->getWhitelist()
         );
     }

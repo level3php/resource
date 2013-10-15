@@ -3,9 +3,6 @@ namespace Level3\Tests;
 
 use Level3\Processor\Wrapper\RateLimiter;
 use Level3\Messages\Response;
-use Psr\Log\LogLevel;
-use Teapot\StatusCode;
-use Exception;
 
 use Mockery as m;
 
@@ -25,15 +22,13 @@ class RateLimiterTest extends TestCase
         return $wrapper;
     }
 
-
     protected function callGetInWrapperAndGetResponse($method, $wrapper, $request = null, $response = null)
     {
         if (!$request) $request = $this->createRequestMockSimple();
         if (!$response) $response = new Response();
-
         return $wrapper->$method(function($request) use ($response) {
             return $response;
-        }, $request); 
+        }, $request);
     }
 
     public function testHeaderLimit()

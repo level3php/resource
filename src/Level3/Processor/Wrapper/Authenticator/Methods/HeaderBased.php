@@ -18,7 +18,7 @@ abstract class HeaderBased implements Method
     protected $scheme;
     protected $continueWithoutAuthentication = false;
 
-    public function continueWithoutAuthentication($continue) 
+    public function continueWithoutAuthentication($continue)
     {
         $this->continueWithoutAuthentication = $continue;
     }
@@ -69,7 +69,7 @@ abstract class HeaderBased implements Method
         return array($data['scheme'][0], $data['token'][0]);
     }
 
-    protected function verifyScheme(Request $request, $scheme) 
+    protected function verifyScheme(Request $request, $scheme)
     {
         return strtolower($this->scheme) == strtolower($scheme);
     }

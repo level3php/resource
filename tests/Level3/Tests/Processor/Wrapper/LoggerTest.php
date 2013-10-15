@@ -5,7 +5,6 @@ use Level3\Processor\Wrapper\Logger;
 use Level3\Messages\Response;
 use Psr\Log\LogLevel;
 use Teapot\StatusCode;
-use Exception;
 
 use Mockery as m;
 
@@ -26,7 +25,7 @@ class LoggerTest extends TestCase
     {
         $attributes = $this->createParametersMock();
         $request = $this->createRequestMock($attributes);
-        
+
         $this->loggerMock->shouldReceive($level)
             ->once()->andReturn(null);
 

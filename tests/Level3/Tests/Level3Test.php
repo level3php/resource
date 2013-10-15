@@ -10,7 +10,6 @@
 
 namespace Level3\Tests;
 use Level3\Level3;
-use Mockery as m;
 
 class Level3Test extends TestCase
 {
@@ -37,22 +36,22 @@ class Level3Test extends TestCase
     public function testGetDebug()
     {
         $this->level3->setDebug(true);
-        $this->assertTrue($this->level3->getDebug());   
+        $this->assertTrue($this->level3->getDebug());
     }
 
     public function testGetHub()
     {
-        $this->assertSame($this->hubMock, $this->level3->getHub());   
+        $this->assertSame($this->hubMock, $this->level3->getHub());
     }
 
     public function testGetMapper()
     {
-        $this->assertSame($this->mapperMock, $this->level3->getMapper());   
+        $this->assertSame($this->mapperMock, $this->level3->getMapper());
     }
 
     public function testGetProcessor()
     {
-        $this->assertSame($this->processorMock, $this->level3->getProcessor());   
+        $this->assertSame($this->processorMock, $this->level3->getProcessor());
     }
 
     public function testGetRepository()
@@ -60,7 +59,7 @@ class Level3Test extends TestCase
         $repository = $this->createRepositoryMock();
         $this->hubMock->shouldReceive('get')->once()->with('foo')->andReturn($repository);
 
-        $this->assertSame($repository, $this->level3->getRepository('foo'));   
+        $this->assertSame($repository, $this->level3->getRepository('foo'));
     }
 
     public function testGetURI()
@@ -68,7 +67,7 @@ class Level3Test extends TestCase
         $parameters = $this->createParametersMock();
         $this->mapperMock->shouldReceive('getURI')->once()->with('foo', 'bar', $parameters)->andReturn('foo');
 
-        $this->assertSame('foo', $this->level3->getURI('foo', 'bar', $parameters));   
+        $this->assertSame('foo', $this->level3->getURI('foo', 'bar', $parameters));
     }
 
     public function testAddProcessorWrapperBoth()

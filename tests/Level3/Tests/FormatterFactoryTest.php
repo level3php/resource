@@ -14,12 +14,13 @@ use Level3\FormatterFactory;
 use Level3\Formatter\JsonFormatter;
 use Level3\Formatter\XmlFormatter;
 
-class FormatterFactoryTest extends TestCase {
+class FormatterFactoryTest extends TestCase
+{
     public function testCreateWithOutContentTypes()
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter',
             $factory->create()
         );
     }
@@ -31,17 +32,16 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter',
             $factory->create(array('foo'))
         );
     }
-
 
     public function testCreateWithInvalidContentTypesWithAvoidNotAcceptable()
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter',
             $factory->create(array('foo'), true)
         );
     }
@@ -50,7 +50,7 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\JsonFormatter', 
+            'Level3\Formatter\JsonFormatter',
             $factory->create(array(JsonFormatter::CONTENT_TYPE), true)
         );
     }
@@ -59,7 +59,7 @@ class FormatterFactoryTest extends TestCase {
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\XmlFormatter', 
+            'Level3\Formatter\XmlFormatter',
             $factory->create(array(XmlFormatter::CONTENT_TYPE), true)
         );
     }

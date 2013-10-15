@@ -9,9 +9,7 @@
  */
 
 namespace Level3\Tests;
-use Level3\ResourceHub;
 use Level3\Mocks\Mapper;
-use Level3\Mocks\ResourceManager;
 use Hal\Resource;
 use Mockery as m;
 
@@ -34,7 +32,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return m::mock('Level3\Hub');
     }
-   
+
     protected function createLinkMock()
     {
         return m::mock('Level3\Resource\Link');
@@ -59,12 +57,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return m::mock('Level3\Repository,Level3\Repository\Putter');
     }
-    
+
     protected function createPosterMock()
     {
         return m::mock('Level3\Repository,Level3\Repository\Poster');
     }
-    
+
     protected function createPatcherMock()
     {
         return m::mock('Level3\Repository,Level3\Repository\Patcher');
@@ -123,14 +121,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return m::mock('Level3\Messages\Request');
     }
-    
+
     protected function createResponseMock()
     {
         return m::mock('Level3\Messages\Response');
     }
-    
+
     protected function createRequestMock(
-        $attributes = null, $filters = null, $formatter = null, 
+        $attributes = null, $filters = null, $formatter = null,
         $repository = null, $content = null, $key = self::IRRELEVANT_KEY
     )
     {
@@ -139,7 +137,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
             $request->shouldReceive('getKey')
                 ->withNoArgs()->once()->andReturn($key);
         }
-        
+
         if ($attributes) {
             $request->shouldReceive('getAttributes')
                 ->withNoArgs()->once()->andReturn($attributes);

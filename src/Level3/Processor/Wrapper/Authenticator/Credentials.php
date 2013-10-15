@@ -2,8 +2,6 @@
 
 namespace Level3\Processor\Wrapper\Authenticator;
 
-use Level3\Processor\Wrapper\Authorization\Role;
-
 class Credentials
 {
     protected $isAuthenticated;
@@ -21,7 +19,7 @@ class Credentials
     public function __toString()
     {
         $authenticated = $this->isAuthenticated() ? 'true' : 'false';
-        
+
         return sprintf('Authenticated: %s', $authenticated);
     }
 }
