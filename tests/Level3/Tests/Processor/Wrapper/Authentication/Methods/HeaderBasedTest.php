@@ -22,7 +22,7 @@ class HeaderBasedTest extends TestCase
             ->once()->andReturn(null);
 
         $response = $this->createResponseMock();
-        $method->authenticate($request);
+        $method->authenticateRequest($request, 'get');
     }
 
     public function testAuthenticateRequestWithOutHeaderAllowed()
@@ -36,8 +36,8 @@ class HeaderBasedTest extends TestCase
             ->once()->andReturn(null);
 
         $response = $this->createResponseMock();
-        $method->authenticate($request);
-        $method->modifyResponse($response);
+        $method->authenticateRequest($request, 'get');
+        $method->modifyResponse($response, 'get');
     }
 
     public function testAuthenticateRequest()
@@ -53,7 +53,7 @@ class HeaderBasedTest extends TestCase
             ->once()->andReturn(null);
 
         $response = $this->createResponseMock();
-        $method->authenticate($request);
+        $method->authenticateRequest($request, 'get');
     }
 
     /**
@@ -69,7 +69,7 @@ class HeaderBasedTest extends TestCase
             ->twice()->andReturn('Authorization: Foo QWxhZGRpbjpvcGVuHNlc2FtZQ==');
 
         $response = $this->createResponseMock();
-        $method->authenticate($request);
+        $method->authenticateRequest($request, 'get');
     }
 
     /**
@@ -85,7 +85,7 @@ class HeaderBasedTest extends TestCase
             ->twice()->andReturn('Authorization: QWxhZGRpbjpvcGVuHNlc2FtZQ==');
 
         $response = $this->createResponseMock();
-        $method->authenticate($request);
+        $method->authenticateRequest($request, 'get');
     }
 }
 
@@ -102,7 +102,7 @@ class HeaderBasedMock extends HeaderBased
         return false;
     }
 
-    protected function modifyRequest(Request $request)
+    protected function modifyRequest(Request $request, $httpMethod)
     {
         $request->mustBeCalledSetCredentials();
     }

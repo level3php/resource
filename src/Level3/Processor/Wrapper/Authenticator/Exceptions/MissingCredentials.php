@@ -9,6 +9,6 @@ class MissingCredentials extends HTTPException
 {
     public function __construct($message = '')
     {
-        parent::__construct($message, StatusCode::BAD_REQUEST);
+        parent::__construct($message, StatusCode::UNAUTHORIZED);
     }
 }

@@ -54,7 +54,7 @@ abstract class HMAC extends HeaderBased
         return $parts;
     }
 
-    protected function modifyRequest(Request $request)
+    protected function modifyRequest(Request $request, $httpMethod)
     {
         $credentials = new Credentials($this->lastVerification);
         $request->setCredentials($credentials);

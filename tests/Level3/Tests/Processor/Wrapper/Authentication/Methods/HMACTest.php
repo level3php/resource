@@ -34,8 +34,7 @@ class HMACTest extends TestCase
                 return $credentials->isAuthenticated();
             }));
 
-        $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticateRequest($request, 'get');
     }
 
     public function testSetHashAlgorithm()
@@ -58,8 +57,7 @@ class HMACTest extends TestCase
                 return $credentials->isAuthenticated();
             }));
 
-        $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticateRequest($request, 'get');
     }
 
     /**
@@ -83,8 +81,7 @@ class HMACTest extends TestCase
             ->with(HMAC::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: HMAC '. self::MALFORMED_TOKEN);
 
-        $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticateRequest($request, 'get');
     }
 
     /**
@@ -103,8 +100,7 @@ class HMACTest extends TestCase
             ->withNoArgs()
             ->once()->andReturn('qux');
 
-        $response = $this->createResponseMock();
-        $method->authenticate($request, $response);
+        $method->authenticateRequest($request, 'get');
     }
 }
 

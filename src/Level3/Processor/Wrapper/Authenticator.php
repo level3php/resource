@@ -44,42 +44,45 @@ class Authenticator extends Wrapper
     {
         $this->setAllowCredentialsIfNeeded();
 
-        return $execution($request);
+        $response = $execution($request);
+        $this->modifyResponse($response, 'error');
+
+        return $response;
     }
 
     protected function processRequest(Closure $execution, Request $request, $httpMethod)
     {
         $this->setAllowCredentialsIfNeeded();
 
-        $this->authenticate($request);
+        $this->authenticateRequest($request, $httpMethod);
         $response = $execution($request);
-        $this->modifyResponse($response);
+        $this->modifyResponse($response, $httpMethod);
 
         return $response;
     }
 
-    protected function authenticate(Request $request)
+    protected function authenticateRequest(Request $request, $httpMethod)
     {
         foreach ($this->getMethods() as $method) {
-            $this->authenticateWithMethod($method, $request);
+            $this->authenticateWithMethod($method, $request, $httpMethod);
         }
     }
 
-    protected function authenticateWithMethod(Method $method, Request $request)
+    protected function authenticateWithMethod(Method $method, Request $request, $httpMethod)
     {
-        $method->authenticate($request);
+        $method->authenticateRequest($request, $httpMethod);
     }
 
-    protected function modifyResponse(Response $response)
+    protected function modifyResponse(Response $response, $httpMethod)
     {
         foreach ($this->getMethods() as $method) {
-            $this->modifyResponseWithMethod($method, $response);
+            $this->modifyResponseWithMethod($method, $response, $httpMethod);
         }
     }
 
-    protected function modifyResponseWithMethod(Method $method, Response $response)
+    protected function modifyResponseWithMethod(Method $method, Response $response, $httpMethod)
     {
-        $method->modifyResponse($response);
+        $method->modifyResponse($response, $httpMethod);
     }
 
     protected function setAllowCredentialsIfNeeded()
