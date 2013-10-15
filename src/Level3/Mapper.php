@@ -22,14 +22,14 @@ abstract class Mapper
     protected $skipCurieSegments = 0;
 
     protected $interfacesWithOutParams = array(
-        'Level3\Repository\Putter' => 'PUT',
+        'Level3\Repository\Poster' => 'POST',
         'Level3\Repository\Finder' => 'GET'
     );
 
     protected $interfacesWithParams = array(
         'Level3\Repository\Deleter' => 'DELETE',
         'Level3\Repository\Getter' => 'GET',
-        'Level3\Repository\Poster' => 'POST',
+        'Level3\Repository\Putter' => 'PUT',
         'Level3\Repository\Patcher' => 'PATCH'
     );
 
