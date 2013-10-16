@@ -85,7 +85,7 @@ class HMACTest extends TestCase
     }
 
     /**
-     * @expectedException Level3\Exceptions\Forbidden
+     * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\Unauthorized
      */
     public function testAuthenticateRequestInvalid()
     {

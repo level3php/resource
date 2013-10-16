@@ -10,8 +10,8 @@ use Exception;
 abstract class HMAC extends HeaderBased
 {
     const TOKEN_SEPARATOR = ':';
-    protected $hashAlgorithm = 'sha256';
     protected $scheme = 'HMAC';
+    protected $hashAlgorithm = 'sha256';
     protected $lastVerification;
 
     public function setHashAlgorithm($algorithm)

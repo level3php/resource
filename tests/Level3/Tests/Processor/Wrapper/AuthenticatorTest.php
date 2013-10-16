@@ -23,12 +23,14 @@ class AuthenticatorTest extends TestCase
 
     public function testClearMethods()
     {
-        $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) {
-            return $request;
+        $response = $this->createResponseMock();
+        $execution = function($request) use ($response) {
+            return $response;
         };
 
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+        $method->shouldReceive('modifyResponse');
+
         $wrapper = new Authenticator();
         $wrapper->addMethod($method);
         $wrapper->clearMethods();
@@ -71,6 +73,9 @@ class AuthenticatorTest extends TestCase
 
         $request = $this->createRequestMockSimple();
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+        $method->shouldReceive('modifyResponse')
+            ->once()->with(m::type('Level3\Messages\Response'), 'error');
+
         $wrapper = new Authenticator();
         $wrapper->addMethod($method);
 
@@ -153,13 +158,17 @@ class AuthenticatorTest extends TestCase
 
 
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
+        $method->shouldReceive('modifyResponse')
+            ->once()->with(m::type('Level3\Messages\Response'), 'error');
+            
         $auth = new Authenticator();
         $auth->addMethod($method);
         $auth->setLevel3($level3);
 
         $request = $this->createRequestMockSimple();
-        $execution = function($request) use ($request) {
-            return $request;
+        $response = $this->createResponseMock();
+        $execution = function($request) use ($response) {
+            return $response;
         };
 
         $auth->error($execution, $request);

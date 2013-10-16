@@ -3,9 +3,9 @@
 namespace Level3\Tests\Processor\Wrapper\Authentication;
 
 use Level3\Tests\TestCase;
-
 use Level3\Processor\Wrapper\Authenticator\Methods\HeaderBased;
 use Level3\Messages\Request;
+use Teapot\StatusCode;
 
 class HeaderBasedTest extends TestCase
 {
@@ -36,6 +36,13 @@ class HeaderBasedTest extends TestCase
             ->once()->andReturn(null);
 
         $response = $this->createResponseMock();
+        $response->shouldReceive('getStatusCode')
+            ->once()->andReturn(StatusCode::UNAUTHORIZED);
+
+        $response->shouldReceive('setHeader')
+            ->once()->with(HeaderBasedMock::WWW_AUTHENTICATE_HEADER, 'Basic')
+            ->andReturn(StatusCode::UNAUTHORIZED);
+
         $method->authenticateRequest($request, 'get');
         $method->modifyResponse($response, 'get');
     }
