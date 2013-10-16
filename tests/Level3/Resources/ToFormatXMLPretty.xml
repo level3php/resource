@@ -1,10 +1,21 @@
 <?xml version="1.0"?>
-<resource href="/test">
+<resource href="/test" atribute="foo">
   <link rel="quz" href="foo" name="name" hreflang="lang" title="title"/>
   <link rel="foo" href="foo" name="name" hreflang="lang" title="title"/>
   <link rel="foo" href="qux"/>
-  <qux>bar</qux>
-  <resource rel="baz" href="/test">
-    <bar>qux</bar>
-  </resource>
+  <value>bar</value>
+  <bar>1</bar>
+  <foo>1</foo>
+  <array>
+    <bar>foo</bar>
+  </array>
+  <arrayOfarrays>
+    <bar>foo</bar>
+  </arrayOfarrays>
+  <arrayOfarrays>
+    <foo>bar</foo>
+  </arrayOfarrays>
+  <arrayOfstrings>foo</arrayOfstrings>
+  <arrayOfstrings>bar</arrayOfstrings>
+  <resource rel="baz" href="/test">qux</resource>
 </resource>

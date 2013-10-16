@@ -64,6 +64,22 @@ class HeaderBasedTest extends TestCase
     }
 
     /**
+     * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\Unauthorized
+     */
+    public function testAuthenticateRequestAndFaild()
+    {
+        $method = new HeaderBasedMock();
+
+        $request = $this->createRequestMockSimple();
+        $request->shouldReceive('getHeader')
+            ->with(HeaderBased::AUTHORIZATION_HEADER)
+            ->twice()->andReturn('Authorization: Basic bar');
+
+        $response = $this->createResponseMock();
+        $method->authenticateRequest($request, 'get');
+    }
+
+    /**
      * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\InvalidScheme
      */
     public function testAuthenticateRequestInvalidScheme()
@@ -93,6 +109,17 @@ class HeaderBasedTest extends TestCase
 
         $response = $this->createResponseMock();
         $method->authenticateRequest($request, 'get');
+    }
+
+    public function testErrorNonUnauthorized()
+    {
+        $method = new HeaderBasedMock();
+
+        $response = $this->createResponseMock();
+        $response->shouldReceive('getStatusCode')
+            ->once()->andReturn(StatusCode::FORBIDDEN);
+
+        $method->modifyResponse($response, 'get');
     }
 }
 

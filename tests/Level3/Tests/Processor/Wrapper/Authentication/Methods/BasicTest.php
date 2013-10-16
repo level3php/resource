@@ -48,6 +48,18 @@ class BasicTest extends TestCase
         $method->modifyResponse($response, 'get');
     }
 
+    public function testErrorNonUnauthorized()
+    {
+        $method = new BasicMock();
+        $method->setRealm('test');
+
+        $response = $this->createResponseMock();
+        $response->shouldReceive('getStatusCode')
+            ->once()->andReturn(StatusCode::FORBIDDEN);
+
+        $method->modifyResponse($response, 'get');
+    }
+
 
     /**
      * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\MalformedCredentials

@@ -23,8 +23,8 @@ abstract class FormatterTest extends TestCase
         $formatter = new $this->class();
         $array = $formatter->fromRequest($this->readResource($this->from));
 
-        $this->assertCount(1, $array);
-        $this->assertSame('bar', $array['qux']);
+        $this->assertCount(9, $array);
+        $this->assertSame(1, (int) $array['bar']);
     }
 
     /**
@@ -48,7 +48,22 @@ abstract class FormatterTest extends TestCase
 
         $repository = $this->createRepositoryMock();
         $resource = $this->createResource(self::EXAMPLE_URI);
-        $resource->setData(array('qux' => 'bar'));
+        $resource->setData(array(
+            'value' => 'bar',
+            'bar' => 1,
+            'foo' => true,
+            'array' => array(
+                'bar' => 'foo'
+            ),
+            'arrayOfarrays' => array(
+                array('bar' => 'foo'),
+                array('foo' => 'bar')
+            ),
+            'arrayOfstrings' => array(
+                'foo', 'bar'
+            ),
+            '@atribute' => 'foo'
+        ));
 
         $link = new Link('foo');
         $link->setName('name');
@@ -63,9 +78,15 @@ abstract class FormatterTest extends TestCase
             new Link('qux')
         ));
 
-        $resource->addResource('baz',
-            $this->createResource(self::EXAMPLE_URI)->setData(array('bar' => 'qux'))
+        $subResource = $this->createResource(self::EXAMPLE_URI)->setData(array('value' => 'qux'));
+        $subResource->addResource('foo',
+            $this->createResource(self::EXAMPLE_URI)->setData(array('foo' => 'qux'))
         );
+
+        $resource->addResource('baz', $subResource);
+
+//echo($formatter->toResponse($resource, true)); exit();
+
 
         if (
             version_compare(PHP_VERSION, '5.4' , '>=') ||
