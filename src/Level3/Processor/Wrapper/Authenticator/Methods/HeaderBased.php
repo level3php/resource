@@ -5,15 +5,16 @@ namespace Level3\Processor\Wrapper\Authenticator\Methods;
 use Level3\Processor\Wrapper\Authenticator\Method;
 use Level3\Messages\Request;
 use Level3\Messages\Response;
-
-use Level3\Exceptions\Forbidden;
+use Level3\Processor\Wrapper\Authenticator\Exceptions\Unauthorized;
 use Level3\Processor\Wrapper\Authenticator\Exceptions\MissingCredentials;
 use Level3\Processor\Wrapper\Authenticator\Exceptions\MalformedCredentials;
 use Level3\Processor\Wrapper\Authenticator\Exceptions\InvalidScheme;
+use Teapot\StatusCode;
 
 abstract class HeaderBased implements Method
 {
     const AUTHORIZATION_HEADER = 'Authorization';
+    const WWW_AUTHENTICATE_HEADER = 'WWW-Authenticate';
 
     protected $scheme;
     protected $continueWithoutAuthentication = false;
@@ -23,7 +24,7 @@ abstract class HeaderBased implements Method
         $this->continueWithoutAuthentication = $continue;
     }
 
-    public function authenticate(Request $request)
+    public function authenticateRequest(Request $request, $httpMethod)
     {
         if (!$this->hasAuthorizationHeader($request)) {
             if (!$this->continueWithoutAuthentication) {
@@ -34,7 +35,7 @@ abstract class HeaderBased implements Method
         }
 
         $this->verifyAuthorizationHeader($request);
-        $this->modifyRequest($request);
+        $this->modifyRequest($request, $httpMethod);
 
     }
 
@@ -52,7 +53,7 @@ abstract class HeaderBased implements Method
         }
 
         if (!$this->verifyToken($request, $token)) {
-            throw new Forbidden('Provided credentials are invalid');
+            throw new Unauthorized('Provided credentials are invalid');
         }
     }
 
@@ -74,12 +75,16 @@ abstract class HeaderBased implements Method
         return strtolower($this->scheme) == strtolower($scheme);
     }
 
-    public function modifyResponse(Response $response)
+    public function modifyResponse(Response $response, $httpMethod)
     {
+        if ($response->getStatusCode() != StatusCode::UNAUTHORIZED) {
+            return null;
+        }
 
+        $response->setHeader(self::WWW_AUTHENTICATE_HEADER, $this->scheme);
     }
 
     abstract protected function verifyToken(Request $request, $token);
-    abstract protected function modifyRequest(Request $request);
+    abstract protected function modifyRequest(Request $request, $httpMethod);
 
 }

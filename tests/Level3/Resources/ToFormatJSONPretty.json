@@ -1,5 +1,23 @@
 {
-    "qux": "bar",
+    "value": "bar",
+    "bar": 1,
+    "foo": true,
+    "array": {
+        "bar": "foo"
+    },
+    "arrayOfarrays": [
+        {
+            "bar": "foo"
+        },
+        {
+            "foo": "bar"
+        }
+    ],
+    "arrayOfstrings": [
+        "foo",
+        "bar"
+    ],
+    "@atribute": "foo",
     "_links": {
         "self": {
             "href": "/test"
@@ -25,11 +43,23 @@
     "_embedded": {
         "baz": [
             {
-                "bar": "qux",
+                "value": "qux",
                 "_links": {
                     "self": {
                         "href": "/test"
                     }
+                },
+                "_embedded": {
+                    "foo": [
+                        {
+                            "foo": "qux",
+                            "_links": {
+                                "self": {
+                                    "href": "/test"
+                                }
+                            }
+                        }
+                    ]
                 }
             }
         ]
