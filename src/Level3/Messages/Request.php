@@ -66,7 +66,10 @@ class Request extends SymfonyRequest
 
     public function getAttributes()
     {
-        return new Parameters($this->attributes->all());
+        $params = new Parameters($this->attributes->all());
+        $params->set('_credentials', $this->credentials);
+
+        return $params;
     }
 
     public function getFilters()
