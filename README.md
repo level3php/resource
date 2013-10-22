@@ -15,7 +15,7 @@ Requirements
 * PHP 5.3.x
 * shrikeh/teapot
 * symfony/http-foundation
-* psr/log: ~1.0
+* psr/log
 
 Installation
 ------------
