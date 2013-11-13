@@ -71,7 +71,7 @@ class ResourceTest extends TestCase
         $this->assertInstanceOf('Level3\Resource\Link', $links['foo']);
         $this->assertSame('foo', $links['foo']->getHref());
 
-        $linked = $this->resource->getLinkedResources();
+        $linked = $this->resource->getAllLinkedResources();
         $this->assertSame($linkedResource, $linked['foo']);
     }
 
@@ -95,9 +95,9 @@ class ResourceTest extends TestCase
         $this->assertSame('foo', $links['foo'][0]->getHref());
         $this->assertSame('bar', $links['foo'][1]->getHref());
 
-        $linked = $this->resource->getLinkedResources();
-        $this->assertSame($linkedResourceA, $linked['foo'][0]);
-        $this->assertSame($linkedResourceB, $linked['foo'][1]);
+        $linked = $this->resource->getLinkedResources('foo');
+        $this->assertSame($linkedResourceA, $linked[0]);
+        $this->assertSame($linkedResourceB, $linked[1]);
     }
 
     public function testExpandLinkedResourcesOne()
@@ -138,6 +138,87 @@ class ResourceTest extends TestCase
             array($linkedResourceA, $linkedResourceB),
             $this->resource->getResources('foo')
         );
+    }
+
+    public function testExpandLinkedResourcesTreeOneLevel()
+    {
+        $linkedResource = new Resource($this->repository);
+        $linkedResource->setURI('foo');
+
+        $this->resource->linkResource('foo', $linkedResource);
+        $this->assertCount(0, $this->resource->getAllResources());
+
+        $this->resource->expandLinkedResourcesTree(array('foo'));
+        $this->assertSame(
+            array($linkedResource),
+            $this->resource->getResources('foo')
+        );
+    }
+
+    public function testExpandLinkedResourcesTreeTwoLevel()
+    {
+        $linkedLevel1Resource = new Resource($this->repository);
+        $linkedLevel1Resource->setURI('foo');
+
+        $linkedLevel2Resource = new Resource($this->repository);
+        $linkedLevel2Resource->linkResource('bar', $linkedLevel1Resource);
+
+        $this->resource->addResource('foo', $linkedLevel2Resource);
+        $this->assertCount(0, $linkedLevel2Resource->getAllResources());
+
+        $this->resource->expandLinkedResourcesTree(array('foo', 'bar'));
+        $this->assertSame(
+            array($linkedLevel1Resource),
+            $linkedLevel2Resource->getResources('bar')
+        );
+    }
+
+    public function testExpandLinkedResourcesTreeTwoLevelLinked()
+    {
+        $linkedLevel1Resource = new Resource($this->repository);
+        $linkedLevel1Resource->setURI('foo');
+
+        $linkedLevel2Resource = new Resource($this->repository);
+        $linkedLevel2Resource->setURI('foo');
+        $linkedLevel2Resource->linkResource('bar', $linkedLevel1Resource);
+
+        $this->resource->linkResource('foo', $linkedLevel2Resource);
+        $this->assertCount(0, $linkedLevel2Resource->getAllResources());
+
+        $this->resource->expandLinkedResourcesTree(array('foo', 'bar'));
+        $this->assertSame(
+            array($linkedLevel1Resource),
+            $linkedLevel2Resource->getResources('bar')
+        );
+    }
+
+    public function testExpandLinkedResourcesTreeThreeLevelLinked()
+    {
+        $linkedLevel1Resource = new Resource($this->repository);
+        $linkedLevel1Resource->setURI('foo');
+
+        $linkedLevel2Resource = new Resource($this->repository);
+        $linkedLevel2Resource->setURI('foo');
+        $linkedLevel2Resource->linkResource('bar', $linkedLevel1Resource);
+
+        $linkedLevel3Resource = new Resource($this->repository);
+        $linkedLevel3Resource->setURI('foo');
+        $linkedLevel3Resource->linkResource('qux', $linkedLevel2Resource);
+
+        $this->resource->linkResource('foo', $linkedLevel3Resource);
+        $this->assertCount(0, $linkedLevel2Resource->getAllResources());
+
+        $this->resource->expandLinkedResourcesTree(array('foo', 'qux', 'bar'));
+        $this->assertSame(
+            array($linkedLevel1Resource),
+            $linkedLevel2Resource->getResources('bar')
+        );
+    }
+
+    public function testExpandLinkedResourcesTreeNotExists()
+    {
+        $this->resource->expandLinkedResourcesTree(array('foo', 'bar'));
+        $this->assertNull($this->resource->getResources('bar'));
     }
 
     /**

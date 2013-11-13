@@ -98,25 +98,54 @@ class Resource
         return $this;
     }
 
+    public function expandLinkedResourcesTree(Array $path)
+    {
+        if (count($path) == 1) {
+            return $this->expandLinkedResources(end($path));
+        }
+
+        $rel = array_shift($path);
+        $this->expandLinkedResources($rel);
+
+        $resources = $this->getResources($rel);
+        if (!$resources) {
+            return;
+        }
+
+        foreach ($resources as $resource) {
+            $resource->expandLinkedResourcesTree($path);
+        }
+    }
+
     public function expandLinkedResources($rel)
     {
-        if (!isset($this->linkedResources[$rel])) {
+        $resources = $this->getLinkedResources($rel);
+        if (!$resources) {
             return;
+        }
+
+        foreach ($resources as $resource) {
+            $this->addResource($rel, $resource);
+        }
+    }
+
+    public function getAllLinkedResources()
+    {
+        return $this->linkedResources;
+    }
+
+    public function getLinkedResources($rel)
+    {
+        if (!isset($this->linkedResources[$rel])) {
+            return null;
         }
 
         $resources = $this->linkedResources[$rel];
         if (!is_array($resources)) {
             $resources = array($resources);
         }
-        
-        foreach ($resources as $resource) {
-            $this->addResource($rel, $resource);
-        }
-    }
 
-    public function getLinkedResources()
-    {
-        return $this->linkedResources;
+        return $resources;
     }
 
     public function getAllLinks()
