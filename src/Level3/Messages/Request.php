@@ -13,7 +13,8 @@ class Request extends SymfonyRequest
     const HEADER_SORT = 'X-Sort';
 
     const HEADER_EXPAND = 'X-Expand-Links';
-    const HEADER_EXPAND_SEPARATOR = ';';
+    const HEADER_EXPAND_PATH_SEPARATOR = ';';
+    const HEADER_EXPAND_LEVEL_SEPARATOR = '.';
 
     const HEADER_RANGE = 'Range';
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
@@ -142,7 +143,12 @@ class Request extends SymfonyRequest
     {
         $expand = $this->headers->get(self::HEADER_EXPAND);
 
-        return explode(self::HEADER_EXPAND_SEPARATOR, $expand);
+        $expand = explode(self::HEADER_EXPAND_PATH_SEPARATOR, $expand);
+        foreach ($expand as &$part) {
+            $part = explode(self::HEADER_EXPAND_LEVEL_SEPARATOR, $part);
+        } 
+
+        return $expand;
     }
 
     public function isAuthenticated()

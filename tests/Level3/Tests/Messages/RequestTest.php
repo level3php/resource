@@ -131,10 +131,13 @@ class RequestTest extends TestCase
 
     public function testGetExpand()
     {
-        $this->request->headers->add(array('X-Expand-Links' => 'foo;bar'));
+        $this->request->headers->add(array('X-Expand-Links' => 'foo;qux.bar'));
 
         $expand = $this->request->getExpand();
-        $this->assertThat($expand, $this->equalTo(array('foo','bar')));
+        $this->assertThat($expand, $this->equalTo(array(
+            array('foo'),
+            array('qux','bar')
+        )));
     }
 
     public function testGetExpandWithoutHeader()

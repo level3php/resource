@@ -56,7 +56,7 @@ class ProcessorTest extends TestCase
     /**
      * @dataProvider provider
      */
-    public function testMethods($method, $repositoryMock, $attributes, $filters, $content, $resource, $formatter, $statusCode, $exception = null)
+    public function testMethods($method, $repositoryMock, $attributes, $filters, $content, $resource, $formatter, $statusCode, $exception = null, $expand = null)
     {
         $repository = $this->$repositoryMock();
 
@@ -65,6 +65,10 @@ class ProcessorTest extends TestCase
             $response = $this->processor->$method($request, $exception);
         } else {
             $request = $this->createRequestMock($attributes, $filters, $formatter, $repository, $content);
+            if ($expand !== null) {
+                $request->shouldReceive('getExpand')->withNoArgs()->once()->andReturn(array($expand));
+                $resource->shouldReceive('expandLinkedResourcesTree')->with($expand)->once()->andReturn(null);
+            }
 
             $this->level3ShouldHavePair(self::IRRELEVANT_KEY, $repository);
 
@@ -98,13 +102,13 @@ class ProcessorTest extends TestCase
                 'find', 'createFinderMock',
                 $this->createParametersMock(), $this->createParametersMock(), null,
                 $this->createResourceMock(), $this->createFormatterMock(),
-                StatusCode::OK
+                StatusCode::OK, null, array('foo')
             ),
             array(
                 'get', 'createGetterMock',
                 $this->createParametersMock(), null, null,
                 $this->createResourceMock(), $this->createFormatterMock(),
-                StatusCode::OK
+                StatusCode::OK, null, array()
             ),
             array(
                 'post', 'createPosterMock',

@@ -33,6 +33,7 @@ class Processor
             $filters = $request->getFilters();
             $resource = $repository->find($attributes, $filters);
 
+            $this->applyExpandToResource($request->getExpand(), $resource);
             return Response::createFromResource($request, $resource);
         });
     }
@@ -48,8 +49,16 @@ class Processor
             $attributes = $request->getAttributes();
             $resource = $repository->get($attributes);
 
+            $this->applyExpandToResource($request->getExpand(), $resource);
             return Response::createFromResource($request, $resource);
         });
+    }
+
+    protected function applyExpandToResource(Array $paths, Resource $resource)
+    {
+        foreach ($paths as $path) {
+            $resource->expandLinkedResourcesTree($path);
+        }
     }
 
     public function post(Request $request)
