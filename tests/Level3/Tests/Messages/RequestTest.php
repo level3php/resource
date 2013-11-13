@@ -53,6 +53,7 @@ class RequestTest extends TestCase
         $this->assertTrue(array_key_exists('range', $data));
         $this->assertTrue(array_key_exists('sort', $data));
         $this->assertTrue(array_key_exists('criteria', $data));
+        $this->assertTrue(array_key_exists('expand', $data));
     }
 
     public function testGetCriteria()
@@ -125,6 +126,21 @@ class RequestTest extends TestCase
     {
         $range = $this->request->getRange();
         $this->assertThat($range, $this->equalTo(array(0,0)));
+    }
+
+
+    public function testGetExpand()
+    {
+        $this->request->headers->add(array('X-Expand-Links' => 'foo;bar'));
+
+        $expand = $this->request->getExpand();
+        $this->assertThat($expand, $this->equalTo(array('foo','bar')));
+    }
+
+    public function testGetExpandWithoutHeader()
+    {
+        $expand = $this->request->getExpand();
+        $this->assertThat($expand, $this->equalTo(array()));
     }
 
     public function testGetHeader()

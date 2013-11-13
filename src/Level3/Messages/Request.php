@@ -11,6 +11,10 @@ use Level3\Resource\Parameters;
 class Request extends SymfonyRequest
 {
     const HEADER_SORT = 'X-Sort';
+
+    const HEADER_EXPAND = 'X-Expand-Links';
+    const HEADER_EXPAND_SEPARATOR = ';';
+
     const HEADER_RANGE = 'Range';
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
@@ -77,7 +81,8 @@ class Request extends SymfonyRequest
         return new Parameters(array(
             'range' => $this->getRange(),
             'criteria' => $this->getCriteria(),
-            'sort' => $this->getSort()
+            'sort' => $this->getSort(),
+            'expand' => $this->getExpand()
         ));
     }
 
@@ -122,6 +127,22 @@ class Request extends SymfonyRequest
         $range = explode(self::HEADER_RANGE_SEPARATOR, $range);
 
         return $range;
+    }
+
+    public function getExpand()
+    {
+        if (!$this->headers->has(self::HEADER_EXPAND)) {
+            return array();
+        }
+
+        return $this->extractExpandFromHeader();
+    }
+
+    private function extractExpandFromHeader()
+    {
+        $expand = $this->headers->get(self::HEADER_EXPAND);
+
+        return explode(self::HEADER_EXPAND_SEPARATOR, $expand);
     }
 
     public function isAuthenticated()

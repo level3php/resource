@@ -113,7 +113,7 @@ class ResourceTest extends TestCase
 
         $this->resource->expandLinkedResources('foo');
         $this->assertSame(
-            array($linkedResource), 
+            array($linkedResource),
             $this->resource->getResources('foo')
         );
     }
@@ -135,7 +135,7 @@ class ResourceTest extends TestCase
 
         $this->resource->expandLinkedResources('foo');
         $this->assertSame(
-            array($linkedResourceA, $linkedResourceB), 
+            array($linkedResourceA, $linkedResourceB),
             $this->resource->getResources('foo')
         );
     }
