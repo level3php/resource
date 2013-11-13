@@ -19,6 +19,7 @@ class Resource
     protected $id;
     protected $uri;
     protected $resources = array();
+    protected $linkedResources = array();
     protected $links = array();
     protected $data = array();
     protected $lastUpdate;
@@ -68,6 +69,8 @@ class Resource
 
     public function linkResource($rel, Resource $resource)
     {
+        $this->linkedResources[$rel] = $resource;
+
         $link = $resource->getSelfLink();
         if (!$link) {
             throw new InvalidArgumentException(
@@ -83,9 +86,9 @@ class Resource
     public function linkResources($rel, Array $resources)
     {
         $links = array();
-
         foreach ($resources as $resource) {
             if ($resource instanceOf Resource) {
+                $this->linkedResources[$rel][] = $resource;
                 $links[] = $resource->getSelfLink();
             }
         }
@@ -95,12 +98,33 @@ class Resource
         return $this;
     }
 
-    public function getLinks()
+    public function expandLinkedResources($rel)
+    {
+        if (!isset($this->linkedResources[$rel])) {
+            return;
+        }
+
+        $resources = $this->linkedResources[$rel];
+        if (!is_array($resources)) {
+            $resources = array($resources);
+        }
+        
+        foreach ($resources as $resource) {
+            $this->addResource($rel, $resource);
+        }
+    }
+
+    public function getLinkedResources()
+    {
+        return $this->linkedResources;
+    }
+
+    public function getAllLinks()
     {
         return $this->links;
     }
 
-    public function getLinksByRel($rel)
+    public function getLinks($rel)
     {
         if (isset($this->links[$rel])) {
             return $this->links[$rel];
@@ -116,12 +140,12 @@ class Resource
         return $this;
     }
 
-    public function getResources()
+    public function getAllResources()
     {
         return $this->resources;
     }
 
-    public function getResourcesByRel($rel)
+    public function getResources($rel)
     {
         if (isset($this->resources[$rel])) {
             return $this->resources[$rel];

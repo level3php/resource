@@ -33,7 +33,7 @@ class ResourceTest extends TestCase
         $link = $this->createLinkMock();
         $this->resource->setLink('foo', $link);
 
-        $links = $this->resource->getLinks();
+        $links = $this->resource->getAllLinks();
         $this->assertSame($link, $links['foo']);
     }
 
@@ -46,19 +46,19 @@ class ResourceTest extends TestCase
 
         $this->resource->setLinks('foo', $linksExpected);
 
-        $links = $this->resource->getLinks();
+        $links = $this->resource->getAllLinks();
         $this->assertSame($linksExpected, $links['foo']);
     }
 
-    public function testGetLinkByRel()
+    public function testGetLink()
     {
         $link = $this->createLinkMock();
         $this->resource->setLink('foo', $link);
 
-        $links = $this->resource->getLinksByRel('foo');
+        $links = $this->resource->getLinks('foo');
         $this->assertSame($link, $links);
 
-        $this->assertNull($this->resource->getLinksByRel('bar'));
+        $this->assertNull($this->resource->getLinks('bar'));
     }
 
     public function testLinkResource()
@@ -67,9 +67,12 @@ class ResourceTest extends TestCase
         $linkedResource->setURI('foo');
 
         $this->resource->linkResource('foo', $linkedResource);
-        $links = $this->resource->getLinks();
+        $links = $this->resource->getAllLinks();
         $this->assertInstanceOf('Level3\Resource\Link', $links['foo']);
         $this->assertSame('foo', $links['foo']->getHref());
+
+        $linked = $this->resource->getLinkedResources();
+        $this->assertSame($linkedResource, $linked['foo']);
     }
 
     public function testLinkResources()
@@ -85,12 +88,56 @@ class ResourceTest extends TestCase
             $linkedResourceB
         ));
 
-        $links = $this->resource->getLinks();
+        $links = $this->resource->getAllLinks();
         $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][0]);
         $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][1]);
 
         $this->assertSame('foo', $links['foo'][0]->getHref());
         $this->assertSame('bar', $links['foo'][1]->getHref());
+
+        $linked = $this->resource->getLinkedResources();
+        $this->assertSame($linkedResourceA, $linked['foo'][0]);
+        $this->assertSame($linkedResourceB, $linked['foo'][1]);
+    }
+
+    public function testExpandLinkedResourcesOne()
+    {
+        $linkedResource = new Resource($this->repository);
+        $linkedResource->setURI('foo');
+
+        $this->resource->linkResource('foo', $linkedResource);
+        $this->assertCount(0, $this->resource->getAllResources());
+
+        $this->resource->expandLinkedResources('bar');
+        $this->assertCount(0, $this->resource->getAllResources());
+
+        $this->resource->expandLinkedResources('foo');
+        $this->assertSame(
+            array($linkedResource), 
+            $this->resource->getResources('foo')
+        );
+    }
+
+    public function testExpandLinkedResourcesMany()
+    {
+        $linkedResourceA = new Resource($this->repository);
+        $linkedResourceA->setURI('foo');
+
+        $linkedResourceB = new Resource($this->repository);
+        $linkedResourceB->setURI('bar');
+
+        $this->resource->linkResources('foo', array(
+            $linkedResourceA,
+            $linkedResourceB
+        ));
+
+        $this->assertCount(0, $this->resource->getAllResources());
+
+        $this->resource->expandLinkedResources('foo');
+        $this->assertSame(
+            array($linkedResourceA, $linkedResourceB), 
+            $this->resource->getResources('foo')
+        );
     }
 
     /**
@@ -101,7 +148,7 @@ class ResourceTest extends TestCase
         $linkedResource = new Resource($this->repository);
 
         $this->resource->linkResource('foo', $linkedResource);
-        $links = $this->resource->getLinks();
+        $links = $this->resource->getAllLinks();
         $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][0]);
         $this->assertSame('foo', $links['foo'][0]->getHref());
     }
@@ -111,19 +158,19 @@ class ResourceTest extends TestCase
         $resource = new Resource($this->repository);
 
         $this->resource->addResource('foo', $resource);
-        $resources = $this->resource->getResources();
+        $resources = $this->resource->getAllResources();
         $this->assertSame($resource, $resources['foo'][0]);
     }
 
-    public function testGetResourceByRel()
+    public function testGetResource()
     {
         $resource = new Resource($this->repository);
 
         $this->resource->addResource('foo', $resource);
-        $resources = $this->resource->getResourcesByRel('foo');
+        $resources = $this->resource->getResources('foo');
         $this->assertSame($resource, $resources[0]);
 
-        $this->assertNull($this->resource->getResourcesByRel('bar'));
+        $this->assertNull($this->resource->getResources('bar'));
     }
 
     public function testSetData()

@@ -53,13 +53,13 @@ class XmlFormatter extends Formatter
         if (!is_null($uri = $resource->getUri())) {
             $doc->addAttribute('href', $uri);
         }
-        $this->linksForXml($doc, $resource->getLinks());
+        $this->linksForXml($doc, $resource->getAllLinks());
 
         if ($data = $resource->getData()) {
             $this->arrayToXml($data, $doc);
         }
 
-        foreach ($resource->getResources() as $rel => $resources) {
+        foreach ($resource->getAllResources() as $rel => $resources) {
             $this->resourcesForXml($doc, $rel, $resources);
         }
 
@@ -134,9 +134,9 @@ class XmlFormatter extends Formatter
                     $element->addAttribute('href', $uri);
                 }
 
-                $this->linksForXml($element, $resource->getLinks());
+                $this->linksForXml($element, $resource->getAllLinks());
 
-                foreach ($resource->getResources() as $innerRel => $innerRes) {
+                foreach ($resource->getAllResources() as $innerRel => $innerRes) {
                     $this->resourcesForXml($element, $innerRel, $innerRes);
                 }
 
