@@ -6,7 +6,7 @@ use Level3\Formatter;
 use Level3\Resource;
 use Level3\Exceptions\BadRequest;
 
-class JsonFormatter extends Formatter
+class HALJsonFormatter extends Formatter
 {
     const CONTENT_TYPE = 'application/hal+json';
 

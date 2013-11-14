@@ -43,7 +43,7 @@ class Resource
 
     public function setLink($rel, Link $link)
     {
-        $this->links[$rel] = $link;
+        $this->links[$rel][] = $link;
 
         return $this;
     }
@@ -51,9 +51,7 @@ class Resource
     public function setLinks($rel, Array $links)
     {
         foreach ($links as $link) {
-            if ($link instanceOf Link) {
-                $this->links[$rel][] = $link;
-            }
+            $this->setLink($rel, $link);
         }
 
         return $this;
@@ -61,7 +59,7 @@ class Resource
 
     public function linkResource($rel, Resource $resource)
     {
-        $this->linkedResources[$rel] = $resource;
+        $this->linkedResources[$rel][] = $resource;
 
         $link = $resource->getSelfLink();
         if (!$link) {
@@ -70,22 +68,14 @@ class Resource
             );
         }
 
-        $this->setLink($rel, $link);
-
         return $this;
     }
 
     public function linkResources($rel, Array $resources)
     {
-        $links = [];
         foreach ($resources as $resource) {
-            if ($resource instanceOf Resource) {
-                $this->linkedResources[$rel][] = $resource;
-                $links[] = $resource->getSelfLink();
-            }
+            $this->linkResource($rel, $resource);
         }
-
-        $this->setLinks($rel, $links);
 
         return $this;
     }
@@ -235,11 +225,21 @@ class Resource
         }
 
         foreach ($this->links as $rel => $links) {
-            if ($links instanceOf Link) {
-                $base['_links'][$rel] = $links->toArray();
+            if (count($links) == 1) {
+                $base['_links'][$rel] = end($links)->toArray();
             } else {
                 foreach ($links as $link) {
                     $base['_links'][$rel][] = $link->toArray();
+                }
+            }
+        }
+
+       foreach ($this->linkedResources as $rel => $links) {
+            if (count($links) == 1) {
+                $base['_links'][$rel] = end($links)->getSelfLink()->toArray();
+            } else {
+                foreach ($links as $link) {
+                    $base['_links'][$rel][] = $link->getSelfLink()->toArray();
                 }
             }
         }

@@ -12,7 +12,7 @@ use Level3\Exceptions\BadRequest;
 use SimpleXMLElement;
 use Exception;
 
-class XmlFormatter extends Formatter
+class HALXmlFormatter extends Formatter
 {
     const CONTENT_TYPE = 'application/hal+xml';
 

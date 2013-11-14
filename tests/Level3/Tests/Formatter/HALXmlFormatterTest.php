@@ -10,10 +10,10 @@
 
 namespace Level3\Tests\Formatter;
 
-class JsonFormatterTest extends FormatterTest
+class HALXmlFormatterTest extends FormatterTest
 {
-    protected $class = 'Level3\Formatter\JsonFormatter';
-    protected $toNonPretty = 'ToFormatJSONNonPretty.json';
-    protected $toPretty = 'ToFormatJSONPretty.json';
-    protected $from = 'FromFormatJSON.json';
+    protected $class = 'Level3\Formatter\HALXmlFormatter';
+    protected $toNonPretty = 'ToFormatHALXMLNonPretty.xml';
+    protected $toPretty = 'ToFormatHALXMLPretty.xml';
+    protected $from = 'FromFormatHALXML.xml';
 }

@@ -34,7 +34,7 @@ class ResourceTest extends TestCase
         $this->resource->setLink('foo', $link);
 
         $links = $this->resource->getAllLinks();
-        $this->assertSame($link, $links['foo']);
+        $this->assertSame([$link], $links['foo']);
     }
 
     public function testSetLinks()
@@ -56,7 +56,7 @@ class ResourceTest extends TestCase
         $this->resource->setLink('foo', $link);
 
         $links = $this->resource->getLinks('foo');
-        $this->assertSame($link, $links);
+        $this->assertSame([$link], $links);
 
         $this->assertNull($this->resource->getLinks('bar'));
     }
@@ -67,12 +67,11 @@ class ResourceTest extends TestCase
         $linkedResource->setURI('foo');
 
         $this->resource->linkResource('foo', $linkedResource);
-        $links = $this->resource->getAllLinks();
-        $this->assertInstanceOf('Level3\Resource\Link', $links['foo']);
-        $this->assertSame('foo', $links['foo']->getHref());
 
-        $linked = $this->resource->getAllLinkedResources();
-        $this->assertSame($linkedResource, $linked['foo']);
+        $links = $this->resource->getLinkedResources('foo');
+        $this->assertSame([$linkedResource], $links);
+
+        $this->assertNull($this->resource->getLinkedResources('bar'));
     }
 
     public function testLinkResources()
@@ -88,16 +87,14 @@ class ResourceTest extends TestCase
             $linkedResourceB
         ]);
 
-        $links = $this->resource->getAllLinks();
-        $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][0]);
-        $this->assertInstanceOf('Level3\Resource\Link', $links['foo'][1]);
 
-        $this->assertSame('foo', $links['foo'][0]->getHref());
-        $this->assertSame('bar', $links['foo'][1]->getHref());
+        $links = $this->resource->getLinkedResources('foo');
+        $this->assertSame([
+            $linkedResourceA,
+            $linkedResourceB
+        ], $links);
 
-        $linked = $this->resource->getLinkedResources('foo');
-        $this->assertSame($linkedResourceA, $linked[0]);
-        $this->assertSame($linkedResourceB, $linked[1]);
+        $this->assertNull($this->resource->getLinkedResources('bar'));
     }
 
     public function testExpandLinkedResourcesOne()
