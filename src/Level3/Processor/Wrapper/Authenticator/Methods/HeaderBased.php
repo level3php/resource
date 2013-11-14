@@ -67,7 +67,7 @@ abstract class HeaderBased implements Method
             throw new MalformedCredentials();
         }
 
-        return array($data['scheme'][0], $data['token'][0]);
+        return [$data['scheme'][0], $data['token'][0]];
     }
 
     protected function verifyScheme(Request $request, $scheme)

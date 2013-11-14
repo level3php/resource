@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3;
 
@@ -21,17 +13,17 @@ abstract class Mapper
     protected $baseURI = '';
     protected $skipCurieSegments = 0;
 
-    protected $interfacesWithOutParams = array(
+    protected $interfacesWithOutParams = [
         'Level3\Repository\Poster' => 'POST',
         'Level3\Repository\Finder' => 'GET'
-    );
+    ];
 
-    protected $interfacesWithParams = array(
+    protected $interfacesWithParams = [
         'Level3\Repository\Deleter' => 'DELETE',
         'Level3\Repository\Getter' => 'GET',
         'Level3\Repository\Putter' => 'PUT',
         'Level3\Repository\Patcher' => 'PATCH'
-    );
+    ];
 
     public function setBaseURI($uri)
     {
@@ -186,7 +178,7 @@ abstract class Mapper
             $this->interfacesWithParams
         );
 
-        $methods = array();
+        $methods = [];
         foreach ($interfaces as $interface => $method) {
             if ($repository instanceOf $interface) {
                 $methods[] = $method;

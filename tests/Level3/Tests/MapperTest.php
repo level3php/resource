@@ -16,7 +16,7 @@ use Mockery as m;
 
 class MapperTest extends TestCase
 {
-    public function getMapperMock($constructor = array())
+    public function getMapperMock($constructor = [])
     {
         return m::mock(
             'Level3\Mapper[mapFinder,mapGetter,mapPoster,mapPutter,mapDeleter,mapPatcher,mapOptions]',
@@ -61,7 +61,7 @@ class MapperTest extends TestCase
 
         $hub =  m::mock('Level3\Hub');
         $hub->shouldReceive('get')->once()->with('foo')->andReturn($repository);
-        $hub->shouldReceive('getKeys')->once()->andReturn(array('foo'));
+        $hub->shouldReceive('getKeys')->once()->andReturn(['foo']);
 
         $repositoryKey = $repository->getKey();
         $mapper = $this->getMapperMock();
@@ -138,7 +138,7 @@ class MapperTest extends TestCase
             $mapper->getURI(
                 'foo',
                 'Level3\Repository\Deleter',
-                new Parameters(array('fooId' => 1))
+                new Parameters(['fooId' => 1])
             )
         );
     }
@@ -161,7 +161,7 @@ class MapperTest extends TestCase
 
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            array('DELETE'),
+            ['DELETE'],
             $mapper->getMethods($repository)
         );
     }
@@ -172,7 +172,7 @@ class MapperTest extends TestCase
 
         $mapper = $this->getMapperMock();
         $this->assertSame(
-            array('DELETE', 'GET', 'PATCH', 'POST', 'PUT'),
+            ['DELETE', 'GET', 'PATCH', 'POST', 'PUT'],
             $mapper->getMethods($repository)
         );
     }

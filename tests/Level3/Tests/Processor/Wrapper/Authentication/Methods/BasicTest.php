@@ -60,7 +60,6 @@ class BasicTest extends TestCase
         $method->modifyResponse($response, 'get');
     }
 
-
     /**
      * @expectedException Level3\Processor\Wrapper\Authenticator\Exceptions\MalformedCredentials
      */

@@ -7,7 +7,6 @@ use Level3\Messages\Response;
 use Level3\Processor\Wrapper\Authenticator\Credentials;
 use Level3\Processor\Wrapper\Authenticator\Exceptions\MalformedCredentials;
 use Teapot\StatusCode;
-use Exception;
 
 abstract class Basic extends HeaderBased
 {
@@ -27,7 +26,7 @@ abstract class Basic extends HeaderBased
         list($user, $password) = $this->extractUserAndPassword($token);
 
         $this->lastVerification = $this->validateUserAndPassword($user, $password);
-        
+
         return $this->lastVerification;
     }
 
@@ -56,7 +55,7 @@ abstract class Basic extends HeaderBased
         }
 
         $response->setHeader(
-            self::WWW_AUTHENTICATE_HEADER, 
+            self::WWW_AUTHENTICATE_HEADER,
             sprintf('%s realm="%s"', $this->scheme, $this->realm)
         );
     }

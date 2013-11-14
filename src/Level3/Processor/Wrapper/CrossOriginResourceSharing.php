@@ -24,25 +24,25 @@ class CrossOriginResourceSharing extends Wrapper
     const HEADER_ALLOW_HEADERS = 'Access-Control-Allow-Headers';
     const HEADER_ORIGIN = 'Origin';
 
-    protected $enabledHeaders = array(
-        self::HEADER_ALLOW_ORIGIN => array(),
-        self::HEADER_ALLOW_CRENDENTIALS => array(),
-        self::HEADER_EXPOSE_HEADERS => array(),
-        self::HEADER_MAX_AGE => array('options'),
-        self::HEADER_ALLOW_HEADERS => array('options'),
-        self::HEADER_ALLOW_METHODS => array('options'),
-    );
+    protected $enabledHeaders = [
+        self::HEADER_ALLOW_ORIGIN => [],
+        self::HEADER_ALLOW_CRENDENTIALS => [],
+        self::HEADER_EXPOSE_HEADERS => [],
+        self::HEADER_MAX_AGE => ['options'],
+        self::HEADER_ALLOW_HEADERS => ['options'],
+        self::HEADER_ALLOW_METHODS => ['options'],
+    ];
 
     protected $allowOrigin = self::ALLOW_ORIGIN_WILDCARD;
     protected $exposeHeaders;
     protected $maxAge;
     protected $allowCredentials;
     protected $allowMethods = true;
-    protected $allowHeaders = array(
+    protected $allowHeaders = [
         Request::HEADER_RANGE,
         Request::HEADER_SORT,
         request::HEADER_EXPAND
-    );
+    ];
 
     public function setAllowOrigin($allowOrigin)
     {
@@ -240,13 +240,13 @@ class CrossOriginResourceSharing extends Wrapper
 
     protected function getNonSimpleResponseHeaders(Response $response)
     {
-        $simpleHeaders = array(
+        $simpleHeaders = [
             'Cache-control', 'Content-Language', 'Content-Type',
             'Expires' , 'Last-Modified', 'Pragma', 'Status', 'Date',
             self::HEADER_ALLOW_ORIGIN, self::HEADER_EXPOSE_HEADERS,
             self::HEADER_MAX_AGE, self::HEADER_ALLOW_CRENDENTIALS,
             self::HEADER_ALLOW_METHODS, self::HEADER_ALLOW_HEADERS
-        );
+        ];
 
         array_walk($simpleHeaders, function(&$value) { $value = strtolower($value); });
 

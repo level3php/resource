@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3;
 
@@ -18,10 +10,10 @@ class Resource
 {
     protected $id;
     protected $uri;
-    protected $resources = array();
-    protected $linkedResources = array();
-    protected $links = array();
-    protected $data = array();
+    protected $resources = [];
+    protected $linkedResources = [];
+    protected $links = [];
+    protected $data = [];
     protected $lastUpdate;
     protected $cache;
 
@@ -85,7 +77,7 @@ class Resource
 
     public function linkResources($rel, Array $resources)
     {
-        $links = array();
+        $links = [];
         foreach ($resources as $resource) {
             if ($resource instanceOf Resource) {
                 $this->linkedResources[$rel][] = $resource;
@@ -142,7 +134,7 @@ class Resource
 
         $resources = $this->linkedResources[$rel];
         if (!is_array($resources)) {
-            $resources = array($resources);
+            $resources = [$resources];
         }
 
         return $resources;

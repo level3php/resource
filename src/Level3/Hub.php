@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3;
 use Closure;
@@ -16,8 +8,8 @@ class Hub
     const MIN_KEY_LENGHT = 1;
 
     private $level3;
-    private $repositoryDefinitions = array();
-    private $instancedRepositories = array();
+    private $repositoryDefinitions = [];
+    private $instancedRepositories = [];
 
     public function setLevel3(Level3 $level3)
     {

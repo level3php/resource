@@ -119,13 +119,12 @@ class BasicIpFirewallTest extends TestCase
         $wrapper = $this->createWrapper();
         $wrapper->addIpToBlacklist(self::EXAMPLE_CIDR);
 
-        $this->assertSame(array(
+        $this->assertSame([
             '178.32.79.60',
             '178.32.79.61',
             '178.32.79.62',
             '178.32.79.63'
-            ), $wrapper->getBlacklist()
-        );
+        ], $wrapper->getBlacklist());
     }
 
     public function testAddWhitelistIP()
@@ -133,10 +132,9 @@ class BasicIpFirewallTest extends TestCase
         $wrapper = $this->createWrapper();
         $wrapper->addIpToWhitelist(self::EXAMPLE_IP_B);
 
-        $this->assertSame(array(
+        $this->assertSame([
             '178.32.79.60',
-            ), $wrapper->getWhitelist()
-        );
+        ], $wrapper->getWhitelist());
     }
 
     /**

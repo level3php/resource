@@ -17,7 +17,7 @@ class RequestTest extends TestCase
 
     public function setUp()
     {
-        $this->dummySymfonyRequest = new SymfonyRequest(array(), array(), array(), array(), array(), array(), self::IRRELEVANT_CONTENT);
+        $this->dummySymfonyRequest = new SymfonyRequest([], [], [], [], [], [], self::IRRELEVANT_CONTENT);
         $this->request = new Request(self::IRRELEVANT_KEY, $this->dummySymfonyRequest);
     }
 
@@ -58,10 +58,10 @@ class RequestTest extends TestCase
 
     public function testGetCriteria()
     {
-        $this->request->server->add(array('QUERY_STRING' => 'foo=bar'));
+        $this->request->server->add(['QUERY_STRING' => 'foo=bar']);
 
         $criteria = $this->request->getCriteria();
-        $this->assertSame(array('foo' => 'bar'), $criteria);
+        $this->assertSame(['foo' => 'bar'], $criteria);
     }
 
     public function testGetCredentials()
@@ -89,7 +89,7 @@ class RequestTest extends TestCase
     public function testgetContent()
     {
         $content = $this->request->getContent();
-        $this->assertSame(array('foo' => 'bar'), $content);
+        $this->assertSame(['foo' => 'bar'], $content);
     }
 
     public function testgetRawContent()
@@ -100,55 +100,54 @@ class RequestTest extends TestCase
 
     public function testGetRange()
     {
-        $this->request->headers->add(array('Range' => 'entity=0-9'));
+        $this->request->headers->add(['Range' => 'entity=0-9']);
 
         $range = $this->request->getRange();
-        $this->assertThat($range, $this->equalTo(array(0,9)));
+        $this->assertThat($range, $this->equalTo([0,9]));
     }
 
     public function testGetRangeWithoutLowerBound()
     {
-        $this->request->headers->add(array('Range' => 'entity=-9'));
+        $this->request->headers->add(['Range' => 'entity=-9']);
 
         $range = $this->request->getRange();
-        $this->assertThat($range, $this->equalTo(array(0,9)));
+        $this->assertThat($range, $this->equalTo([0,9]));
     }
 
     public function testGetRangeWithoutUpperBound()
     {
-        $this->request->headers->add(array('Range' => 'entity=9-'));
+        $this->request->headers->add(['Range' => 'entity=9-']);
 
         $range = $this->request->getRange();
-        $this->assertThat($range, $this->equalTo(array(9,0)));
+        $this->assertThat($range, $this->equalTo([9,0]));
     }
 
     public function testGetRangeWithoutHeader()
     {
         $range = $this->request->getRange();
-        $this->assertThat($range, $this->equalTo(array(0,0)));
+        $this->assertThat($range, $this->equalTo([0,0]));
     }
-
 
     public function testGetExpand()
     {
-        $this->request->headers->add(array('X-Expand-Links' => 'foo;qux.bar'));
+        $this->request->headers->add(['X-Expand-Links' => 'foo;qux.bar']);
 
         $expand = $this->request->getExpand();
-        $this->assertThat($expand, $this->equalTo(array(
-            array('foo'),
-            array('qux','bar')
-        )));
+        $this->assertThat($expand, $this->equalTo([
+            ['foo'],
+            ['qux','bar']
+        ]));
     }
 
     public function testGetExpandWithoutHeader()
     {
         $expand = $this->request->getExpand();
-        $this->assertThat($expand, $this->equalTo(array()));
+        $this->assertThat($expand, $this->equalTo([]));
     }
 
     public function testGetHeader()
     {
-        $this->request->headers->add(array('foo'=> array('bar', 'crap')));
+        $this->request->headers->add(['foo'=> ['bar', 'crap']]);
 
         $header = $this->request->getHeader('foo');
         $this->assertThat($header, $this->equalTo('bar'));
@@ -157,22 +156,22 @@ class RequestTest extends TestCase
     public function testGetSort()
     {
         $this->request->headers->add(
-            array(Request::HEADER_SORT => ' foo = 1; bar;baz  =-1')
+            [Request::HEADER_SORT => ' foo = 1; bar;baz  =-1']
         );
 
         $this->assertEquals(
-            array('foo' => 1, 'bar' => 1, 'baz' => -1),
+            ['foo' => 1, 'bar' => 1, 'baz' => -1],
             $this->request->getSort());
     }
 
     public function testGetSortEmpty()
     {
         $this->request->headers->add(
-            array(Request::HEADER_SORT => '')
+            [Request::HEADER_SORT => '']
         );
 
         $this->assertEquals(
-            array(),
+            [],
             $this->request->getSort());
     }
 

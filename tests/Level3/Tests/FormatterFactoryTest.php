@@ -33,7 +33,7 @@ class FormatterFactoryTest extends TestCase
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
             'Level3\Formatter\JsonFormatter',
-            $factory->create(array('foo'))
+            $factory->create(['foo'])
         );
     }
 
@@ -42,7 +42,7 @@ class FormatterFactoryTest extends TestCase
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
             'Level3\Formatter\JsonFormatter',
-            $factory->create(array('foo'), true)
+            $factory->create(['foo'], true)
         );
     }
 
@@ -51,7 +51,7 @@ class FormatterFactoryTest extends TestCase
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
             'Level3\Formatter\JsonFormatter',
-            $factory->create(array(JsonFormatter::CONTENT_TYPE), true)
+            $factory->create([JsonFormatter::CONTENT_TYPE], true)
         );
     }
 
@@ -60,7 +60,7 @@ class FormatterFactoryTest extends TestCase
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
             'Level3\Formatter\XmlFormatter',
-            $factory->create(array(XmlFormatter::CONTENT_TYPE), true)
+            $factory->create([XmlFormatter::CONTENT_TYPE], true)
         );
     }
 }

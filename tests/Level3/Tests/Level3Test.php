@@ -132,10 +132,10 @@ class Level3Test extends TestCase
     {
         $wrapperA = $this->createWrapperMock();
         $this->assertNull($this->level3->getProcessorWrappersByClass(get_class($wrapperA)));
-        
+
         $this->level3->addProcessorWrapper($wrapperA);
 
-        $this->assertSame($wrapperA, 
+        $this->assertSame($wrapperA,
             $this->level3->getProcessorWrappersByClass(get_class($wrapperA))
         );
     }

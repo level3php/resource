@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3;
 
@@ -23,7 +15,7 @@ class Level3
     private $hub;
     private $mapper;
     private $processor;
-    private $wrappers = array();
+    private $wrappers = [];
 
     public function __construct(Mapper $mapper, Hub $hub, Processor $processor)
     {
@@ -72,7 +64,7 @@ class Level3
 
     public function clearProcessWrappers()
     {
-        $this->wrappers = array();
+        $this->wrappers = [];
     }
 
     public function addProcessorWrapper(Wrapper $wrapper, $priority = self::PRIORITY_NORMAL)
@@ -83,7 +75,7 @@ class Level3
 
     public function getProcessorWrappers()
     {
-        $result = array();
+        $result = [];
 
         ksort($this->wrappers);
         foreach ($this->wrappers as $priority => $wrappers) {
@@ -101,7 +93,6 @@ class Level3
             }
         }
     }
-
 
     public function boot()
     {

@@ -16,11 +16,11 @@ class Authenticator extends Wrapper
     const PRIORITY_NORMAL = 20;
     const PRIORITY_HIGH = 30;
 
-    protected $methods = array();
+    protected $methods = [];
 
     public function clearMethods()
     {
-        $this->methods = array();
+        $this->methods = [];
     }
 
     public function addMethod(Method $method, $priority = self::PRIORITY_NORMAL)
@@ -30,7 +30,7 @@ class Authenticator extends Wrapper
 
     public function getMethods()
     {
-        $result = array();
+        $result = [];
 
         ksort($this->methods);
         foreach ($this->methods as $priority => $methods) {

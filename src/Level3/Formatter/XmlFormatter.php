@@ -1,12 +1,6 @@
 <?php
 /*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- * (c) Ben Longden <ben@nocarrier.co.uk
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+ * (c) Ben Longden <ben@nocarrier.co.uk>
  */
 
 namespace Level3\Formatter;
@@ -25,7 +19,7 @@ class XmlFormatter extends Formatter
     public function fromRequest($string)
     {
         if (strlen($string) == 0) {
-            return Array();
+            return [];
         }
 
         try {
@@ -75,7 +69,7 @@ class XmlFormatter extends Formatter
     protected function linksForXml(SimpleXmlElement $doc, Array $links)
     {
         foreach ($links as $rel => $links) {
-            if (!is_array($links)) $links = array($links);
+            if (!is_array($links)) $links = [$links];
 
             foreach ($links as $link) {
                 $element = $doc->addChild('link');

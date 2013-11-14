@@ -20,11 +20,11 @@ class ProcessorTest extends TestCase
     {
         $this->level3 = $this->createLevel3Mock();
         $this->level3->shouldReceive('getProcessorWrappers')
-            ->withNoArgs()->andReturn(array(
+            ->withNoArgs()->andReturn([
                 new WrapperMock(),
                 new WrapperMock(),
                 new WrapperMock()
-            ));
+            ]);
 
         $this->processor = new Processor();
         $this->processor->setLevel3($this->level3);
@@ -66,7 +66,7 @@ class ProcessorTest extends TestCase
         } else {
             $request = $this->createRequestMock($attributes, $filters, $formatter, $repository, $content);
             if ($expand !== null) {
-                $request->shouldReceive('getExpand')->withNoArgs()->once()->andReturn(array($expand));
+                $request->shouldReceive('getExpand')->withNoArgs()->once()->andReturn([$expand]);
                 $resource->shouldReceive('expandLinkedResourcesTree')->with($expand)->once()->andReturn(null);
             }
 
@@ -97,56 +97,49 @@ class ProcessorTest extends TestCase
 
     public function provider()
     {
-        return array(
-            array(
+        return [
+            [
                 'find', 'createFinderMock',
                 $this->createParametersMock(), $this->createParametersMock(), null,
                 $this->createResourceMock(), $this->createFormatterMock(),
-                StatusCode::OK, null, array('foo')
-            ),
-            array(
+                StatusCode::OK, null, ['foo']
+            ],[
                 'get', 'createGetterMock',
                 $this->createParametersMock(), null, null,
                 $this->createResourceMock(), $this->createFormatterMock(),
-                StatusCode::OK, null, array()
-            ),
-            array(
+                StatusCode::OK, null, []
+            ],[
                 'post', 'createPosterMock',
-                $this->createParametersMock(), null, array(true),
+                $this->createParametersMock(), null, [true],
                 $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::CREATED
-            ),
-            array(
+            ],[
                 'put', 'createPutterMock',
-                $this->createParametersMock(), null, array(true),
+                $this->createParametersMock(), null, [true],
                 $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::OK
-            ),
-            array(
+            ],[
                 'patch', 'createPatcherMock',
-                $this->createParametersMock(), null, array(true),
+                $this->createParametersMock(), null, [true],
                 $this->createResourceMock(), $this->createFormatterMock(),
                 StatusCode::OK
-            ),
-            array(
+            ],[
                 'delete', 'createDeleterMock',
                 $this->createParametersMock(), null, null,
                 null, null,
                 StatusCode::NO_CONTENT
-            ),
-            array(
+            ],[
                 'error', 'createDeleterMock',
                 null, null, null,
                 null, $this->createFormatterMock(),
                 StatusCode::INTERNAL_SERVER_ERROR, new \Exception
-            ),
-            array(
+            ],[
                 'error', 'createDeleterMock',
                 null, null, null,
                 null, $this->createFormatterMock(),
                 StatusCode::NOT_FOUND, new NotFound
-            )
-        );
+            ]
+        ];
     }
 
     protected function level3ShouldHavePair($key, $repository)

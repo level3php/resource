@@ -55,20 +55,20 @@ class ExceptionHandlerTest extends TestCase
 
     public function provider()
     {
-        return array(
-            array('get', StatusCode::NOT_FOUND, new NotFound()),
-            array('get', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
-            array('find', StatusCode::NOT_FOUND, new NotFound()),
-            array('find', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
-            array('post', StatusCode::NOT_FOUND, new NotFound()),
-            array('post', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
-            array('patch', StatusCode::NOT_FOUND, new NotFound()),
-            array('patch', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
-            array('put', StatusCode::NOT_FOUND, new NotFound()),
-            array('put', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
-            array('delete', StatusCode::NOT_FOUND, new NotFound()),
-            array('delete', StatusCode::INTERNAL_SERVER_ERROR, new Exception()),
-            array('options', StatusCode::INTERNAL_SERVER_ERROR, new Exception())
-        );
+        return [
+            ['get', StatusCode::NOT_FOUND, new NotFound()],
+            ['get', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
+            ['find', StatusCode::NOT_FOUND, new NotFound()],
+            ['find', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
+            ['post', StatusCode::NOT_FOUND, new NotFound()],
+            ['post', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
+            ['patch', StatusCode::NOT_FOUND, new NotFound()],
+            ['patch', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
+            ['put', StatusCode::NOT_FOUND, new NotFound()],
+            ['put', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
+            ['delete', StatusCode::NOT_FOUND, new NotFound()],
+            ['delete', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
+            ['options', StatusCode::INTERNAL_SERVER_ERROR, new Exception()]
+        ];
     }
 }

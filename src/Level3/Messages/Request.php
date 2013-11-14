@@ -20,7 +20,11 @@ class Request extends SymfonyRequest
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
 
-    protected $availableHeaders = array(self::HEADER_SORT, self::HEADER_RANGE, self::HEADER_EXPAND);
+    protected $availableHeaders = [
+        self::HEADER_SORT,
+        self::HEADER_RANGE,
+        self::HEADER_EXPAND
+    ];
 
     private $credentials;
     private $key;
@@ -79,12 +83,12 @@ class Request extends SymfonyRequest
 
     public function getFilters()
     {
-        return new Parameters(array(
+        return new Parameters([
             'range' => $this->getRange(),
             'criteria' => $this->getCriteria(),
             'sort' => $this->getSort(),
             'expand' => $this->getExpand()
-        ));
+        ]);
     }
 
     public function getRawContent($none = false)
@@ -102,7 +106,7 @@ class Request extends SymfonyRequest
     public function getRange()
     {
         if (!$this->headers->has(self::HEADER_RANGE)) {
-            return array(0, 0);
+            return [0, 0];
         }
 
         $range = $this->extractRangeFromHeader();
@@ -133,7 +137,7 @@ class Request extends SymfonyRequest
     public function getExpand()
     {
         if (!$this->headers->has(self::HEADER_EXPAND)) {
-            return array();
+            return [];
         }
 
         return $this->extractExpandFromHeader();
@@ -146,7 +150,7 @@ class Request extends SymfonyRequest
         $expand = explode(self::HEADER_EXPAND_PATH_SEPARATOR, $expand);
         foreach ($expand as &$part) {
             $part = explode(self::HEADER_EXPAND_LEVEL_SEPARATOR, $part);
-        } 
+        }
 
         return $expand;
     }
@@ -165,7 +169,7 @@ class Request extends SymfonyRequest
 
     public function getCriteria()
     {
-        $result = array();
+        $result = [];
         parse_str($this->getQueryString(), $result);
 
         return $result;
@@ -182,7 +186,7 @@ class Request extends SymfonyRequest
 
     private function parseSortHeader($sortHeader)
     {
-        $sort = array();
+        $sort = [];
         $parts = explode(';', $sortHeader);
         foreach ($parts as $part) {
             list($field, $direction) = $this->parseSortPart($part);
@@ -194,7 +198,7 @@ class Request extends SymfonyRequest
 
     private function parseSortPart($part)
     {
-        $match = array();
+        $match = [];
         $pattern = '/^
             \s* (?P<field>\w+) \s* # capture the field
             (?: = \s* (?P<direction>-?1) )? \s* # capture the sort direction if it is there
@@ -202,7 +206,7 @@ class Request extends SymfonyRequest
         preg_match($pattern, $part, $match);
         list($field, $direction) = $this->extractFieldAndDirectionFromRegexMatch($match);
 
-        return array($field, $direction);
+        return [$field, $direction];
     }
 
     private function extractFieldAndDirectionFromRegexMatch($match)
@@ -219,6 +223,6 @@ class Request extends SymfonyRequest
             $direction = 1;
         }
 
-        return array($field, $direction);
+        return [$field, $direction];
     }
 }

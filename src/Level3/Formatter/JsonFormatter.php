@@ -1,13 +1,4 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- * (c) Ben Longden <ben@nocarrier.co.uk>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Formatter;
 
@@ -22,7 +13,7 @@ class JsonFormatter extends Formatter
     public function fromRequest($string)
     {
         if (strlen($string) == 0) {
-            return Array();
+            return [];
         }
 
         $array = json_decode($string, true);
@@ -36,9 +27,9 @@ class JsonFormatter extends Formatter
 
     public function toResponse(Resource $resource, $pretty = false)
     {
-        $options = 0;
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0 and $pretty) {
-            $options = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT;
+        $options = JSON_UNESCAPED_SLASHES;
+        if ($pretty) {
+            $options = $options | JSON_PRETTY_PRINT;
         }
 
         return json_encode($resource->toArray(), $options);

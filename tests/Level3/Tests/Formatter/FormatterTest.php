@@ -39,7 +39,7 @@ abstract class FormatterTest extends TestCase
     public function testFromRequestEmpty()
     {
         $formatter = new $this->class();
-        $this->assertSame(array(), $formatter->fromRequest(''));
+        $this->assertSame([], $formatter->fromRequest(''));
     }
 
     public function testToResponse()
@@ -48,22 +48,22 @@ abstract class FormatterTest extends TestCase
 
         $repository = $this->createRepositoryMock();
         $resource = $this->createResource(self::EXAMPLE_URI);
-        $resource->setData(array(
+        $resource->setData([
             'value' => 'bar',
             'bar' => 1,
             'foo' => true,
-            'array' => array(
+            'array' => [
                 'bar' => 'foo'
-            ),
-            'arrayOfarrays' => array(
-                array('bar' => 'foo'),
-                array('foo' => 'bar')
-            ),
-            'arrayOfstrings' => array(
+            ],
+            'arrayOfarrays' => [
+                ['bar' => 'foo'],
+                ['foo' => 'bar']
+            ],
+            'arrayOfstrings' => [
                 'foo', 'bar'
-            ),
+            ],
             '@atribute' => 'foo'
-        ));
+        ]);
 
         $link = new Link('foo');
         $link->setName('name');
@@ -73,39 +73,26 @@ abstract class FormatterTest extends TestCase
 
         $resource->setLink('quz', $link);
 
-        $resource->setLinks('foo', array(
+        $resource->setLinks('foo', [
             $link,
             new Link('qux')
-        ));
+        ]);
 
-        $subResource = $this->createResource(self::EXAMPLE_URI)->setData(array('value' => 'qux'));
+        $subResource = $this->createResource(self::EXAMPLE_URI)->setData(['value' => 'qux']);
         $subResource->addResource('foo',
-            $this->createResource(self::EXAMPLE_URI)->setData(array('foo' => 'qux'))
+            $this->createResource(self::EXAMPLE_URI)->setData(['foo' => 'qux'])
         );
 
         $resource->addResource('baz', $subResource);
 
-//echo($formatter->toResponse($resource, true)); exit();
-
-
-        if (
-            version_compare(PHP_VERSION, '5.4' , '>=') ||
-            $this->class != 'Level3\Formatter\JsonFormatter'
-        ) {
-            $this->assertSame(
-                $this->readResource($this->toPretty),
-                $formatter->toResponse($resource, true)
-            );
-        } else {
-            $this->assertSame(
-                $this->readResource($this->toNonPretty),
-                $formatter->toResponse($resource, true)
-            );
-        }
+        $this->assertSame(
+            $this->readResource($this->toPretty),
+            trim($formatter->toResponse($resource, true))
+        );
 
         $this->assertSame(
             $this->readResource($this->toNonPretty),
-            $formatter->toResponse($resource)
+            trim($formatter->toResponse($resource))
         );
     }
 
@@ -127,6 +114,6 @@ abstract class FormatterTest extends TestCase
 
     public function readResource($filename)
     {
-        return file_get_contents(__DIR__ . '/../../Resources/' . $filename);
+        return trim(file_get_contents(__DIR__ . '/../../Resources/' . $filename));
     }
 }

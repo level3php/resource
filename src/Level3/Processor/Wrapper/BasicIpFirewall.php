@@ -13,8 +13,8 @@ class BasicIpFirewall extends Wrapper
 {
     const CIDR_SEPARATOR = '/';
 
-    private $blacklist = array();
-    private $whitelist = array();
+    private $blacklist = [];
+    private $whitelist = [];
 
     public function addIpToBlacklist($ipOrCIDR)
     {
@@ -127,7 +127,7 @@ class BasicIpFirewall extends Wrapper
         $cidrParts = $this->getCIDRComponents($cidr);
 
         $length = $this->getCIDRLength($cidr);
-        $range = array();
+        $range = [];
 
         $start = ip2long($cidrParts[0]);
         for ($i=0;$i < $length;$i++) {

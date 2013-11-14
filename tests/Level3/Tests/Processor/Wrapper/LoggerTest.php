@@ -40,26 +40,26 @@ class LoggerTest extends TestCase
 
     public function provider()
     {
-        return array(
-            array('get', StatusCode::OK, LogLevel::INFO),
-            array('get', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('get', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
-            array('find', StatusCode::OK, LogLevel::INFO),
-            array('find', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('find', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
-            array('post', StatusCode::OK, LogLevel::INFO),
-            array('post', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('post', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
-            array('patch', StatusCode::OK, LogLevel::INFO),
-            array('patch', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('patch', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
-            array('put', StatusCode::OK, LogLevel::INFO),
-            array('put', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('put', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
-            array('delete', StatusCode::OK, LogLevel::INFO),
-            array('delete', StatusCode::NOT_FOUND, LogLevel::WARNING),
-            array('delete', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR),
-            array('options', StatusCode::OK, LogLevel::INFO)
-        );
+        return [
+            ['get', StatusCode::OK, LogLevel::INFO],
+            ['get', StatusCode::NOT_FOUND, LogLevel::WARNING],
+            ['get', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR],
+            ['find', StatusCode::OK, LogLevel::INFO],
+            ['find', StatusCode::NOT_FOUND, LogLevel::WARNING],
+            ['find', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR],
+            ['post', StatusCode::OK, LogLevel::INFO],
+            ['post', StatusCode::NOT_FOUND, LogLevel::WARNING],
+            ['post', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR],
+            ['patch', StatusCode::OK, LogLevel::INFO],
+            ['patch', StatusCode::NOT_FOUND, LogLevel::WARNING],
+            ['patch', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR],
+            ['put', StatusCode::OK, LogLevel::INFO],
+            ['put', StatusCode::NOT_FOUND, LogLevel::WARNING],
+            ['put', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR],
+            ['delete', StatusCode::OK, LogLevel::INFO],
+            ['delete', StatusCode::NOT_FOUND, LogLevel::WARNING],
+            ['delete', StatusCode::INTERNAL_SERVER_ERROR, LogLevel::ERROR],
+            ['options', StatusCode::OK, LogLevel::INFO]
+        ];
     }
 }

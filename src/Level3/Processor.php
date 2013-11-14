@@ -23,33 +23,31 @@ class Processor
 
     public function find(Request $request)
     {
-        $self = $this;
-
-        return $this->execute('find', $request, function(Request $request) use ($self) {
+        return $this->execute('find', $request, function(Request $request) {
             $key = $request->getKey();
-            $repository = $self->getRepository($key);
+            $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
             $filters = $request->getFilters();
             $resource = $repository->find($attributes, $filters);
 
             $this->applyExpandToResource($request->getExpand(), $resource);
+
             return Response::createFromResource($request, $resource);
         });
     }
 
     public function get(Request $request)
     {
-        $self = $this;
-
-        return $this->execute('get', $request, function(Request $request) use ($self) {
+        return $this->execute('get', $request, function(Request $request) {
             $key = $request->getKey();
-            $repository = $self->getRepository($key);
+            $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
             $resource = $repository->get($attributes);
 
             $this->applyExpandToResource($request->getExpand(), $resource);
+
             return Response::createFromResource($request, $resource);
         });
     }
@@ -63,11 +61,9 @@ class Processor
 
     public function post(Request $request)
     {
-        $self = $this;
-
-        return $this->execute('post', $request, function(Request $request) use ($self) {
+        return $this->execute('post', $request, function(Request $request) {
             $key = $request->getKey();
-            $repository = $self->getRepository($key);
+            $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
             $content = $request->getContent();
@@ -82,11 +78,9 @@ class Processor
 
     public function patch(Request $request)
     {
-        $self = $this;
-
-        return $this->execute('patch', $request, function(Request $request) use ($self) {
+        return $this->execute('patch', $request, function(Request $request) {
             $key = $request->getKey();
-            $repository = $self->getRepository($key);
+            $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
             $content = $request->getContent();
@@ -98,11 +92,9 @@ class Processor
 
     public function put(Request $request)
     {
-        $self = $this;
-
-        return $this->execute('put', $request, function(Request $request) use ($self) {
+        return $this->execute('put', $request, function(Request $request) {
             $key = $request->getKey();
-            $repository = $self->getRepository($key);
+            $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
             $content = $request->getContent();
@@ -114,11 +106,9 @@ class Processor
 
     public function delete(Request $request)
     {
-        $self = $this;
-
-        return $this->execute('delete', $request, function(Request $request) use ($self) {
+        return $this->execute('delete', $request, function(Request $request) {
             $key = $request->getKey();
-            $repository = $self->getRepository($key);
+            $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
             $resource = $repository->delete($attributes);
@@ -153,10 +143,7 @@ class Processor
         return $execution($request);
     }
 
-    /**
-     * @protected 5.3
-     */
-    public function getRepository($key)
+    protected function getRepository($key)
     {
         try {
             return $this->level3->getRepository($key);

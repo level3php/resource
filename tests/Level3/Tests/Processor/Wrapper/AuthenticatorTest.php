@@ -54,14 +54,14 @@ class AuthenticatorTest extends TestCase
 
     public function provider()
     {
-        return array(
-            array('get'),
-            array('find'),
-            array('post'),
-            array('patch'),
-            array('put'),
-            array('delete'),
-        );
+        return [
+            ['get'],
+            ['find'],
+            ['post'],
+            ['patch'],
+            ['put'],
+            ['delete'],
+        ];
     }
 
     public function testErrorAuthentication()
@@ -151,16 +151,15 @@ class AuthenticatorTest extends TestCase
         $cors = m::mock($corsClass);
         $cors->shouldReceive('setAllowCredentials')
             ->once()->with(true);
-            
+
         $level3 = $this->createLevel3Mock();
         $level3->shouldReceive('getProcessorWrappersByClass')
             ->once()->with($corsClass)->andReturn($cors);
 
-
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
         $method->shouldReceive('modifyResponse')
             ->once()->with(m::type('Level3\Messages\Response'), 'error');
-            
+
         $auth = new Authenticator();
         $auth->addMethod($method);
         $auth->setLevel3($level3);

@@ -25,7 +25,7 @@ class HubTest extends TestCase
     public function testRegisterDefinition()
     {
         $repository = m::mock('Level3\Repository');
-        $repository->shouldReceive('setKey')->once()->andReturn(array('foo'));
+        $repository->shouldReceive('setKey')->once()->andReturn(['foo']);
 
         $hub = new Hub();
         $hub->registerDefinition('foo', function() use ($repository) {
@@ -68,6 +68,6 @@ class HubTest extends TestCase
         $hub = new Hub();
         $hub->registerDefinition('foo', function() {});
 
-        $this->assertSame(array('foo'), $hub->getKeys());
+        $this->assertSame(['foo'], $hub->getKeys());
     }
 }

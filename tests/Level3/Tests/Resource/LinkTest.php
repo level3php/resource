@@ -75,12 +75,12 @@ class LinkTest extends TestCase
 
     public function testGetAttributes()
     {
-        $expected = array(
+        $expected = [
             'templated' => true,
             'name' => 'foo',
             'hreflang' => 'bar',
             'title' => 'qux'
-        );
+        ];
 
         $link = new Link();
         $link->setName($expected['name']);
@@ -93,13 +93,13 @@ class LinkTest extends TestCase
 
     public function testToArray()
     {
-        $expected = array(
+        $expected = [
             'href' => 'fux',
             'templated' => true,
             'name' => 'foo',
             'hreflang' => 'bar',
             'title' => 'qux'
-        );
+        ];
 
         $link = new Link($expected['href']);
         $link->setName($expected['name']);
@@ -112,7 +112,7 @@ class LinkTest extends TestCase
 
     public function testGetAttributesEmpty()
     {
-        $expected = array();
+        $expected = [];
 
         $link = new Link();
         $this->assertSame($expected, $link->getAttributes());

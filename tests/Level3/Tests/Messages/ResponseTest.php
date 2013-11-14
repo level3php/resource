@@ -162,7 +162,7 @@ class ResponseTest extends TestCase
 
         $fooHeaders = $response->getHeaders('foo');
 
-        $this->assertThat($fooHeaders, $this->equalTo(array('bar', 'crap')));
+        $this->assertThat($fooHeaders, $this->equalTo(['bar', 'crap']));
     }
 
     public function testAddHeaderTwiceAndGetHeader()
@@ -184,7 +184,7 @@ class ResponseTest extends TestCase
 
         $fooHeder = $response->getHeaders('foo');
 
-        $this->assertThat($fooHeder, $this->equalTo(array('qux')));
+        $this->assertThat($fooHeder, $this->equalTo(['qux']));
     }
 
     public function testSetHeaderTwiceAndGetHeader()

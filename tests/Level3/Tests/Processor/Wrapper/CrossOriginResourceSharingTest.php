@@ -123,10 +123,10 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetMultipleAllowOrigin()
     {
-        $urls = array(
+        $urls = [
             'http://foo.bar',
             'http://qux.baz'
-        );
+        ];
 
         $wrapper = $this->createWrapper();
         $wrapper->setMultipleAllowOrigin($urls);
@@ -140,7 +140,7 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetExposeHeaders()
     {
-        $headers = array('bar', 'Foo');
+        $headers = ['bar', 'Foo'];
 
         $wrapper = $this->createWrapper();
         $wrapper->setExposeHeaders($headers);
@@ -232,7 +232,7 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetAllowMethods()
     {
-        $methods = array('bar', 'foo');
+        $methods = ['bar', 'foo'];
 
         $wrapper = $this->createWrapper();
         $wrapper->setAllowMethods(true);
@@ -271,7 +271,7 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetAllowHeaders()
     {
-        $headers = array('bar', 'foo');
+        $headers = ['bar', 'foo'];
 
         $wrapper = $this->createWrapper();
         $wrapper->setAllowHeaders($headers);

@@ -10,15 +10,10 @@
             "name": "Máximo Cuadros",
             "email": "maximo@yunait.com",
             "homepage": "http://yunait.com"
-        },
-        {
-            "name": "Alex Martín",
-            "email": "alex@yunait.com",
-            "homepage": "http://yunait.com"
         }
     ],
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "shrikeh/teapot": "0.2",
         "symfony/http-foundation": "2.3.*@dev",
         "psr/log": "~1.0"
