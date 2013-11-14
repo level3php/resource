@@ -40,7 +40,8 @@ class CrossOriginResourceSharing extends Wrapper
     protected $allowMethods = true;
     protected $allowHeaders = array(
         Request::HEADER_RANGE,
-        Request::HEADER_SORT
+        Request::HEADER_SORT,
+        request::HEADER_EXPAND
     );
 
     public function setAllowOrigin($allowOrigin)

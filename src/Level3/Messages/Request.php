@@ -20,7 +20,7 @@ class Request extends SymfonyRequest
     const HEADER_RANGE_UNIT_SEPARATOR = '=';
     const HEADER_RANGE_SEPARATOR = '-';
 
-    protected $availableHeaders = array(self::HEADER_SORT, self::HEADER_SORT);
+    protected $availableHeaders = array(self::HEADER_SORT, self::HEADER_RANGE, self::HEADER_EXPAND);
 
     private $credentials;
     private $key;
