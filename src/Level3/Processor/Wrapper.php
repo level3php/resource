@@ -27,7 +27,7 @@ abstract class Wrapper
 
     public function get(Closure $execution, Request $request)
     {
-        return $this->processRequest($execution ,$request, __FUNCTION__);
+        return $this->processRequest($execution, $request, __FUNCTION__);
     }
 
     public function post(Closure $execution, Request $request)

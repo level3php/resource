@@ -22,11 +22,14 @@
     <resource rel="foo" href="/test">
       <foo>qux</foo>
     </resource>
+    <resource rel="baz">
+      <foo>qux</foo>
+    </resource>
     <link rel="qux" href="/test"/>
     <link rel="foo" href="/test"/>
     <link rel="foo" href="/test"/>
   </resource>
-  <resource rel="baz" href="/test">
+  <resource rel="baz">
     <baz>foo</baz>
   </resource>
 </resource>

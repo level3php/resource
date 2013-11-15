@@ -1,18 +1,10 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Tests;
 
 use Level3\Resource\FormatterFactory;
-use Level3\Resource\Formatter\HAL\JsonFormatter;
-use Level3\Resource\Formatter\HAL\XMLFormatter;
+use Level3\Resource\Formatter\HAL;
+use Level3\Resource\Formatter\Siren;
 
 class FormatterFactoryTest extends TestCase
 {
@@ -51,7 +43,7 @@ class FormatterFactoryTest extends TestCase
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
             'Level3\Resource\Formatter\HAL\JsonFormatter',
-            $factory->create([JsonFormatter::CONTENT_TYPE], true)
+            $factory->create([HAL\JsonFormatter::CONTENT_TYPE], true)
         );
     }
 
@@ -60,7 +52,16 @@ class FormatterFactoryTest extends TestCase
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
             'Level3\Resource\Formatter\HAL\XMLFormatter',
-            $factory->create([XMLFormatter::CONTENT_TYPE], true)
+            $factory->create([HAL\XMLFormatter::CONTENT_TYPE], true)
+        );
+    }
+
+    public function testCreateWithSirenJsonFormatter()
+    {
+        $factory = new FormatterFactory();
+        $this->assertInstanceOf(
+            'Level3\Resource\Formatter\Siren\JsonFormatter',
+            $factory->create([Siren\JsonFormatter::CONTENT_TYPE], true)
         );
     }
 }

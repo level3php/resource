@@ -1,12 +1,4 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Tests;
 
@@ -190,11 +182,28 @@ class RepositoryMock
         \Level3\Repository\Deleter,
         \Level3\Repository\Patcher
 {
-    public function delete(Parameters $attributes) {}
-    public function get(Parameters $attributes) {}
-    public function post(Parameters $attributes, Array $data) {}
-    public function put(Parameters $attributes, Array $data) {}
-    public function patch(Parameters $attributes, Array $data) {}
-    public function find(Parameters $attributes, Parameters $filters) {}
+    public function delete(Parameters $attributes)
+    {
+    }
 
+    public function get(Parameters $attributes)
+    {
+    }
+
+    public function post(Parameters $attributes, Array $data)
+    {
+    }
+
+    public function put(Parameters $attributes, Array $data)
+    {
+    }
+    
+    public function patch(Parameters $attributes, Array $data)
+    {
+    }
+
+    public function find(Parameters $attributes, Parameters $filters)
+    {
+
+    }
 }

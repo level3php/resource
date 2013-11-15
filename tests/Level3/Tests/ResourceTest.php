@@ -1,14 +1,7 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Tests;
+
 use Level3\Resource\Resource;
 use Level3\Resource\Link;
 use DateTime;
@@ -26,6 +19,22 @@ class ResourceTest extends TestCase
 
         $this->assertSame($this->resource, $this->resource->setId($id));
         $this->assertSame($id, $this->resource->getId());
+    }
+
+    public function testSetRepositoryKey()
+    {
+        $key = 'foo';
+
+        $this->assertSame($this->resource, $this->resource->setRepositoryKey($key));
+        $this->assertSame($key, $this->resource->getRepositoryKey());
+    }
+
+    public function testSetTitle()
+    {
+        $title = 'foo';
+
+        $this->assertSame($this->resource, $this->resource->setTitle($title));
+        $this->assertSame($title, $this->resource->getTitle());
     }
 
     public function testSetLink()
@@ -48,6 +57,19 @@ class ResourceTest extends TestCase
 
         $links = $this->resource->getAllLinks();
         $this->assertSame($linksExpected, $links['foo']);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetLinksInvalid()
+    {
+        $linksExpected = [
+            $this->createLinkMock(),
+            'foo'
+        ];
+
+        $this->resource->setLinks('foo', $linksExpected);
     }
 
     public function testGetLink()
@@ -94,6 +116,18 @@ class ResourceTest extends TestCase
         ], $links);
 
         $this->assertNull($this->resource->getLinkedResources('bar'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testSetResourcesInvalid()
+    {
+        $linkedResourceB = new Resource($this->repository);
+
+        $this->resource->linkResources('foo', [
+            $linkedResourceB
+        ]);
     }
 
     public function testExpandLinkedResourcesOne()
@@ -239,6 +273,37 @@ class ResourceTest extends TestCase
         $this->assertSame($resource, $resources['foo']);
     }
 
+    public function testAddResources()
+    {
+        $resourceA = new Resource($this->repository);
+        $resourceB = new Resource($this->repository);
+
+        $this->resource->addResources('foo', [
+            $resourceA,
+            $resourceB
+        ]);
+
+        $resources = $this->resource->getAllResources();
+        $this->assertSame([$resourceA, $resourceB], $resources['foo']);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddResourcesInvalid()
+    {
+        $resourceA = new Resource($this->repository);
+        $resourceB = new Resource($this->repository);
+
+        $this->resource->addResources('foo', [
+            $resourceA,
+            'root'
+        ]);
+        
+        $resources = $this->resource->getAllResources();
+        $this->assertSame([$resourceA, $resourceB], $resources['foo']);
+    }
+
     public function testGetResource()
     {
         $resource = new Resource($this->repository);
@@ -284,6 +349,24 @@ class ResourceTest extends TestCase
 
         $this->assertSame($this->resource, $this->resource->setCache($cache));
         $this->assertSame($cache, $this->resource->getCache());
+    }
+
+    public function testGetSelfLinkNoUri()
+    {
+        $this->assertNull($this->resource->getSelfLink());
+    }
+
+    public function testGetSelfLink()
+    {
+        $this->resource->setId('qux');
+        $this->resource->setUri('foo');
+        $this->resource->setTitle('bar');
+
+        $link = $this->resource->getSelfLink();
+
+        $this->assertSame('foo', $link->getHref());
+        $this->assertSame('qux', $link->getName());
+        $this->assertSame('bar', $link->getTitle());
     }
 
     /*public function testToArray()

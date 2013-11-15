@@ -39,7 +39,7 @@ class JsonFormatter extends BaseJsonFormatter
 
     protected function transformLinkedResources(&$array, Resource $resource)
     {
-       foreach ($resource->getAllLinkedResources() as $rel => $links) {
+        foreach ($resource->getAllLinkedResources() as $rel => $links) {
             if (!is_array($links)) {
                 $array['_links'][$rel] = $links->getSelfLink()->toArray();
             } else {

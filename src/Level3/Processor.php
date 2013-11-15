@@ -112,7 +112,7 @@ class Processor
             $repository = $this->getRepository($key);
 
             $attributes = $request->getAttributes();
-            $resource = $repository->delete($attributes);
+            $repository->delete($attributes);
 
             return new Response(null, StatusCode::NO_CONTENT);
         });
@@ -136,7 +136,7 @@ class Processor
     {
         $wrappers = $this->level3->getProcessorWrappers();
         foreach ($wrappers as $wrapper) {
-            $execution = function($request) use ($execution, $method, $wrapper) {
+            $execution = function ($request) use ($execution, $method, $wrapper) {
                 return $wrapper->$method($execution, $request);
             };
         }

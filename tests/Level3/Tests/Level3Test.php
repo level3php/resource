@@ -1,14 +1,7 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Tests;
+
 use Level3\Level3;
 
 class Level3Test extends TestCase
@@ -135,7 +128,8 @@ class Level3Test extends TestCase
 
         $this->level3->addProcessorWrapper($wrapperA);
 
-        $this->assertSame($wrapperA,
+        $this->assertSame(
+            $wrapperA,
             $this->level3->getProcessorWrappersByClass(get_class($wrapperA))
         );
     }

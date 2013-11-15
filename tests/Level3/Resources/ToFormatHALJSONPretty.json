@@ -17,10 +17,18 @@
         "foo",
         "bar"
     ],
+    "baz": [
+        {
+            "baz": "foo"
+        }
+    ],
     "_embedded": {
         "baz": [
             {
                 "value": "qux",
+                "baz": {
+                    "foo": "qux"
+                },
                 "_embedded": {
                     "foo": {
                         "foo": "qux",
@@ -46,14 +54,6 @@
                             "href": "/test"
                         }
                     ]
-                }
-            },
-            {
-                "baz": "foo",
-                "_links": {
-                    "self": {
-                        "href": "/test"
-                    }
                 }
             }
         ]

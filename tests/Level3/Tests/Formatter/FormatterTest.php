@@ -82,9 +82,14 @@ abstract class FormatterTest extends TestCase
             $this->createResource(self::EXAMPLE_URI)->setData(['foo' => 'qux'])
         );
 
+        $subResource->addResource(
+            'baz',
+            $this->createResource()->setData(['foo' => 'qux'])
+        );
+
         $resource->addResources('baz', [
             $subResource,
-            $this->createResource(self::EXAMPLE_URI)->setData(['baz' => 'foo'])
+            $this->createResource()->setData(['baz' => 'foo'])
         ]);
 
         $subResource->linkResource(
@@ -108,10 +113,12 @@ abstract class FormatterTest extends TestCase
         );
     }
 
-    protected function createResource($uri)
+    protected function createResource($uri = null)
     {
         $resource = new Resource();
-        $resource->setURI($uri);
+        if ($uri) {
+            $resource->setURI($uri);
+        }
 
         return $resource;
     }

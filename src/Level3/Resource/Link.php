@@ -87,7 +87,7 @@ class Link
 
     public function toArray()
     {
-        $filter = function($value) {
+        $filter = function ($value) {
             return $value != null;
         };
 

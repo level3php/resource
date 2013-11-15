@@ -177,7 +177,9 @@ class Request extends SymfonyRequest
 
     public function getSort()
     {
-        if (!$this->headers->has(self::HEADER_SORT)) return null;
+        if (!$this->headers->has(self::HEADER_SORT)) {
+            return null;
+        }
 
         $sortHeader = $this->headers->get(self::HEADER_SORT);
 
@@ -190,7 +192,9 @@ class Request extends SymfonyRequest
         $parts = explode(';', $sortHeader);
         foreach ($parts as $part) {
             list($field, $direction) = $this->parseSortPart($part);
-            if ($field) $sort[$field] = $direction;
+            if ($field) {
+                $sort[$field] = $direction;
+            }
         }
 
         return $sort;

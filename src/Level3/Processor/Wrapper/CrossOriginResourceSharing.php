@@ -249,7 +249,7 @@ class CrossOriginResourceSharing extends Wrapper
         ];
 
         array_walk($simpleHeaders, function (&$value) {
-            $value = strtolower($value); 
+            $value = strtolower($value);
         });
 
         $allHeaders = $response->headers->keys();

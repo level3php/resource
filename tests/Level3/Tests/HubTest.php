@@ -1,14 +1,7 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Tests;
+
 use Level3\Hub;
 use Mockery as m;
 
@@ -28,7 +21,7 @@ class HubTest extends TestCase
         $repository->shouldReceive('setKey')->once()->andReturn(['foo']);
 
         $hub = new Hub();
-        $hub->registerDefinition('foo', function() use ($repository) {
+        $hub->registerDefinition('foo', function () use ($repository) {
             return $repository;
         });
 
@@ -41,7 +34,8 @@ class HubTest extends TestCase
     public function testRegisterDefinitionInvalidKey()
     {
         $hub = new Hub();
-        $hub->registerDefinition('', function() {});
+        $hub->registerDefinition('', function () {
+        });
     }
 
     /**
@@ -50,7 +44,8 @@ class HubTest extends TestCase
     public function testRegisterDefinitionInvalidClosureResult()
     {
         $hub = new Hub();
-        $hub->registerDefinition('foo', function() {});
+        $hub->registerDefinition('foo', function () {
+        });
         $hub->get('foo');
     }
 
@@ -66,7 +61,8 @@ class HubTest extends TestCase
     public function testGetKeys()
     {
         $hub = new Hub();
-        $hub->registerDefinition('foo', function() {});
+        $hub->registerDefinition('foo', function () {
+        });
 
         $this->assertSame(['foo'], $hub->getKeys());
     }
