@@ -9,6 +9,7 @@
  */
 
 namespace Level3\Tests;
+
 use Level3\Hub;
 use Level3\Messages\Parameters;
 

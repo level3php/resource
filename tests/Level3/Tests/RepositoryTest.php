@@ -52,7 +52,6 @@ class RepositoryTest extends TestCase
     {
         $uri = 'qux';
         $key = 'foo';
-        $method = 'bar';
         $attributes = $this->createParametersMock();
 
         $this->level3->shouldReceive('getURI')

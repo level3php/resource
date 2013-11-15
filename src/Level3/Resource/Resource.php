@@ -43,18 +43,6 @@ class Resource
         return $this->key;
     }
 
-    public function setRelation($relation)
-    {
-        $this->relation = $rel;
-
-        return $this;
-    }
-
-    public function getRelation()
-    {
-        return $this->relation;
-    }
-
     public function setTitle($title)
     {
         $this->title = $title;
@@ -89,7 +77,7 @@ class Resource
     public function setLinks($rel, Array $links)
     {
         foreach ($links as $link) {
-            if (!$link instanceOf Link) {
+            if (!$link instanceof Link) {
                 throw new InvalidArgumentException(
                     'Invalid array, must be []Link'
                 );
@@ -205,7 +193,7 @@ class Resource
     public function addResources($rel, Array $resources)
     {
         foreach ($resources as $resource) {
-            if (!$resource instanceOf Resource) {
+            if (!$resource instanceof Resource) {
                 throw new InvalidArgumentException(
                     'Invalid array, must be []Resource'
                 );

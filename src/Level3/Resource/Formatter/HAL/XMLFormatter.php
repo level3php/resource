@@ -104,8 +104,8 @@ class XMLFormatter extends BaseXMLFormatter
 
     private function doWriteArray(XMLWriter $writer, $name, Array $array)
     {
-        foreach ($array as $childName => $childValue) {
-           $this->addValue($writer, $name, $childValue);
+        foreach ($array as $childValue) {
+            $this->addValue($writer, $name, $childValue);
         }
     }
 
@@ -113,7 +113,7 @@ class XMLFormatter extends BaseXMLFormatter
     {
         $writer->startElement($name);
         foreach ($array as $childName => $childValue) {
-           $this->addValue($writer, $childName, $childValue);
+            $this->addValue($writer, $childName, $childValue);
         }
 
         $writer->endElement();
@@ -121,7 +121,6 @@ class XMLFormatter extends BaseXMLFormatter
 
     protected function transformResources(XMLWriter $writer, Resource $resource)
     {
-        $embedded = [];
         foreach ($resource->getAllResources() as $rel => $resources) {
             if (!is_array($resources)) {
                 $resources = [$resources];

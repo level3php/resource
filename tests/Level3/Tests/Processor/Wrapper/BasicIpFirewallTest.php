@@ -20,8 +20,8 @@ class BasicIpFirewallTest extends TestCase
 
     public function testError()
     {
-        $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) {
+        $request = $this->createResponseMock();
+        $execution = function ($request) use ($request) {
             return $request;
         };
 
@@ -46,7 +46,7 @@ class BasicIpFirewallTest extends TestCase
 
         $wrapper->addIpToWhitelist(self::EXAMPLE_CIDR);
 
-        $wrapper->get(function($request) {
+        $wrapper->get(function ($request) {
             return new Response();
         }, $request);
     }
@@ -60,7 +60,7 @@ class BasicIpFirewallTest extends TestCase
 
         $wrapper->addIpToWhitelist(self::EXAMPLE_CIDR);
 
-        $expected = $wrapper->get(function($request) {
+        $expected = $wrapper->get(function ($request) {
             return new Response();
         }, $request);
 
@@ -79,7 +79,7 @@ class BasicIpFirewallTest extends TestCase
 
         $wrapper->addIpToBlacklist(self::EXAMPLE_CIDR);
 
-        $expected = $wrapper->get(function($request) {
+        $expected = $wrapper->get(function () {
             return new Response();
         }, $request);
     }
@@ -91,7 +91,7 @@ class BasicIpFirewallTest extends TestCase
         $request = $this->createRequestMockSimple();
         $request->shouldReceive('getClientIp')->once()->andReturn(self::EXAMPLE_IP_B);
 
-        $expected = $wrapper->get(function($request) {
+        $expected = $wrapper->get(function ($request) {
             return new Response();
         }, $request);
 
@@ -107,7 +107,7 @@ class BasicIpFirewallTest extends TestCase
 
         $wrapper->addIpToWhitelist(self::EXAMPLE_CIDR);
 
-        $expected = $wrapper->get(function($request) {
+        $expected = $wrapper->get(function ($request) {
             return new Response();
         }, $request);
 

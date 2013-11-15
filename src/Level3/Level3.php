@@ -88,7 +88,7 @@ class Level3
     public function getProcessorWrappersByClass($class)
     {
         foreach ($this->getProcessorWrappers() as $wrapper) {
-            if ($wrapper instanceOf $class) {
+            if ($wrapper instanceof $class) {
                 return $wrapper;
             }
         }

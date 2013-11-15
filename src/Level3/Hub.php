@@ -1,6 +1,7 @@
 <?php
 
 namespace Level3;
+
 use Closure;
 
 class Hub
@@ -41,7 +42,7 @@ class Hub
     private function instanceDefinition($key)
     {
         $repository = $this->repositoryDefinitions[$key]($this->level3);
-        if (!$repository instanceOf Repository) {
+        if (!$repository instanceof Repository) {
             throw new \RuntimeException(
                 sprintf('Invalid definition for "%s", must return a Repository instance', $key)
             );

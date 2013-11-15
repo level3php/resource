@@ -40,7 +40,7 @@ class ProcessorTest extends TestCase
         $this->level3->shouldReceive('getRepository')
             ->with(self::IRRELEVANT_KEY)->once()->andThrow(new RuntimeException());
 
-        $response = $this->processor->get($request);
+        $this->processor->get($request);
     }
 
     /**
@@ -48,16 +48,17 @@ class ProcessorTest extends TestCase
      */
     public function testOptions()
     {
-        $repository = $this->createFinderMock();
         $request = $this->createRequestMockSimple();
-        $response = $this->processor->options($request);
+        $this->processor->options($request);
     }
 
     /**
      * @dataProvider provider
      */
-    public function testMethods($method, $repositoryMock, $attributes, $filters, $content, $resource, $formatter, $statusCode, $exception = null, $expand = null)
-    {
+    public function testMethods(
+        $method, $repositoryMock, $attributes, $filters, $content, $resource, 
+        $formatter, $statusCode, $exception = null, $expand = null
+    ) {
         $repository = $this->$repositoryMock();
 
         if ($exception) {

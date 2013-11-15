@@ -11,8 +11,6 @@ class RateLimiterTest extends TestCase
     const EXAMPLE_IP = '127.0.0.1';
     const EXAMPLE_KEY = '{level3-127.0.0.1}';
 
-    private $wrapper;
-
     public function createWrapper()
     {
         $this->redisMock = m::mock('Redis');
@@ -26,7 +24,7 @@ class RateLimiterTest extends TestCase
     {
         if (!$request) $request = $this->createRequestMockSimple();
         if (!$response) $response = new Response();
-        return $wrapper->$method(function($request) use ($response) {
+        return $wrapper->$method(function ($request) use ($response) {
             return $response;
         }, $request);
     }
@@ -88,7 +86,7 @@ class RateLimiterTest extends TestCase
 
         $this->redisMock->shouldReceive('ttl')->with(self::EXAMPLE_KEY);
 
-        $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
+        $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
     }
 
     public function testHeaderReset()
@@ -120,7 +118,7 @@ class RateLimiterTest extends TestCase
         $this->redisMock->shouldReceive('incr')->with(self::EXAMPLE_KEY);
         $this->redisMock->shouldReceive('ttl')->with(self::EXAMPLE_KEY)->andReturn(10);
 
-        $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
+        $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
     }
 
     public function testLimitReachedOnError()
@@ -134,6 +132,6 @@ class RateLimiterTest extends TestCase
         $this->redisMock->shouldReceive('incr')->with(self::EXAMPLE_KEY);
         $this->redisMock->shouldReceive('ttl')->with(self::EXAMPLE_KEY)->andReturn(10);
 
-        $response = $this->callGetInWrapperAndGetResponse('error', $wrapper, $request);
+        $this->callGetInWrapperAndGetResponse('error', $wrapper, $request);
     }
 }

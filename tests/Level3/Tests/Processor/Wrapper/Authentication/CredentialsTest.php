@@ -6,8 +6,6 @@ use Level3\Processor\Wrapper\Authenticator\Credentials;
 
 class CredentialsTest extends TestCase
 {
-    private $wrapper;
-
     public function testConstruct()
     {
         $credentials = new Credentials(true);

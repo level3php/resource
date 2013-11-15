@@ -29,10 +29,9 @@ abstract class XMLFormatter extends Formatter
 
     protected function xmlToArray(SimpleXMLElement $xml)
     {
-
         $data = (array) $xml;
-        foreach ($data as $key => &$value) {
-            if ($value instanceOf SimpleXMLElement) {
+        foreach ($data as &$value) {
+            if ($value instanceof SimpleXMLElement) {
                 $value = $this->xmlToArray($value);
             }
         }

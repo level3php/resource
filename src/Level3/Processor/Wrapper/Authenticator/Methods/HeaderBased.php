@@ -86,5 +86,4 @@ abstract class HeaderBased implements Method
 
     abstract protected function verifyToken(Request $request, $token);
     abstract protected function modifyRequest(Request $request, $httpMethod);
-
 }

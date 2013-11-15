@@ -8,8 +8,6 @@ use Mockery as m;
 
 class AuthenticatorTest extends TestCase
 {
-    private $wrapper;
-
     public function createWrapper($httpMethod)
     {
         $this->request = $this->createRequestMockSimple();
@@ -23,11 +21,6 @@ class AuthenticatorTest extends TestCase
 
     public function testClearMethods()
     {
-        $response = $this->createResponseMock();
-        $execution = function($request) use ($response) {
-            return $response;
-        };
-
         $method = m::mock('Level3\Processor\Wrapper\Authenticator\Method');
         $method->shouldReceive('modifyResponse');
 
@@ -43,8 +36,8 @@ class AuthenticatorTest extends TestCase
      */
     public function testAuthentication($method)
     {
-        $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) {
+        $request = $this->createResponseMock();
+        $execution = function ($request) use ($request) {
             return $request;
         };
 
@@ -67,7 +60,7 @@ class AuthenticatorTest extends TestCase
     public function testErrorAuthentication()
     {
         $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) {
+        $execution = function ($request) use ($request) {
             return $request;
         };
 
@@ -166,7 +159,7 @@ class AuthenticatorTest extends TestCase
 
         $request = $this->createRequestMockSimple();
         $response = $this->createResponseMock();
-        $execution = function($request) use ($response) {
+        $execution = function ($request) use ($response) {
             return $response;
         };
 

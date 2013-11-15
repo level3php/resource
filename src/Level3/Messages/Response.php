@@ -46,7 +46,7 @@ class Response extends SymfonyResponse
     public static function createFromException(Request $request, Exception $exception)
     {
         $code = StatusCode::INTERNAL_SERVER_ERROR;
-        if ($exception instanceOf HTTPException) {
+        if ($exception instanceof HTTPException) {
             $code = $exception->getCode();
         }
 
@@ -106,7 +106,7 @@ class Response extends SymfonyResponse
 
     public function getContent()
     {
-        if (!$this->formatter instanceOf Formatter || !$this->resource) {
+        if (!$this->formatter instanceof Formatter || !$this->resource) {
             return '';
         }
 

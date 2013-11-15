@@ -24,7 +24,7 @@ class Processor
 
     public function find(Request $request)
     {
-        return $this->execute('find', $request, function(Request $request) {
+        return $this->execute('find', $request, function (Request $request) {
             $key = $request->getKey();
             $repository = $this->getRepository($key);
 
@@ -40,7 +40,7 @@ class Processor
 
     public function get(Request $request)
     {
-        return $this->execute('get', $request, function(Request $request) {
+        return $this->execute('get', $request, function (Request $request) {
             $key = $request->getKey();
             $repository = $this->getRepository($key);
 
@@ -62,7 +62,7 @@ class Processor
 
     public function post(Request $request)
     {
-        return $this->execute('post', $request, function(Request $request) {
+        return $this->execute('post', $request, function (Request $request) {
             $key = $request->getKey();
             $repository = $this->getRepository($key);
 
@@ -79,7 +79,7 @@ class Processor
 
     public function patch(Request $request)
     {
-        return $this->execute('patch', $request, function(Request $request) {
+        return $this->execute('patch', $request, function (Request $request) {
             $key = $request->getKey();
             $repository = $this->getRepository($key);
 
@@ -93,7 +93,7 @@ class Processor
 
     public function put(Request $request)
     {
-        return $this->execute('put', $request, function(Request $request) {
+        return $this->execute('put', $request, function (Request $request) {
             $key = $request->getKey();
             $repository = $this->getRepository($key);
 
@@ -107,7 +107,7 @@ class Processor
 
     public function delete(Request $request)
     {
-        return $this->execute('delete', $request, function(Request $request) {
+        return $this->execute('delete', $request, function (Request $request) {
             $key = $request->getKey();
             $repository = $this->getRepository($key);
 
@@ -120,14 +120,14 @@ class Processor
 
     public function options(Request $request)
     {
-        return $this->execute('options', $request, function() {
+        return $this->execute('options', $request, function () {
             throw new NotImplemented();
         });
     }
 
     public function error(Request $request, Exception $exception)
     {
-        return $this->execute('error', $request, function(Request $request) use ($exception) {
+        return $this->execute('error', $request, function (Request $request) use ($exception) {
             return Response::createFromException($request, $exception);
         });
     }

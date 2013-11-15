@@ -54,7 +54,7 @@ class JsonFormatter extends BaseJsonFormatter
     {
         $embedded = [];
         foreach ($resource->getAllResources() as $rel => $resources) {
-            if ($resources instanceOf Resource) {
+            if ($resources instanceof Resource) {
                 if (!$resources->getUri()) {
                     $array[$rel] = $this->resourceToArray($resources);
                 } else {

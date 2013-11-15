@@ -33,7 +33,7 @@ abstract class FormatterTest extends TestCase
     public function testFromRequestInvalid()
     {
         $formatter = new $this->class();
-        $array = $formatter->fromRequest('foo');
+        $formatter->fromRequest('foo');
     }
 
     public function testFromRequestEmpty()
@@ -46,7 +46,6 @@ abstract class FormatterTest extends TestCase
     {
         $formatter = new $this->class();
 
-        $repository = $this->createRepositoryMock();
         $resource = $this->createResource(self::EXAMPLE_URI);
         $resource->setData([
             'value' => 'bar',
@@ -78,7 +77,8 @@ abstract class FormatterTest extends TestCase
         ]);
 
         $subResource = $this->createResource(self::EXAMPLE_URI)->setData(['value' => 'qux']);
-        $subResource->addResource('foo',
+        $subResource->addResource(
+            'foo',
             $this->createResource(self::EXAMPLE_URI)->setData(['foo' => 'qux'])
         );
 
@@ -87,7 +87,8 @@ abstract class FormatterTest extends TestCase
             $this->createResource(self::EXAMPLE_URI)->setData(['baz' => 'foo'])
         ]);
 
-        $subResource->linkResource('qux',
+        $subResource->linkResource(
+            'qux',
             $this->createResource(self::EXAMPLE_URI)->setData([])
         );
 

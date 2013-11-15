@@ -230,7 +230,7 @@ class CrossOriginResourceSharing extends Wrapper
             $exposeHeaders = $nonBasicHeaders;
         }
 
-        array_walk($exposeHeaders, function(&$value) {
+        array_walk($exposeHeaders, function (&$value) {
             $value = implode('-', array_map('ucfirst', explode('-', $value)));
         });
 
@@ -248,7 +248,9 @@ class CrossOriginResourceSharing extends Wrapper
             self::HEADER_ALLOW_METHODS, self::HEADER_ALLOW_HEADERS
         ];
 
-        array_walk($simpleHeaders, function(&$value) { $value = strtolower($value); });
+        array_walk($simpleHeaders, function (&$value) {
+            $value = strtolower($value); 
+        });
 
         $allHeaders = $response->headers->keys();
 
@@ -300,7 +302,7 @@ class CrossOriginResourceSharing extends Wrapper
 
         $methods = $this->getAvailableMethods($request);
 
-        $header = implode(', ',$methods);
+        $header = implode(', ', $methods);
         $response->addHeader(self::HEADER_ALLOW_METHODS, $header);
     }
 
@@ -322,7 +324,7 @@ class CrossOriginResourceSharing extends Wrapper
             return;
         }
 
-        $header = implode(', ',$this->allowHeaders);
+        $header = implode(', ', $this->allowHeaders);
         $response->addHeader(self::HEADER_ALLOW_HEADERS, $header);
     }
 

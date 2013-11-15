@@ -23,8 +23,8 @@ class ExceptionHandlerTest extends TestCase
 
     public function testErrorAuthentication()
     {
-        $request = $this->createResponseMock(); ;
-        $execution = function($request) use ($request) {
+        $request = $this->createResponseMock();
+        $execution = function ($request) use ($request) {
             return $request;
         };
 
@@ -40,14 +40,13 @@ class ExceptionHandlerTest extends TestCase
     /**
      * @dataProvider provider
      */
-    public function testExceptionHandling($method, $code, $exception)
+    public function testExceptionHandling($method, $exception)
     {
-        $attributes = $this->createParametersMock();
         $request = $this->createRequestMock(null, null, null);
         $this->processor->shouldReceive('error')
             ->once()->with($request, $exception);
 
-        $response = $this->wrapper->$method(function($request) use ($exception) {
+        $this->wrapper->$method(function($request) use ($exception) {
             $request->getKey();
             throw $exception;
         }, $request);
@@ -56,19 +55,19 @@ class ExceptionHandlerTest extends TestCase
     public function provider()
     {
         return [
-            ['get', StatusCode::NOT_FOUND, new NotFound()],
-            ['get', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
-            ['find', StatusCode::NOT_FOUND, new NotFound()],
-            ['find', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
-            ['post', StatusCode::NOT_FOUND, new NotFound()],
-            ['post', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
-            ['patch', StatusCode::NOT_FOUND, new NotFound()],
-            ['patch', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
-            ['put', StatusCode::NOT_FOUND, new NotFound()],
-            ['put', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
-            ['delete', StatusCode::NOT_FOUND, new NotFound()],
-            ['delete', StatusCode::INTERNAL_SERVER_ERROR, new Exception()],
-            ['options', StatusCode::INTERNAL_SERVER_ERROR, new Exception()]
+            ['get', new NotFound()],
+            ['get', new Exception()],
+            ['find', new NotFound()],
+            ['find', new Exception()],
+            ['post', new NotFound()],
+            ['post', new Exception()],
+            ['patch', new NotFound()],
+            ['patch', new Exception()],
+            ['put', new NotFound()],
+            ['put', new Exception()],
+            ['delete', new NotFound()],
+            ['delete', new Exception()],
+            ['options', new Exception()]
         ];
     }
 }

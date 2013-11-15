@@ -1,14 +1,7 @@
 <?php
-/*
- * This file is part of the Level3 package.
- *
- * (c) Máximo Cuadros <maximo@yunait.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace Level3\Tests;
+
 use Level3\Mocks\Mapper;
 use Mockery as m;
 
@@ -129,8 +122,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function createRequestMock(
         $attributes = null, $filters = null, $formatter = null,
         $repository = null, $content = null, $key = self::IRRELEVANT_KEY
-    )
-    {
+    ) {
         $request = $this->createRequestMockSimple();
         if ($key) {
             $request->shouldReceive('getKey')

@@ -21,7 +21,6 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->once()->andReturn(null);
 
-        $response = $this->createResponseMock();
         $method->authenticateRequest($request, 'get');
     }
 
@@ -59,7 +58,6 @@ class HeaderBasedTest extends TestCase
         $request->shouldReceive('mustBeCalledSetCredentials')
             ->once()->andReturn(null);
 
-        $response = $this->createResponseMock();
         $method->authenticateRequest($request, 'get');
     }
 
@@ -75,7 +73,6 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: Basic bar');
 
-        $response = $this->createResponseMock();
         $method->authenticateRequest($request, 'get');
     }
 
@@ -91,7 +88,6 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: Foo QWxhZGRpbjpvcGVuHNlc2FtZQ==');
 
-        $response = $this->createResponseMock();
         $method->authenticateRequest($request, 'get');
     }
 
@@ -107,7 +103,6 @@ class HeaderBasedTest extends TestCase
             ->with(HeaderBased::AUTHORIZATION_HEADER)
             ->twice()->andReturn('Authorization: QWxhZGRpbjpvcGVuHNlc2FtZQ==');
 
-        $response = $this->createResponseMock();
         $method->authenticateRequest($request, 'get');
     }
 

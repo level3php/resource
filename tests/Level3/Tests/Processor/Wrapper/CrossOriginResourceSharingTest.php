@@ -7,8 +7,6 @@ use Teapot\StatusCode;
 
 class CrossOriginResourceSharingTest extends TestCase
 {
-    private $wrapper;
-
     public function createWrapper()
     {
         $wrapper = new CORS();
@@ -33,7 +31,7 @@ class CrossOriginResourceSharingTest extends TestCase
     {
         if (!$request) $request = $this->createRequestMockSimple();
         if (!$response) $response = new Response();
-        return $wrapper->$method(function($request) use ($response) {
+        return $wrapper->$method(function ($request) use ($response) {
             return $response;
         }, $request);
     }
@@ -48,7 +46,6 @@ class CrossOriginResourceSharingTest extends TestCase
 
     public function testSetAllowOriginWildcard()
     {
-        $url = 'http://foo.bar';
         $wrapper = $this->createWrapper();
         $wrapper->setAllowOrigin(CORS::ALLOW_ORIGIN_WILDCARD);
 
@@ -84,7 +81,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $wrapper->setAllowOrigin($url);
 
         $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $requestUrl);
-        $response = $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
+        $this->callGetInWrapperAndGetResponse('get', $wrapper, $request);
     }
 
     public function testReadOriginInvalidWithErrorMethod()
@@ -96,7 +93,7 @@ class CrossOriginResourceSharingTest extends TestCase
         $wrapper->setAllowOrigin($url);
 
         $request = $this->createRequestMockWithGetHeader(CORS::HEADER_ORIGIN, $requestUrl);
-        $response = $this->callGetInWrapperAndGetResponse('error', $wrapper, $request);
+        $this->callGetInWrapperAndGetResponse('error', $wrapper, $request);
     }
 
     public function testReadOriginNone()

@@ -96,7 +96,7 @@ abstract class Mapper
 
     private function mapMethodIfNeeded(Repository $repository, $interface)
     {
-        if ($repository instanceOf $interface) {
+        if ($repository instanceof $interface) {
             $this->callToMapMethod($repository, $interface);
         }
     }
@@ -156,7 +156,7 @@ abstract class Mapper
 
         $names = explode(self::SLASH_CHARACTER, $repositoryKey);
         $max = count($names);
-        for ($i=0;$i<$max;$i++) {
+        for ($i=0; $i<$max; $i++) {
             $uri .= self::SLASH_CHARACTER . $names[$i];
             if (($specific || $max > $i+1) && $i >= $this->skipCurieSegments) {
                 $uri .= self::SLASH_CHARACTER . $this->createCurieParamFromName($names[$i]);
@@ -180,7 +180,7 @@ abstract class Mapper
 
         $methods = [];
         foreach ($interfaces as $interface => $method) {
-            if ($repository instanceOf $interface) {
+            if ($repository instanceof $interface) {
                 $methods[] = $method;
             }
         }

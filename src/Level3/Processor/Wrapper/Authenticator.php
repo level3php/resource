@@ -98,5 +98,4 @@ class Authenticator extends Wrapper
             $cors->setAllowCredentials(true);
         }
     }
-
 }

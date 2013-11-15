@@ -130,7 +130,7 @@ class BasicIpFirewall extends Wrapper
         $range = [];
 
         $start = ip2long($cidrParts[0]);
-        for ($i=0;$i < $length;$i++) {
+        for ($i=0; $i<$length; $i++) {
             $range[] = long2ip($start + $i);
         }
 
