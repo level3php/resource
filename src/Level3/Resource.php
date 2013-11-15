@@ -9,6 +9,9 @@ use InvalidArgumentException;
 class Resource
 {
     protected $id;
+    protected $title;
+    protected $key;
+    protected $relation;
     protected $uri;
     protected $resources = [];
     protected $linkedResources = [];
@@ -27,6 +30,42 @@ class Resource
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setRepositoryKey($key)
+    {
+        $this->key = $key;
+
+        return $this;
+    }
+    
+    public function getRepositoryKey()
+    {
+        return $this->key;
+    }
+
+    public function setRelation($relation)
+    {
+        $this->relation = $rel;
+
+        return $this;
+    }
+    
+    public function getRelation()
+    {
+        return $this->relation;
+    }
+
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+    
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     public function setURI($uri)
@@ -59,14 +98,8 @@ class Resource
 
     public function linkResource($rel, Resource $resource)
     {
-        $this->linkedResources[$rel][] = $resource;
-
-        $link = $resource->getSelfLink();
-        if (!$link) {
-            throw new InvalidArgumentException(
-                'This resource not contains a valid URI'
-            );
-        }
+        $this->trowExceptionIfNotLinkableResouce($resource);
+        $this->linkedResources[$rel] = $resource;
 
         return $this;
     }
@@ -74,10 +107,22 @@ class Resource
     public function linkResources($rel, Array $resources)
     {
         foreach ($resources as $resource) {
-            $this->linkResource($rel, $resource);
+            $this->trowExceptionIfNotLinkableResouce($resource);
         }
+        
+        $this->linkedResources[$rel] = $resources;
 
         return $this;
+    }
+
+    protected function trowExceptionIfNotLinkableResouce(Resource $resource)
+    {
+        $link = $resource->getSelfLink();
+        if (!$link) {
+            throw new InvalidArgumentException(
+                'This resource not contains a valid URI'
+            );
+        }
     }
 
     public function expandLinkedResourcesTree(Array $path)
@@ -93,6 +138,10 @@ class Resource
         if (!$resources) {
             return;
         }
+        
+        if (!is_array($resources)) {
+            $resources = [$resources];
+        }
 
         foreach ($resources as $resource) {
             $resource->expandLinkedResourcesTree($path);
@@ -106,8 +155,10 @@ class Resource
             return;
         }
 
-        foreach ($resources as $resource) {
-            $this->addResource($rel, $resource);
+        if (!is_array($resources)) {
+            $this->addResource($rel, $resources);
+        } else {
+            $this->addResources($rel, $resources);
         }
     }
 
@@ -122,12 +173,7 @@ class Resource
             return null;
         }
 
-        $resources = $this->linkedResources[$rel];
-        if (!is_array($resources)) {
-            $resources = [$resources];
-        }
-
-        return $resources;
+        return $this->linkedResources[$rel];
     }
 
     public function getAllLinks()
@@ -146,7 +192,22 @@ class Resource
 
     public function addResource($rel, Resource $resource)
     {
-        $this->resources[$rel][] = $resource;
+        $this->resources[$rel] = $resource;
+
+        return $this;
+    }
+
+    public function addResources($rel, Array $resources)
+    {
+        foreach ($resources as $resource) {
+            if (!$resource instanceOf Resource) {
+                throw new InvalidArgumentException(
+                    'Invalid array, must be []Resource'
+                );
+            }
+        }
+
+        $this->resources[$rel] = $resources;
 
         return $this;
     }
@@ -190,7 +251,17 @@ class Resource
             return null;
         }
 
-        return new Link($this->getURI());
+        $link = new Link($this->getURI());
+
+        if ($title = $this->getTitle()) {
+            $link->setTitle($title);
+        }
+
+        if ($name = $this->getId()) {
+            $link->setName($name);
+        }
+
+        return $link;
     }
 
     public function setLastUpdate(DateTime $date)
@@ -215,41 +286,5 @@ class Resource
     public function getCache()
     {
         return $this->cache;
-    }
-
-    public function toArray()
-    {
-        $base = $this->data;
-        if ($self = $this->getSelfLink()) {
-            $base['_links']['self'] = $self->toArray();
-        }
-
-        foreach ($this->links as $rel => $links) {
-            if (count($links) == 1) {
-                $base['_links'][$rel] = end($links)->toArray();
-            } else {
-                foreach ($links as $link) {
-                    $base['_links'][$rel][] = $link->toArray();
-                }
-            }
-        }
-
-       foreach ($this->linkedResources as $rel => $links) {
-            if (count($links) == 1) {
-                $base['_links'][$rel] = end($links)->getSelfLink()->toArray();
-            } else {
-                foreach ($links as $link) {
-                    $base['_links'][$rel][] = $link->getSelfLink()->toArray();
-                }
-            }
-        }
-
-        foreach ($this->resources as $rel => $resources) {
-            foreach ($resources as $resource) {
-                $base['_embedded'][$rel][] = $resource->toArray();
-            }
-        }
-
-        return $base;
     }
 }

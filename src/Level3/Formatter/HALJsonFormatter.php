@@ -29,7 +29,7 @@ class HALJsonFormatter extends Formatter
     {
         $options = JSON_UNESCAPED_SLASHES;
 
-        if (!$pretty) {
+        if ($pretty) {
             $options = $options | JSON_PRETTY_PRINT;
         }
 
@@ -54,8 +54,8 @@ class HALJsonFormatter extends Formatter
         }
 
         foreach ($resource->getAllLinks() as $rel => $links) {
-            if (count($links) == 1) {
-                $array['_links'][$rel] = end($links)->toArray();
+            if (!is_array($links)) {
+                $array['_links'][$rel] = $links->getSelfLink()->toArray();
             } else {
                 foreach ($links as $link) {
                     $array['_links'][$rel][] = $link->toArray();
@@ -67,8 +67,8 @@ class HALJsonFormatter extends Formatter
     protected function transformLinkedResources(&$array, Resource $resource)
     {
        foreach ($resource->getAllLinkedResources() as $rel => $links) {
-            if (count($links) == 1) {
-                $array['_links'][$rel] = end($links)->getSelfLink()->toArray();
+            if (!is_array($links)) {
+                $array['_links'][$rel] = $links->getSelfLink()->toArray();
             } else {
                 foreach ($links as $link) {
                     $array['_links'][$rel][] = $link->getSelfLink()->toArray();

@@ -94,6 +94,10 @@ class SirenJsonFormatter extends Formatter
         }
 
         foreach ($resource->getAllLinkedResources() as $rel => $linkedResources) {
+            if (!is_array($linkedResources)) {
+                $linkedResources = [$linkedResources];
+            }
+
             foreach ($linkedResources as $linked) {
                 $link = $linked->getSelfLink()->getHref();
                 if (isset($embeddedLinks[$link])) {
