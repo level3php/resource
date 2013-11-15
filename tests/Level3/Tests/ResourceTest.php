@@ -34,7 +34,7 @@ class ResourceTest extends TestCase
         $this->resource->setLink('foo', $link);
 
         $links = $this->resource->getAllLinks();
-        $this->assertSame([$link], $links['foo']);
+        $this->assertSame($link, $links['foo']);
     }
 
     public function testSetLinks()
@@ -56,7 +56,7 @@ class ResourceTest extends TestCase
         $this->resource->setLink('foo', $link);
 
         $links = $this->resource->getLinks('foo');
-        $this->assertSame([$link], $links);
+        $this->assertSame($link, $links);
 
         $this->assertNull($this->resource->getLinks('bar'));
     }

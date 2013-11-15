@@ -18,6 +18,28 @@
         "bar"
     ],
     "@atribute": "foo",
+    "_embedded": {
+        "baz": [
+            {
+                "value": "qux",
+                "_embedded": {
+                    "foo": {
+                        "foo": "qux",
+                        "_links": {
+                            "self": {
+                                "href": "/test"
+                            }
+                        }
+                    }
+                },
+                "_links": {
+                    "self": {
+                        "href": "/test"
+                    }
+                }
+            }
+        ]
+    },
     "_links": {
         "self": {
             "href": "/test"
@@ -37,30 +59,6 @@
             },
             {
                 "href": "qux"
-            }
-        ]
-    },
-    "_embedded": {
-        "baz": [
-            {
-                "value": "qux",
-                "_links": {
-                    "self": {
-                        "href": "/test"
-                    }
-                },
-                "_embedded": {
-                    "foo": [
-                        {
-                            "foo": "qux",
-                            "_links": {
-                                "self": {
-                                    "href": "/test"
-                                }
-                            }
-                        }
-                    ]
-                }
             }
         ]
     }

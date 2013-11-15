@@ -82,7 +82,7 @@ class Resource
 
     public function setLink($rel, Link $link)
     {
-        $this->links[$rel][] = $link;
+        $this->links[$rel] = $link;
 
         return $this;
     }
@@ -90,9 +90,14 @@ class Resource
     public function setLinks($rel, Array $links)
     {
         foreach ($links as $link) {
-            $this->setLink($rel, $link);
+            if (!$link instanceOf Link) {
+                throw new InvalidArgumentException(
+                    'Invalid array, must be []Link'
+                );
+            }
         }
 
+        $this->links[$rel] = $links;
         return $this;
     }
 

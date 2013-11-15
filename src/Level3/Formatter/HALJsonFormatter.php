@@ -55,7 +55,7 @@ class HALJsonFormatter extends Formatter
 
         foreach ($resource->getAllLinks() as $rel => $links) {
             if (!is_array($links)) {
-                $array['_links'][$rel] = $links->getSelfLink()->toArray();
+                $array['_links'][$rel] = $links->toArray();
             } else {
                 foreach ($links as $link) {
                     $array['_links'][$rel][] = $link->toArray();

@@ -83,7 +83,9 @@ abstract class FormatterTest extends TestCase
             $this->createResource(self::EXAMPLE_URI)->setData(['foo' => 'qux'])
         );
 
-        $resource->addResource('baz', $subResource);
+        $resource->addResources('baz', [
+            $subResource
+        ]);
 
         $this->assertSame(
             $this->readResource($this->toPretty),
