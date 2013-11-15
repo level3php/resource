@@ -12,7 +12,7 @@ namespace Level3\Tests;
 
 use Level3\FormatterFactory;
 use Level3\Formatter\HAL\JsonFormatter;
-use Level3\Formatter\HAL\XmlFormatter;
+use Level3\Formatter\HAL\XMLFormatter;
 
 class FormatterFactoryTest extends TestCase
 {
@@ -55,12 +55,12 @@ class FormatterFactoryTest extends TestCase
         );
     }
 
-    public function testCreateWithXmlFormatter()
+    public function testCreateWithXMLFormatter()
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\HAL\XmlFormatter',
-            $factory->create([XmlFormatter::CONTENT_TYPE], true)
+            'Level3\Formatter\HAL\XMLFormatter',
+            $factory->create([XMLFormatter::CONTENT_TYPE], true)
         );
     }
 }

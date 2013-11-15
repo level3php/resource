@@ -18,8 +18,8 @@ class FormatterFactory
             switch ($contentType) {
                 case Siren\JsonFormatter::CONTENT_TYPE:
                     return new Siren\JsonFormatter();
-                case HAL\XmlFormatter::CONTENT_TYPE:
-                    return new HAL\XmlFormatter();
+                case HAL\XMLFormatter::CONTENT_TYPE:
+                    return new HAL\XMLFormatter();
                 case HAL\JsonFormatter::CONTENT_TYPE:
                 case Formatter::CONTENT_TYPE_ANY:
                     return new HAL\JsonFormatter();
