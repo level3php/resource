@@ -2,33 +2,32 @@
 
 namespace Level3;
 
-use Level3\Formatter\SirenJsonFormatter;
-use Level3\Formatter\HALJsonFormatter;
-use Level3\Formatter\HALXmlFormatter;
+use Level3\Formatter\Siren;
+use Level3\Formatter\HAL;
 use Level3\Exceptions\NotAcceptable;
 
 class FormatterFactory
 {
-    public function create(array $contentTypes = [], $avoidNotAcceptable = false)
+    public function create(Array $contentTypes = [], $avoidNotAcceptable = false)
     {
         if (count($contentTypes) === 0) {
-            return new HALJsonFormatter();
+            return new HAL\JsonFormatter();
         }
 
         foreach ($contentTypes as $contentType) {
             switch ($contentType) {
-                case SirenJsonFormatter::CONTENT_TYPE:
-                    return new SirenJsonFormatter();
-                case HALXmlFormatter::CONTENT_TYPE:
-                    return new HALXmlFormatter();
-                case HALJsonFormatter::CONTENT_TYPE:
+                case Siren\JsonFormatter::CONTENT_TYPE:
+                    return new Siren\JsonFormatter();
+                case HAL\XmlFormatter::CONTENT_TYPE:
+                    return new HAL\XmlFormatter();
+                case HAL\JsonFormatter::CONTENT_TYPE:
                 case Formatter::CONTENT_TYPE_ANY:
-                    return new HALJsonFormatter();
+                    return new HAL\JsonFormatter();
             }
         }
 
         if ($avoidNotAcceptable) {
-            return new HALJsonFormatter();
+            return new HAL\JsonFormatter();
         }
 
         throw new NotAcceptable(sprintf('Content-Type not supported: %s', join(', ', $contentTypes)));

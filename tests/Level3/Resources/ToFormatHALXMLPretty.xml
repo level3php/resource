@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<resource href="/test" atribute="foo">
+<resource href="/test">
   <link rel="quz" href="foo" name="name" hreflang="lang" title="title"/>
   <link rel="foo" href="foo" name="name" hreflang="lang" title="title"/>
   <link rel="foo" href="qux"/>
@@ -17,5 +17,16 @@
   </arrayOfarrays>
   <arrayOfstrings>foo</arrayOfstrings>
   <arrayOfstrings>bar</arrayOfstrings>
-  <resource rel="baz" href="/test">qux</resource>
+  <resource rel="baz" href="/test">
+    <value>qux</value>
+    <resource rel="foo" href="/test">
+      <foo>qux</foo>
+    </resource>
+    <link rel="qux" href="/test"/>
+    <link rel="foo" href="/test"/>
+    <link rel="foo" href="/test"/>
+  </resource>
+  <resource rel="baz" href="/test">
+    <baz>foo</baz>
+  </resource>
 </resource>

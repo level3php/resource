@@ -12,7 +12,7 @@ namespace Level3\Tests\Formatter;
 
 class HALXmlFormatterTest extends FormatterTest
 {
-    protected $class = 'Level3\Formatter\HALXmlFormatter';
+    protected $class = 'Level3\Formatter\HAL\XmlFormatter';
     protected $toNonPretty = 'ToFormatHALXMLNonPretty.xml';
     protected $toPretty = 'ToFormatHALXMLPretty.xml';
     protected $from = 'FromFormatHALXML.xml';
