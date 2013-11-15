@@ -7,9 +7,11 @@ namespace Level3\Formatter;
 
 use Level3\Formatter;
 use Level3\Resource;
+use Level3\Resource\Link;
 use Level3\Exceptions\BadRequest;
 
-use SimpleXMLElement;
+use Sabre\XML;
+use XMLWriter;
 use Exception;
 
 class HALXmlFormatter extends Formatter
@@ -18,126 +20,148 @@ class HALXmlFormatter extends Formatter
 
     public function fromRequest($string)
     {
-        if (strlen($string) == 0) {
-            return [];
-        }
+ /*
+$reader = new XML\Reader();
+$reader->xml($string);
 
-        try {
-            return $this->xmlToArray(new SimpleXMLElement($string));
-        } catch (Exception $e) {
-            throw new BadRequest();
-        }
-    }
-
-    protected function xmlToArray(SimpleXMLElement $xml)
-    {
-        $data = (array) $xml;
-        foreach ($data as $key => &$value) {
-            if ($value instanceOf SimpleXMLElement) {
-                $value = $this->xmlToArray($value);
-            }
-        }
-
-        return $data;
+$output = $reader->parse();
+print_r($output);
+exit();
+        var_dump($string);*/
     }
 
     public function toResponse(Resource $resource, $pretty = false)
     {
-        $doc = new SimpleXMLElement('<resource></resource>');
-        if (!is_null($uri = $resource->getUri())) {
-            $doc->addAttribute('href', $uri);
-        }
-        $this->linksForXml($doc, $resource->getAllLinks());
+        $writer = new XMLWriter;
+        $writer->openMemory();        
+        $writer->setIndentString('  ');
+        $writer->setIndent($pretty);
+        $writer->startDocument('1.0'); 
 
-        if ($data = $resource->getData()) {
-            $this->arrayToXml($data, $doc);
-        }
+        $this->resourceToArray($writer, $resource);
 
-        foreach ($resource->getAllResources() as $rel => $resources) {
-            $this->resourcesForXml($doc, $rel, $resources);
-        }
-
-        $dom = dom_import_simplexml($doc);
-        if ($pretty) {
-            $dom->ownerDocument->preserveWhiteSpace = false;
-            $dom->ownerDocument->formatOutput = true;
-        }
-
-        return $dom->ownerDocument->saveXML();
+        return $writer->outputMemory();
     }
 
-    protected function linksForXml(SimpleXmlElement $doc, Array $links)
+    protected function resourceToArray(XMLWriter $writer, Resource $resource, $rel = null)
     {
-        foreach ($links as $rel => $links) {
-            if (!is_array($links)) $links = [$links];
+        $writer->startElement('resource'); 
+        if ($rel) {
+            $this->addAttribute($writer, 'rel', $rel);
+        }
+
+        if ($self = $resource->getSelfLink()) {
+            $this->addAttribute($writer, 'href', $self->getHref());
+        }
+
+        $this->transformLinks($writer, $resource);
+        $this->transformData($writer, $resource);
+        $this->transformResources($writer, $resource);
+        $this->transformLinkedResources($writer, $resource);
+
+        $writer->endElement(); 
+    }
+
+    protected function transformLinks(XMLWriter $writer, Resource $resource)
+    {
+        foreach ($resource->getAllLinks() as $rel => $links) {
+            if (!is_array($links)) {
+                $links = [$links];
+            }
 
             foreach ($links as $link) {
-                $element = $doc->addChild('link');
-                $element->addAttribute('rel', $rel);
-                $element->addAttribute('href', $link->getHref());
-
-                foreach ($link->getAttributes() as $attribute => $value) {
-                    $element->addAttribute($attribute, $value);
-                }
+                $this->doTransformLink($writer, $rel, $link);
             }
         }
     }
 
-    protected function arrayToXml(array $data, SimpleXmlElement $element, $parent=null)
+    protected function transformLinkedResources(XMLWriter $writer, Resource $resource)
     {
-        foreach ($data as $key => $value) {
-            if (is_array($value)) {
-                if (!is_numeric($key)) {
-                    if (count($value) > 0 && isset($value[0])) {
-                        $this->arrayToXml($value, $element, $key);
-                    } else {
-                        $subnode = $element->addChild($key);
-                        $this->arrayToXml($value, $subnode, $key);
-                    }
-                } else {
-                    $subnode = $element->addChild($parent);
-                    $this->arrayToXml($value, $subnode, $parent);
-                }
-            } else {
-                if (!is_numeric($key)) {
-                    if (substr($key, 0, 1) === '@') {
-                        $element->addAttribute(substr($key, 1), $value);
-                    } elseif ($key === 'value' and count($data) === 1) {
-                        $element->{0} = $value;
-                    } elseif (is_bool($value)) {
-                        $element->addChild($key, intval($value));
-                    } else {
-                        $element->addChild($key, htmlspecialchars($value, ENT_QUOTES));
-                    }
-                } else {
-                    $element->addChild($parent, htmlspecialchars($value, ENT_QUOTES));
-                }
+        foreach ($resource->getAllLinkedResources() as $rel => $resources) {
+            if (!is_array($resources)) {
+                $resources = [$resources];
+            }
+
+            foreach ($resources as $resource) {
+                $this->doTransformLink($writer, $rel, $resource->getSelfLink());
             }
         }
     }
 
-    protected function resourcesForXml(SimpleXmlElement $doc, $rel, array $resources)
+    private function doTransformLink(XMLWriter $writer, $rel, Link $link)
     {
-        foreach ($resources as $resource) {
+        $writer->startElement('link'); 
+        $this->addAttribute($writer, 'rel', $rel);
 
-            $element = $doc->addChild('resource');
-            $element->addAttribute('rel', $rel);
+        foreach ($link->toArray() as $name => $value) {
+            $this->addAttribute($writer, $name, $value);
+        }
 
-            if ($resource) {
-                if (!is_null($uri = $resource->getURI())) {
-                    $element->addAttribute('href', $uri);
-                }
+        $writer->endElement();
+    }
 
-                $this->linksForXml($element, $resource->getAllLinks());
+    private function addAttribute(XMLWriter $writer, $name, $value)
+    {
+        return $writer->writeAttribute($name, $value);
+    }
 
-                foreach ($resource->getAllResources() as $innerRel => $innerRes) {
-                    $this->resourcesForXml($element, $innerRel, $innerRes);
-                }
+    protected function transformData(XMLWriter $writer, Resource $resource)
+    {
+        foreach ($resource->getData() as $name => $value) {
+            $this->addValue($writer, $name, $value);
+        }
 
-                if ($data = $resource->getData()) {
-                    $this->arrayToXml($data, $element);
-                }
+        return;
+    }
+
+    private function addValue(XMLWriter $writer, $name, $value)
+    {
+        if (!is_array($value)) {
+            return $this->doWriteString($writer, $name, $value);
+        }
+
+        reset($value);
+        if (is_numeric(key($value))) {
+            return $this->doWriteArray($writer, $name, $value);
+        } else {
+            return $this->doWriteAssocArray($writer, $name, $value);
+        }
+    }
+
+    private function doWriteString(XMLWriter $writer, $name, $value)
+    {
+        $writer->writeElement($name, $value); 
+    }
+
+    private function doWriteArray(XMLWriter $writer, $name, Array $array)
+    {
+        foreach ($array as $childName => $childValue) {
+           $this->addValue($writer, $name, $childValue);
+        }        
+    }
+
+    private function doWriteAssocArray(XMLWriter $writer, $name, Array $array)
+    {
+        $writer->startElement($name); 
+        foreach ($array as $childName => $childValue) {
+           $this->addValue($writer, $childName, $childValue);
+        }        
+
+        $writer->endElement(); 
+    }
+
+    protected function transformResources(XMLWriter $writer, Resource $resource)
+    {
+        $embedded = [];
+        foreach ($resource->getAllResources() as $rel => $resources) {
+            if (!is_array($resources)) {
+                $resources = [$resources];
+            }
+
+            foreach ($resources as $resource) {
+                $this->resourceToArray($writer, $resource, $rel);
             }
         }
     }
+
 }

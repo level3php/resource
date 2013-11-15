@@ -17,7 +17,6 @@
         "foo",
         "bar"
     ],
-    "@atribute": "foo",
     "_embedded": {
         "baz": [
             {
@@ -32,6 +31,25 @@
                         }
                     }
                 },
+                "_links": {
+                    "self": {
+                        "href": "/test"
+                    },
+                    "qux": {
+                        "href": "/test"
+                    },
+                    "foo": [
+                        {
+                            "href": "/test"
+                        },
+                        {
+                            "href": "/test"
+                        }
+                    ]
+                }
+            },
+            {
+                "baz": "foo",
                 "_links": {
                     "self": {
                         "href": "/test"

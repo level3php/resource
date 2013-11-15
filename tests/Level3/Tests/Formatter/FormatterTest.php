@@ -61,8 +61,7 @@ abstract class FormatterTest extends TestCase
             ],
             'arrayOfstrings' => [
                 'foo', 'bar'
-            ],
-            '@atribute' => 'foo'
+            ]
         ]);
 
         $link = new Link('foo');
@@ -84,9 +83,19 @@ abstract class FormatterTest extends TestCase
         );
 
         $resource->addResources('baz', [
-            $subResource
+            $subResource,
+            $this->createResource(self::EXAMPLE_URI)->setData(['baz' => 'foo'])
         ]);
 
+        $subResource->linkResource('qux',
+            $this->createResource(self::EXAMPLE_URI)->setData([])
+        );
+
+        $subResource->linkResources('foo', [
+            $this->createResource(self::EXAMPLE_URI)->setData([]),
+            $this->createResource(self::EXAMPLE_URI)->setData([])
+        ]);
+            
         $this->assertSame(
             $this->readResource($this->toPretty),
             trim($formatter->toResponse($resource, true))
