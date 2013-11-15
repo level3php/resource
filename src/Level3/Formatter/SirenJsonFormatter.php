@@ -30,7 +30,7 @@ class SirenJsonFormatter extends Formatter
     {
         $options = JSON_UNESCAPED_SLASHES;
 
-        if ($pretty) {
+        if (!$pretty) {
             $options = $options | JSON_PRETTY_PRINT;
         }
 
@@ -41,9 +41,32 @@ class SirenJsonFormatter extends Formatter
     {
         $data = [];
 
-        $data['properties'] = $resource->getData();
+        $this->transformDataAndMetadata($data, $resource);
+        $this->transformResources($data, $resource);
+        $this->transformLinks($data, $resource);
+        $this->transformLinkedResources($data, $resource);
+
+        return $data;
+    }
+
+    protected function transformDataAndMetadata(&$array, Resource $resource)
+    {
+        $array['class'] = null;
+        if ($key = $resource->getRepositoryKey()) {
+            $array['class'] = explode('/', $key);
+        }
+        
+        if ($title = $resource->getTitle()) {
+            $array['title'] = $title;
+        }
+
+        $array['properties'] = $resource->getData();
+    }
+
+    protected function transformLinks(&$array, Resource $resource)
+    {
         if ($self = $resource->getSelfLink()) {
-            $data['links'][] = [
+            $array['links'][] = [
                 'rel' => 'self',
                 'href' => $self->getHref()
             ];
@@ -51,22 +74,22 @@ class SirenJsonFormatter extends Formatter
 
         foreach ($resource->getAllLinks() as $rel => $links) {
             foreach ($links as $link) {
-                $data['links'][] = [
+                $array['links'][] = [
                     'rel' => $rel,
                     'href' => $link->getHref()
                 ];
             }
-        }
+        } 
+    }
 
-        foreach ($resource->getAllResources() as $rel => $embeddedResources) {
-            foreach ($embeddedResources as $embeddedResource) {
-                if ($link = $embeddedResource->getSelfLink()) {
-                    $embeddedLinks[$link->getHref()] = true;
+    protected function transformLinkedResources(&$array, Resource $resource)
+    {
+        $embeddedLinks = [];
+        if (isset($array['entities'])) {
+            foreach ($array['entities'] as $entity) {
+                if (isset($entity['href'])) {
+                    $embeddedLinks[$entity['href']] = true;
                 }
-                
-                $data['entities'][] = array_merge([
-                    'rel' => $rel,
-                ], $this->resourceToArray($embeddedResource));
             }
         }
 
@@ -77,16 +100,41 @@ class SirenJsonFormatter extends Formatter
                     continue;
                 }
 
-                $data['entities'][] = [
+                $array['entities'][] = [
                     'rel' => $rel,
                     'href' => $link
                 ];
             }
         }
+    }
 
+    protected function transformResources(&$array, Resource $resource)
+    {
+        foreach ($resource->getAllResources() as $rel => $resources) {
+            if (!is_array($resources)) {
+                $resources = [$resources];
+            }
 
+            foreach ($resources as $resource) {
+                $array['entities'][] = $this->doTransformResource($array, $rel, $resource);
+            }
+        }
+    }
 
-        return $data;
+    protected function doTransformResource(Array &$array, $rel, Resource $resource)
+    {
+        $data = $this->resourceToArray($resource);
+        if (!$data['class']) {
+            $data['class'] = array_merge($array['class'], [$rel]);
+        }
 
+        $metadata = [];
+        $metadata['rel'] = $rel;
+
+        if ($resource->getUri()) {
+            $metadata['href'] = $resource->getSelfLink()->getHref();
+        }
+
+        return array_merge($metadata, $data);
     }
 }
