@@ -10,7 +10,6 @@
 
 namespace Level3\Tests;
 use Level3\Mocks\Mapper;
-use Hal\Resource;
 use Mockery as m;
 
 class TestCase extends \PHPUnit_Framework_TestCase
@@ -80,7 +79,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createResourceMock($mockMethods = true)
     {
-        $resource = m::mock('Level3\Resource');
+        $resource = m::mock('Level3\Resource\Resource');
 
         if ($mockMethods) {
             $resource->shouldReceive('getCache')->andReturn(null);
@@ -98,7 +97,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createFormatterMock()
     {
-        $formatter = m::mock('Level3\Formatter');
+        $formatter = m::mock('Level3\Resource\Formatter');
         $formatter->shouldReceive('getContentType')->andReturn('foo/bar');
 
         return $formatter;
@@ -106,7 +105,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createParametersMock()
     {
-        $parameters = m::mock('Level3\Resource\Parameters');
+        $parameters = m::mock('Level3\Messages\Parameters');
         $parameters->shouldReceive('getIterator');
 
         return $parameters;

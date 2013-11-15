@@ -2,8 +2,8 @@
 
 namespace Level3\Messages;
 
-use Level3\Resource;
-use Level3\Formatter;
+use Level3\Resource\Resource;
+use Level3\Resource\Formatter;
 use Level3\Exceptions\HTTPException;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;

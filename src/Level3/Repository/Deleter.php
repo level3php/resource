@@ -1,7 +1,7 @@
 <?php
 
 namespace Level3\Repository;
-use Level3\Resource\Parameters;
+use Level3\Messages\Parameters;
 
 interface Deleter
 {

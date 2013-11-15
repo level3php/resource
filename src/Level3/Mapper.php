@@ -3,7 +3,7 @@
 namespace Level3;
 
 use Level3\Repository;
-use Level3\Resource\Parameters;
+use Level3\Messages\Parameters;
 
 abstract class Mapper
 {

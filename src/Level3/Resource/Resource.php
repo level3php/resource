@@ -1,8 +1,7 @@
 <?php
 
-namespace Level3;
+namespace Level3\Resource;
 
-use Level3\Resource\Link;
 use DateTime;
 use InvalidArgumentException;
 
@@ -38,7 +37,7 @@ class Resource
 
         return $this;
     }
-    
+
     public function getRepositoryKey()
     {
         return $this->key;
@@ -50,7 +49,7 @@ class Resource
 
         return $this;
     }
-    
+
     public function getRelation()
     {
         return $this->relation;
@@ -62,7 +61,7 @@ class Resource
 
         return $this;
     }
-    
+
     public function getTitle()
     {
         return $this->title;
@@ -98,6 +97,7 @@ class Resource
         }
 
         $this->links[$rel] = $links;
+
         return $this;
     }
 
@@ -114,7 +114,7 @@ class Resource
         foreach ($resources as $resource) {
             $this->trowExceptionIfNotLinkableResouce($resource);
         }
-        
+
         $this->linkedResources[$rel] = $resources;
 
         return $this;
@@ -143,7 +143,7 @@ class Resource
         if (!$resources) {
             return;
         }
-        
+
         if (!is_array($resources)) {
             $resources = [$resources];
         }

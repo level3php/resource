@@ -2,7 +2,7 @@
 
 namespace Level3;
 
-use Level3\Resource\Parameters;
+use Level3\Messages\Parameters;
 use Level3\Processor\Wrapper;
 
 class Level3

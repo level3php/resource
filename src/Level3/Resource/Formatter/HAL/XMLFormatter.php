@@ -1,14 +1,12 @@
 <?php
 
-namespace Level3\Formatter\HAL;
+namespace Level3\Resource\Formatter\HAL;
 
-use Level3\Formatter\XMLFormatter as BaseXMLFormatter;
-use Level3\Resource;
+use Level3\Resource\Formatter\XMLFormatter as BaseXMLFormatter;
+use Level3\Resource\Resource;
 use Level3\Resource\Link;
-use Level3\Exceptions\BadRequest;
 
 use XMLWriter;
-use Exception;
 
 class XMLFormatter extends BaseXMLFormatter
 {
@@ -16,7 +14,7 @@ class XMLFormatter extends BaseXMLFormatter
 
     protected function resourceToArray(XMLWriter $writer, Resource $resource, $rel = null)
     {
-        $writer->startElement('resource'); 
+        $writer->startElement('resource');
         if ($rel) {
             $this->addAttribute($writer, 'rel', $rel);
         }
@@ -30,7 +28,7 @@ class XMLFormatter extends BaseXMLFormatter
         $this->transformResources($writer, $resource);
         $this->transformLinkedResources($writer, $resource);
 
-        $writer->endElement(); 
+        $writer->endElement();
     }
 
     protected function transformLinks(XMLWriter $writer, Resource $resource)
@@ -61,7 +59,7 @@ class XMLFormatter extends BaseXMLFormatter
 
     private function doTransformLink(XMLWriter $writer, $rel, Link $link)
     {
-        $writer->startElement('link'); 
+        $writer->startElement('link');
         $this->addAttribute($writer, 'rel', $rel);
 
         foreach ($link->toArray() as $name => $value) {
@@ -101,24 +99,24 @@ class XMLFormatter extends BaseXMLFormatter
 
     private function doWriteString(XMLWriter $writer, $name, $value)
     {
-        $writer->writeElement($name, $value); 
+        $writer->writeElement($name, $value);
     }
 
     private function doWriteArray(XMLWriter $writer, $name, Array $array)
     {
         foreach ($array as $childName => $childValue) {
            $this->addValue($writer, $name, $childValue);
-        }        
+        }
     }
 
     private function doWriteAssocArray(XMLWriter $writer, $name, Array $array)
     {
-        $writer->startElement($name); 
+        $writer->startElement($name);
         foreach ($array as $childName => $childValue) {
            $this->addValue($writer, $childName, $childValue);
-        }        
+        }
 
-        $writer->endElement(); 
+        $writer->endElement();
     }
 
     protected function transformResources(XMLWriter $writer, Resource $resource)

@@ -2,11 +2,11 @@
 
 namespace Level3\Messages;
 
-use Level3\FormatterFactory;
+use Level3\Resource\FormatterFactory;
 use Level3\Processor\Wrapper\Authenticator\Credentials;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-use Level3\Resource\Parameters;
+use Level3\Messages\Parameters;
 
 class Request extends SymfonyRequest
 {

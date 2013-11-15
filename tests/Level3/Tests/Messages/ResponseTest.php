@@ -10,9 +10,9 @@
 
 namespace Level3\Tests;
 
-use Level3\Resource;
+use Level3\Resource\Resource;
 use Level3\Messages\Response;
-use Level3\Formatter\HAL\JsonFormatter;
+use Level3\Resource\Formatter\HAL\JsonFormatter;
 use Level3\Exceptions\NotAcceptable;
 
 use Teapot\StatusCode;
@@ -100,7 +100,7 @@ class ResponseTest extends TestCase
         $this->assertSame(StatusCode::INTERNAL_SERVER_ERROR, $response->getStatusCode());
 
         $resource = $response->getResource();
-        $this->assertInstanceOf('Level3\Resource', $resource);
+        $this->assertInstanceOf('Level3\Resource\Resource', $resource);
         $this->assertSame($formatter, $response->getFormatter());
 
         $data = $resource->getData();
@@ -121,7 +121,7 @@ class ResponseTest extends TestCase
         $this->assertSame(StatusCode::NOT_ACCEPTABLE, $response->getStatusCode());
 
         $resource = $response->getResource();
-        $this->assertInstanceOf('Level3\Resource', $resource);
+        $this->assertInstanceOf('Level3\Resource\Resource', $resource);
         $this->assertSame($formatter, $response->getFormatter());
 
         $data = $resource->getData();

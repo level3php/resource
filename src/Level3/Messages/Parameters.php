@@ -1,6 +1,6 @@
 <?php
 
-namespace Level3\Resource;
+namespace Level3\Messages;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
 

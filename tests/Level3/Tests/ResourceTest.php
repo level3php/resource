@@ -9,7 +9,7 @@
  */
 
 namespace Level3\Tests;
-use Level3\Resource;
+use Level3\Resource\Resource;
 use Level3\Resource\Link;
 use DateTime;
 
@@ -86,7 +86,6 @@ class ResourceTest extends TestCase
             $linkedResourceA,
             $linkedResourceB
         ]);
-
 
         $links = $this->resource->getLinkedResources('foo');
         $this->assertSame([

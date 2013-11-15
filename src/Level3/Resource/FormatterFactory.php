@@ -1,9 +1,9 @@
 <?php
 
-namespace Level3;
+namespace Level3\Resource;
 
-use Level3\Formatter\Siren;
-use Level3\Formatter\HAL;
+use Level3\Resource\Formatter\Siren;
+use Level3\Resource\Formatter\HAL;
 use Level3\Exceptions\NotAcceptable;
 
 class FormatterFactory

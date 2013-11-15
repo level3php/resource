@@ -10,9 +10,9 @@
 
 namespace Level3\Tests;
 
-use Level3\FormatterFactory;
-use Level3\Formatter\HAL\JsonFormatter;
-use Level3\Formatter\HAL\XMLFormatter;
+use Level3\Resource\FormatterFactory;
+use Level3\Resource\Formatter\HAL\JsonFormatter;
+use Level3\Resource\Formatter\HAL\XMLFormatter;
 
 class FormatterFactoryTest extends TestCase
 {
@@ -20,7 +20,7 @@ class FormatterFactoryTest extends TestCase
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\HAL\JsonFormatter',
+            'Level3\Resource\Formatter\HAL\JsonFormatter',
             $factory->create()
         );
     }
@@ -32,7 +32,7 @@ class FormatterFactoryTest extends TestCase
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\HAL\JsonFormatter',
+            'Level3\Resource\Formatter\HAL\JsonFormatter',
             $factory->create(['foo'])
         );
     }
@@ -41,7 +41,7 @@ class FormatterFactoryTest extends TestCase
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\HAL\JsonFormatter',
+            'Level3\Resource\Formatter\HAL\JsonFormatter',
             $factory->create(['foo'], true)
         );
     }
@@ -50,7 +50,7 @@ class FormatterFactoryTest extends TestCase
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\HAL\JsonFormatter',
+            'Level3\Resource\Formatter\HAL\JsonFormatter',
             $factory->create([JsonFormatter::CONTENT_TYPE], true)
         );
     }
@@ -59,7 +59,7 @@ class FormatterFactoryTest extends TestCase
     {
         $factory = new FormatterFactory();
         $this->assertInstanceOf(
-            'Level3\Formatter\HAL\XMLFormatter',
+            'Level3\Resource\Formatter\HAL\XMLFormatter',
             $factory->create([XMLFormatter::CONTENT_TYPE], true)
         );
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace Level3\Formatter;
+namespace Level3\Resource\Formatter;
 
-use Level3\Formatter;
-use Level3\Resource;
+use Level3\Resource\Formatter;
+use Level3\Resource\Resource;
 use Level3\Exceptions\BadRequest;
 
 abstract class JsonFormatter extends Formatter

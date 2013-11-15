@@ -11,7 +11,7 @@
 namespace Level3\Tests\Formatter;
 
 use Level3\Tests\TestCase;
-use Level3\Resource;
+use Level3\Resource\Resource;
 use Level3\Resource\Link;
 
 abstract class FormatterTest extends TestCase
@@ -95,7 +95,7 @@ abstract class FormatterTest extends TestCase
             $this->createResource(self::EXAMPLE_URI)->setData([]),
             $this->createResource(self::EXAMPLE_URI)->setData([])
         ]);
-            
+
         $this->assertSame(
             $this->readResource($this->toPretty),
             trim($formatter->toResponse($resource, true))

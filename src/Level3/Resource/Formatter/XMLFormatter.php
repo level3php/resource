@@ -1,10 +1,9 @@
 <?php
 
-namespace Level3\Formatter;
+namespace Level3\Resource\Formatter;
 
-use Level3\Formatter;
-use Level3\Resource;
-use Level3\Resource\Link;
+use Level3\Resource\Formatter;
+use Level3\Resource\Resource;
 use Level3\Exceptions\BadRequest;
 
 use Exception;
@@ -44,10 +43,10 @@ abstract class XMLFormatter extends Formatter
     public function toResponse(Resource $resource, $pretty = false)
     {
         $writer = new XMLWriter;
-        $writer->openMemory();        
+        $writer->openMemory();
         $writer->setIndentString('  ');
         $writer->setIndent($pretty);
-        $writer->startDocument('1.0'); 
+        $writer->startDocument('1.0');
 
         $this->resourceToArray($writer, $resource);
 

@@ -2,7 +2,7 @@
 
 namespace Level3\Tests;
 
-use Level3\Resource\Parameters;
+use Level3\Messages\Parameters;
 
 class RepositoryTest extends TestCase
 {
@@ -62,7 +62,7 @@ class RepositoryTest extends TestCase
         $this->repository->setKey($key);
         $resource = $this->repository->createResource($attributes);
 
-        $this->assertInstanceOf('Level3\Resource', $resource);
+        $this->assertInstanceOf('Level3\Resource\Resource', $resource);
         $this->assertSame($uri, $resource->getURI());
     }
 }

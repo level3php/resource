@@ -1,9 +1,9 @@
 <?php
 
-namespace Level3\Formatter\Siren;
+namespace Level3\Resource\Formatter\Siren;
 
-use Level3\Formatter\JsonFormatter as BaseJsonFormatter;
-use Level3\Resource;
+use Level3\Resource\Formatter\JsonFormatter as BaseJsonFormatter;
+use Level3\Resource\Resource;
 use Level3\Resource\Link;
 
 class JsonFormatter extends BaseJsonFormatter
@@ -28,7 +28,7 @@ class JsonFormatter extends BaseJsonFormatter
         if ($key = $resource->getRepositoryKey()) {
             $array['class'] = explode('/', $key);
         }
-        
+
         if ($title = $resource->getTitle()) {
             $array['title'] = $title;
         }
@@ -52,7 +52,7 @@ class JsonFormatter extends BaseJsonFormatter
                     'href' => $link->getHref()
                 ];
             }
-        } 
+        }
     }
 
     protected function transformLinkedResources(&$array, Resource $resource)

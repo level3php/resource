@@ -10,7 +10,7 @@
 
 namespace Level3\Tests;
 use Level3\Hub;
-use Level3\Resource\Parameters;
+use Level3\Messages\Parameters;
 
 use Mockery as m;
 

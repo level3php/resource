@@ -29,7 +29,7 @@ class RequestTest extends TestCase
     public function testGetFormatter()
     {
         $formatter = $this->request->getFormatter();
-        $this->assertInstanceOf('Level3\Formatter', $formatter);
+        $this->assertInstanceOf('Level3\Resource\Formatter', $formatter);
     }
 
     public function testGetKey()
@@ -41,13 +41,13 @@ class RequestTest extends TestCase
     public function testGetParameters()
     {
         $attributes = $this->request->getAttributes();
-        $this->assertInstanceOf('Level3\Resource\Parameters', $attributes);
+        $this->assertInstanceOf('Level3\Messages\Parameters', $attributes);
     }
 
     public function testGetFilters()
     {
         $filters = $this->request->GetFilters();
-        $this->assertInstanceOf('Level3\Resource\Parameters', $filters);
+        $this->assertInstanceOf('Level3\Messages\Parameters', $filters);
 
         $data = $filters->all();
         $this->assertTrue(array_key_exists('range', $data));

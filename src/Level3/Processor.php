@@ -2,6 +2,7 @@
 
 namespace Level3;
 
+use Level3\Resource\Resource;
 use Level3\Exceptions\NotFound;
 use Level3\Exceptions\NotImplemented;
 use Level3\Messages\Response;

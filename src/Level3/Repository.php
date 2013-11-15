@@ -2,8 +2,8 @@
 
 namespace Level3;
 
-use Level3\Resource;
-use Level3\Resource\Parameters;
+use Level3\Resource\Resource;
+use Level3\Messages\Parameters;
 use ReflectionClass;
 
 abstract class Repository
