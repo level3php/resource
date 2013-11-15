@@ -12,7 +12,7 @@ namespace Level3\Tests\Formatter;
 
 class HALJsonFormatterTest extends FormatterTest
 {
-    protected $class = 'Level3\Formatter\HALJsonFormatter';
+    protected $class = 'Level3\Formatter\HAL\JsonFormatter';
     protected $toNonPretty = 'ToFormatHALJSONNonPretty.json';
     protected $toPretty = 'ToFormatHALJSONPretty.json';
     protected $from = 'FromFormatHALJSON.json';

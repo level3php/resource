@@ -1,47 +1,18 @@
 <?php
-/*
- * (c) Ben Longden <ben@nocarrier.co.uk>
- */
 
-namespace Level3\Formatter;
+namespace Level3\Formatter\HAL;
 
-use Level3\Formatter;
+use Level3\Formatter\XMLFormatter as BaseXMLFormatter;
 use Level3\Resource;
 use Level3\Resource\Link;
 use Level3\Exceptions\BadRequest;
 
-use Sabre\XML;
 use XMLWriter;
 use Exception;
 
-class HALXmlFormatter extends Formatter
+class XMLFormatter extends BaseXMLFormatter
 {
     const CONTENT_TYPE = 'application/hal+xml';
-
-    public function fromRequest($string)
-    {
- /*
-$reader = new XML\Reader();
-$reader->xml($string);
-
-$output = $reader->parse();
-print_r($output);
-exit();
-        var_dump($string);*/
-    }
-
-    public function toResponse(Resource $resource, $pretty = false)
-    {
-        $writer = new XMLWriter;
-        $writer->openMemory();        
-        $writer->setIndentString('  ');
-        $writer->setIndent($pretty);
-        $writer->startDocument('1.0'); 
-
-        $this->resourceToArray($writer, $resource);
-
-        return $writer->outputMemory();
-    }
 
     protected function resourceToArray(XMLWriter $writer, Resource $resource, $rel = null)
     {
@@ -163,5 +134,4 @@ exit();
             }
         }
     }
-
 }

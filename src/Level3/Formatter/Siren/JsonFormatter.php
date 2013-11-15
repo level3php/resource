@@ -1,41 +1,14 @@
 <?php
 
-namespace Level3\Formatter;
+namespace Level3\Formatter\Siren;
 
-use Level3\Formatter;
+use Level3\Formatter\JsonFormatter as BaseJsonFormatter;
 use Level3\Resource;
 use Level3\Resource\Link;
-use Level3\Exceptions\BadRequest;
 
-class SirenJsonFormatter extends Formatter
+class JsonFormatter extends BaseJsonFormatter
 {
     const CONTENT_TYPE = 'application/vnd.siren+json';
-
-    public function fromRequest($string)
-    {
-        if (strlen($string) == 0) {
-            return [];
-        }
-
-        $array = json_decode($string, true);
-
-        if (!is_array($array)) {
-            throw new BadRequest();
-        }
-
-        return $array;
-    }
-
-    public function toResponse(Resource $resource, $pretty = false)
-    {
-        $options = JSON_UNESCAPED_SLASHES;
-
-        if (!$pretty) {
-            $options = $options | JSON_PRETTY_PRINT;
-        }
-
-        return json_encode($this->resourceToArray($resource), $options);
-    }
 
     protected function resourceToArray(Resource $resource)
     {

@@ -12,7 +12,7 @@ namespace Level3\Tests;
 
 use Level3\Resource;
 use Level3\Messages\Response;
-use Level3\Formatter\HALJsonFormatter;
+use Level3\Formatter\HAL\JsonFormatter;
 use Level3\Exceptions\NotAcceptable;
 
 use Teapot\StatusCode;
@@ -229,7 +229,7 @@ class ResponseTest extends TestCase
     public function testContentTypeFrom()
     {
         $response = new Response();
-        $response->setFormatter(new HALJsonFormatter);
+        $response->setFormatter(new JsonFormatter);
 
         $this->assertEquals('application/hal+json', $response->headers->get('Content-Type'));
     }
