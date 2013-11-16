@@ -55,26 +55,39 @@ class JsonFormatter extends BaseJsonFormatter
         $embedded = [];
         foreach ($resource->getAllResources() as $rel => $resources) {
             if ($resources instanceof Resource) {
-                if (!$resources->getUri()) {
-                    $array[$rel] = $this->resourceToArray($resources);
-                } else {
-                    $embedded[$rel] = $this->resourceToArray($resources);
-                }
-
-                continue;
-            }
-
-            foreach ($resources as $resource) {
-                if (!$resource->getUri()) {
-                    $array[$rel][] = $this->resourceToArray($resource);
-                } else {
-                    $embedded[$rel][] = $this->resourceToArray($resource);
-                }
+                $this->doTransformSingleResource($array, $embedded, $rel, $resources);
+            } else {
+                $this->doTransformResources($array, $embedded, $rel, $resources);
             }
         }
 
         if ($embedded) {
             $array['_embedded'] = $embedded;
+        }
+    }
+
+    private function doTransformSingleResource(&$array, &$embedded, $rel, Resource $resource)
+    {
+        if (!$resource->getUri()) {
+            $array[$rel] = $this->resourceToArray($resource);
+        } else {
+            $embedded[$rel] = $this->resourceToArray($resource);
+        }
+    }
+
+    private function doTransformResource(&$array, &$embedded, $rel, Resource $resource)
+    {
+        if (!$resource->getUri()) {
+            $array[$rel][] = $this->resourceToArray($resource);
+        } else {
+            $embedded[$rel][] = $this->resourceToArray($resource);
+        }
+    }
+
+    private function doTransformResources(&$array, &$embedded, $rel, Array $resources)
+    {
+        foreach ($resources as $resource) {
+            $this->doTransformResource($array, $embedded, $rel, $resource);
         }
     }
 }

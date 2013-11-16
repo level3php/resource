@@ -57,14 +57,7 @@ class JsonFormatter extends BaseJsonFormatter
 
     protected function transformLinkedResources(&$array, Resource $resource)
     {
-        $embeddedLinks = [];
-        if (isset($array['entities'])) {
-            foreach ($array['entities'] as $entity) {
-                if (isset($entity['href'])) {
-                    $embeddedLinks[$entity['href']] = true;
-                }
-            }
-        }
+        $embeddedLinks = $this->getHrefsFromEntities($array);
 
         foreach ($resource->getAllLinkedResources() as $rel => $linkedResources) {
             if (!is_array($linkedResources)) {
@@ -83,6 +76,20 @@ class JsonFormatter extends BaseJsonFormatter
                 ];
             }
         }
+    }
+
+    private function getHrefsFromEntities($array)
+    {
+        $embeddedLinks = [];
+        if (isset($array['entities'])) {
+            foreach ($array['entities'] as $entity) {
+                if (isset($entity['href'])) {
+                    $embeddedLinks[$entity['href']] = true;
+                }
+            }
+        }
+
+        return $embeddedLinks;
     }
 
     protected function transformResources(&$array, Resource $resource)
