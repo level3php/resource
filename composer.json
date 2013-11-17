@@ -1,5 +1,5 @@
 {
-    "name": "level3php/level3",
+    "name": "level3/level3",
     "homepage": "http://github.com/level3php/level3",
     "description": "A RESTful API builder based on 3-level model (URI, HTTP and Hypermedia)",
     "type": "library",
