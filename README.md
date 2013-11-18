@@ -20,12 +20,12 @@ Requirements
 Installation
 ------------
 
-Add `level3php/level3` to your composer requirements, you can see [the package information on Packagist.](https://packagist.org/packages/level3php/level3):
+Add `level3/level3` to your composer requirements, you can see [the package information on Packagist.](https://packagist.org/packages/level3/level3):
 
 ```JSON
 {
     "require": {
-        "level3php/level3": "dev-master"
+        "level3/level3": "dev-master"
     }
 }
 ```
