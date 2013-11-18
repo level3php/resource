@@ -4,7 +4,6 @@ namespace Level3\Resource\Formatter;
 
 use Level3\Resource\Formatter;
 use Level3\Resource\Resource;
-use Level3\Exceptions\BadRequest;
 
 abstract class JsonFormatter extends Formatter
 {
@@ -17,7 +16,7 @@ abstract class JsonFormatter extends Formatter
         $array = json_decode($string, true);
 
         if (!is_array($array)) {
-            throw new BadRequest();
+            return null;
         }
 
         return $array;

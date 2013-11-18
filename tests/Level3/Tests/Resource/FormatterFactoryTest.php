@@ -17,16 +17,10 @@ class FormatterFactoryTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException Level3\Exceptions\NotAcceptable
-     */
     public function testCreateWithInvalidContentTypes()
     {
         $factory = new FormatterFactory();
-        $this->assertInstanceOf(
-            'Level3\Resource\Formatter\HAL\JsonFormatter',
-            $factory->create(['foo'])
-        );
+        $this->assertNull($factory->create(['foo']));
     }
 
     public function testCreateWithInvalidContentTypesWithAvoidNotAcceptable()

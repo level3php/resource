@@ -27,13 +27,10 @@ abstract class FormatterTest extends TestCase
         $this->assertSame(1, (int) $array['bar']);
     }
 
-    /**
-      * @expectedException Level3\Exceptions\BadRequest
-      */
     public function testFromRequestInvalid()
     {
         $formatter = new $this->class();
-        $formatter->fromRequest('foo');
+        $this->assertNull($formatter->fromRequest('foo'));
     }
 
     public function testFromRequestEmpty()
@@ -133,6 +130,6 @@ abstract class FormatterTest extends TestCase
 
     public function readResource($filename)
     {
-        return trim(file_get_contents(__DIR__ . '/../../Resources/' . $filename));
+        return trim(file_get_contents(__DIR__ . '/../../../Resources/' . $filename));
     }
 }

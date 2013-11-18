@@ -4,7 +4,6 @@ namespace Level3\Resource\Formatter;
 
 use Level3\Resource\Formatter;
 use Level3\Resource\Resource;
-use Level3\Exceptions\BadRequest;
 
 use Exception;
 use XMLWriter;
@@ -23,7 +22,7 @@ abstract class XMLFormatter extends Formatter
         try {
             return $this->xmlToArray(new SimpleXMLElement($string));
         } catch (Exception $e) {
-            throw new BadRequest();
+            return null;
         }
     }
 

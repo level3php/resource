@@ -4,7 +4,6 @@ namespace Level3\Resource;
 
 use Level3\Resource\Formatter\Siren;
 use Level3\Resource\Formatter\HAL;
-use Level3\Exceptions\NotAcceptable;
 
 class FormatterFactory
 {
@@ -21,8 +20,10 @@ class FormatterFactory
                 case HAL\XMLFormatter::CONTENT_TYPE:
                     return new HAL\XMLFormatter();
                 case HAL\JsonFormatter::CONTENT_TYPE:
+                    return new HAL\JsonFormatter();
                 case Formatter::CONTENT_TYPE_ANY:
                     return new HAL\JsonFormatter();
+
             }
         }
 
@@ -30,6 +31,6 @@ class FormatterFactory
             return new HAL\JsonFormatter();
         }
 
-        throw new NotAcceptable(sprintf('Content-Type not supported: %s', join(', ', $contentTypes)));
+        return null;
     }
 }
