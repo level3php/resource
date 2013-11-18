@@ -1,7 +1,7 @@
 {
     "name": "level3/resource",
     "homepage": "http://github.com/level3php/resource",
-    "description": "A RESTful API builder based on 3-level model (URI, HTTP and Hypermedia)",
+    "description": "A library for representing resources in hypermedia formats.",
     "type": "library",
     "keywords": ["rest", "restful", "hal", "siren", "hateoas", "api"],
     "license": "MIT",
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-0": {
-            "Level3": "src/"
+            "Level3\\Resource": "src/"
         }
     }
 }
