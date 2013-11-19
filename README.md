@@ -50,10 +50,10 @@ You can see [the package information on Packagist.](https://packagist.org/packag
 ```
 
 
-Usage
------
+Examples
+--------
 
-### Basis Resource with Link as ```application/hal+json```
+### Basic Resource with Link as ```application/hal+json```
 
 ```php
 use Level3\Resource\Link;
@@ -88,7 +88,103 @@ echo $resource;
 }
 ```
 
+### Resource with embedded resources as ```aapplication/vnd.siren+json```
 
+```php
+use Level3\Resource\Link;
+use Level3\Resource\Resource;
+use Level3\Resource\Formatter\Siren;
+
+$resource = new Resource();
+$resource->setRepositoryKey('index');
+$resource->setURI('/index?page=2');
+$resource->setLink('prev', new Link('/index?page=1'));
+$resource->setLink('next', new Link('/index?page=3'));
+$resource->addData('count', 5);
+
+$subresource = [];
+foreach (range(1, 5) as $value) {
+    $subresource = new Resource();
+    $subresource->addData('value', $value);
+
+    $subresources[] = $subresource;
+}
+
+$resource->addResources('subresources', $subresources);
+
+$resource->setFormatter(new Siren\JsonFormatter(true));
+
+echo $resource;
+```
+
+```json
+{
+    "class": [
+        "index"
+    ],
+    "properties": {
+        "count": 5
+    },
+    "entities": [
+        {
+            "rel": "subresources",
+            "class": [
+                "index",
+                "subresources"
+            ],
+            "properties": {
+                "value": 1
+            }
+        },
+        ...
+        {
+            "rel": "subresources",
+            "class": [
+                "index",
+                "subresources"
+            ],
+            "properties": {
+                "value": 5
+            }
+        }
+    ],
+    "links": [
+        {
+            "rel": "self",
+            "href": "/index?page=2"
+        }
+    ]
+}
+```
+
+### Resource with linked resource as ```application/hal+xml```
+
+```php
+use Level3\Resource\Link;
+use Level3\Resource\Resource;
+use Level3\Resource\Formatter\HAL;
+
+$author = new Resource();
+$author->setURI('/john-doe');
+$author->setTitle('John Doe');
+
+$article = new Resource();
+$article->setURI('/lorem-ipsum');
+$article->addData('description', 'Lorem ipsum dolor sit amet ...');
+$article->linkResource('author', $author);
+
+$article->setFormatter(new HAL\XMLFormatter(true));
+
+echo $article;
+```
+
+```xml
+<?xml version="1.0"?>
+<resource href="/lorem-ipsum">
+  <description>Lorem ipsum dolor sit amet ...</description>
+  <link rel="author" href="/john-doe" title="John Doe"/>
+</resource>
+```
 
 Tests
 -----
