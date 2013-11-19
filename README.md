@@ -21,7 +21,7 @@ can get stale if you're not careful. It may not be as efficient on an individual
 
 ### Which Hypermedia specification should I use?
 
-Hypermedia is being defined these days, only the best APIs implements Hypermedia. Currently there is no de 
+Hypermedia is being defined these days. Only the best APIs implement Hypermedia. Currently there is no de 
 facto standard, so you must choose between the differents specifications.
 
 Level3 Resource currenly implements or is planned to implement these specifications:
