@@ -2,12 +2,12 @@ Level3 Resource [![Build Status](https://travis-ci.org/level3php/resource.png?br
 ==============================
 
 Level3 Resource is a library for representing resources in different [hypermedia](http://en.wikipedia.org/wiki/Hypermedia) 
-formats. A resource in a [HATEOAS API] (http://en.wikipedia.org/wiki/HATEOAS) must describe their own capabilities 
-and interconnections, this is the third level of [Three Levels of the REST Maturity Model](http://www.infoq.com/news/2010/03/RESTLevels)
+formats. A resource in a [HATEOAS API] (http://en.wikipedia.org/wiki/HATEOAS) must describe its own capabilities 
+and interconnections, which is the third level of [Three Levels of the REST Maturity Model](http://www.infoq.com/news/2010/03/RESTLevels)
 
 ### Why Hypermedia?
 
-As you can read on prologue of [Designing Hypermedia APIs](http://www.designinghypermediaapis.com/) book:
+As you can read in the prologue of [Designing Hypermedia APIs](http://www.designinghypermediaapis.com/) book:
 
 >Hypermedia APIs embrace the principles that make the web great: flexibility, standardization, and loose coupling 
 to any given service. They take into account the principles of systems design [enumerated by Roy Fielding in his thesis](http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm), 
@@ -19,15 +19,15 @@ can get stale if you're not careful. It may not be as efficient on an individual
 
 >-- [Steve Klabnik](http://www.steveklabnik.com/)
 
-### Which Hypermedia specification i should use?
+### Which Hypermedia specification should I use?
 
-Hypermedia is being defined in this days, just the better APIs implements Hypermedia, currently not exists a de 
+Hypermedia is being defined these days, only the best APIs implements Hypermedia. Currently there is no de 
 facto standard, so you must choose between the differents specifications.
 
-Level3 Resource currenly implements or is planed to implement this specifications:
-* [HAL](http://stateless.co/hal_specification.html): This is the most common and active, has a JSON and a XML version.
-* [Siren](https://github.com/kevinswiber/siren): Currently being defined. Implements some usefull things like actions, classes, etc.
-* [Collection+JSON](http://amundsen.com/media-types/collection/): This is fully oriented to make a API CRUD oriented. 
+Level3 Resource currenly implements or is planned to implement these specifications:
+* [HAL](http://stateless.co/hal_specification.html): This is the most common and active. It has a JSON and a XML version.
+* [Siren](https://github.com/kevinswiber/siren): Currently being defined. It implements some useful things like actions, classes, etc.
+* [Collection+JSON](http://amundsen.com/media-types/collection/): This is fully designed to be a CRUD oriented API. 
 
 
 Requirements
