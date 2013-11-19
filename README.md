@@ -1,34 +1,86 @@
-Level3 RESTful API builder [![Build Status](https://travis-ci.org/level3php/level3.png?branch=master)](https://travis-ci.org/level3php/level3)
+Level3 Resource [![Build Status](https://travis-ci.org/level3php/resource.png?branch=master)](https://travis-ci.org/level3php/resource)
 ==============================
 
-A RESTful API builder based on 3-level model (URI, HTTP and Hypermedia) 
+Level3 Resource is a library for representing resources in different [hypermedia](http://en.wikipedia.org/wiki/Hypermedia) 
+formats. A resource in a [HATEOAS API] (http://en.wikipedia.org/wiki/HATEOAS) must describe their own capabilities 
+and interconnections, this is the third level of [Three Levels of the REST Maturity Model](http://www.infoq.com/news/2010/03/RESTLevels)
 
-Read about *3-level model of restful maturity* at:
-* http://www.infoq.com/news/2010/03/RESTLevels
-* http://www.crummy.com/writing/speaking/2008-QCon/act3.html
+### Why Hypermedia?
 
-> Under heavy development
+As you can read on prologue of [Designing Hypermedia APIs](http://www.designinghypermediaapis.com/) book:
+
+>Hypermedia APIs embrace the principles that make the web great: flexibility, standardization, and loose coupling 
+to any given service. They take into account the principles of systems design [enumerated by Roy Fielding in his thesis](http://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm), 
+but with a little less sytems theory jargon.
+
+>Hypermedia designs scale better, are more easily changed and promote decoupling and encapsulation, with all the 
+benefits those things bring. On the downside, it is not necessarily the most latency-tolerant design, and caches 
+can get stale if you're not careful. It may not be as efficient on an individual request level as other designs.
+
+>-- [Steve Klabnik](http://www.steveklabnik.com/)
+
+#### Which Hypermedia specification i should use?
+
+Hypermedia is being defined in this days, just the better APIs implements Hypermedia, currently not exists a de 
+facto standard, so you must choose between the differents specifications.
+
+Level3 Resource currenly implements or is planed to implement this specifications:
+* [HAL](http://stateless.co/hal_specification.html): This is the most common and active, has a JSON and a XML version. If you dont need use actions is your better option.
+* [Siren](https://github.com/kevinswiber/siren): Currently being defined. Implements some usefull things like actions, classes, etc. Is a good choice if you want make CRUD
+* [Collection+JSON](http://amundsen.com/media-types/collection/): This is fully oriented to make a API CRUD oriented. 
+
 
 Requirements
 ------------
 
 * PHP 5.4.x
-* shrikeh/teapot
-* symfony/http-foundation
-* psr/log
 
 Installation
 ------------
 
-Add `level3/level3` to your composer requirements, you can see [the package information on Packagist.](https://packagist.org/packages/level3/level3):
+The recommended way to install Level3 Resource is [through composer](http://getcomposer.org).
+You can see [the package information on Packagist.](https://packagist.org/packages/level3/resource)
 
 ```JSON
 {
     "require": {
-        "level3/level3": "dev-master"
+        "level3/resource": "dev-master"
     }
 }
 ```
+
+
+Usage
+-----
+
+### Basis Resource as ```application/hal+json```
+
+```php
+$resource = new Resource();
+$resource->setURI('/foo');
+$resource->setData([
+    'foo' => 'bar',
+    'baz' => 'qux'
+]);
+
+$resource->setFormatter(new HAL\JsonFormatter(true));
+
+echo $resource;
+```
+
+```js
+{
+    "foo": "bar",
+    "baz": "qux",
+    "_links": {
+        "self": {
+            "href": "/foo"
+        }
+    }
+}⏎
+```
+
+
 
 Tests
 -----
@@ -38,57 +90,6 @@ To run them, you need PHPUnit.
 Example:
 
     $ phpunit --configuration phpunit.xml.dist
-    
-Documentation
--------------
-### Overview
-Level3 only provides the handling of already parsed requests. These requests extend `Symfony\Component\HttpFoundation\Request` and add some extra functionality. You have to to create these requests from whatever delivery mechanism/framework you are using (see [level3-silex](https://github.com/level3php/level3-silex) for an example of how to do this using [Silex](http://silex.sensiolabs.org/)).
-
-These requests travel along a series of `RequestProcessor` instances that can authenticate, authorize and modify them. The last `RequestProcessor` is the `AccessorWrapper`. It knows how to translate a request into a call for the `Accessor`, and interpret the return of that call to turn it into a `Response` (which extends `Symfony\Component\HttpFoundation\Response`) object.
-
-The `Accessor` is in charge of asking the `RepositoryHub` for the `Repository` in charge of handling the fetching of the requested resource and querying it.
-
-The `RepositoryHub` knows what `Repository` is responsible of fetching each kind of resource based on the `key`.
-
-The `RepositoryMapper` knows about `Repositories` and `URLs`.
-
-`Repositories` have to be extended in order to implement the logic in charge of handling resources from the storage system.
-
-![Classes overview](https://raw.github.com/level3php/level3/master/doc/overview.png)
-
-### Request and Response
-Are the messages passed through a chain of `RequestProcessor`s. They encapsulate all the business logic.
-
-On the one hand the Controller handling the HTTP request has to create a `Request` object, but on the other hand, Level3 `Response` objects, in the case of using a [Symfony](http://symfony.com/) based framework can be returned directly since they extend its Response implementation.
-
-### RequestProcessor
-All subclasses are intended to handle the request, pass it to the next processor, get their response, handle it, and reuturn it. They can be chained in order to implement any kind of functionality. Some default are already provided as an example, since they can also be useful (you can read more about `RequestProcessor` [here](https://raw.github.com/level3php/level3/master/doc/RequestProcessor.md):
-
-#### AcessorWrapper
-Is the only mandatory `RequestProcessor`. It translates the request into a `RepositoryFriendly` format and generates a response from its response. If chained to others, this has to be the last one in the chain.
-
-#### ExceptionHandler
-Captures thrown exceptions and prints them in a convenient format, depending on the request headers. It also logs to a [PSR3 Logger](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md).
-
-#### RequestLogger
-Logs all requests to a [PSR3 Logger](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md).
-
-#### AuthenticationProcessor
-This class authenticates the request and sets *proper* credentials in order to, later, authorize or not the request. The way the authentication is handled is done using implementations of `Level3\Security\Authentication\Method`. By default, `HMAC` is used.
-
-Read more about this [here](https://raw.github.com/level3php/level3/master/doc/AuthenticationProcessor.md).
-
-#### AuthorizationProcessor
-Authorizes the request based on it's `getCredentials()` method. Several authorizators are provided:
-* Role based authorizator
-* ACL based authorizator
-
-By default, all request have anonymous credentials, so if no `AuthenticationProcessor` is chained before, this is what you can expect.
-
-You can read more about `AurizationProcesor` [here](https://raw.github.com/level3php/level3/master/doc/AuthorizationProcessor.md).
-
-### Repository
-Is the one in charge of retrieving the data from the underlying storage and returning a `Level3\Hal\Resource` with some help from `Level3\Hal\ResourceBuilder`.
 
 
 License
