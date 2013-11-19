@@ -6,7 +6,13 @@ abstract class Formatter
 {
     const CONTENT_TYPE_ANY = '*/*';
 
-    abstract public function toResponse(Resource $resource, $pretty = false);
+    protected $pretty;
+
+    public function __construct($pretty = false) {
+        $this->pretty = $pretty;
+    }
+
+    abstract public function toResponse(Resource $resource);
 
     abstract public function fromRequest($string);
 

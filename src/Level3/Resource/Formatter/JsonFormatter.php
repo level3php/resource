@@ -22,11 +22,11 @@ abstract class JsonFormatter extends Formatter
         return $array;
     }
 
-    public function toResponse(Resource $resource, $pretty = false)
+    public function toResponse(Resource $resource)
     {
         $options = JSON_UNESCAPED_SLASHES;
 
-        if ($pretty) {
+        if ($this->pretty) {
             $options = $options | JSON_PRETTY_PRINT;
         }
 

@@ -2,8 +2,9 @@
 
 namespace Level3\Resource;
 
-use DateTime;
+use RuntimeException;
 use InvalidArgumentException;
+use DateTime;
 
 class Resource
 {
@@ -18,6 +19,7 @@ class Resource
     protected $data = [];
     protected $lastUpdate;
     protected $cache;
+    protected $formatter;
 
     public function setId($id)
     {
@@ -65,6 +67,25 @@ class Resource
     public function getURI()
     {
         return $this->uri;
+    }
+
+    public function setData(Array $data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function addData($key, $value)
+    {
+        $this->data[$key] = $value;
+
+        return $this;
+    }
+
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function setLink($rel, Link $link)
@@ -219,25 +240,6 @@ class Resource
         return null;
     }
 
-    public function setData(Array $data)
-    {
-        $this->data = $data;
-
-        return $this;
-    }
-
-    public function addData($key, $value)
-    {
-        $this->data[$key] = $value;
-
-        return $this;
-    }
-
-    public function getData()
-    {
-        return $this->data;
-    }
-
     public function getSelfLink()
     {
         if (!$this->uri) {
@@ -279,5 +281,26 @@ class Resource
     public function getCache()
     {
         return $this->cache;
+    }
+
+    public function setFormatter(Formatter $formatter)
+    {
+        $this->formatter = $formatter;
+    
+        return $this;
+    }
+
+    public function getFormatter()
+    {
+        return $this->formatter;
+    }
+
+    public function __toString()
+    {
+        if (!$this->formatter) {
+            return '';
+        }
+
+        return $this->formatter->toResponse($this);
     }
 }

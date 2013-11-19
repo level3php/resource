@@ -41,8 +41,6 @@ abstract class FormatterTest extends TestCase
 
     public function testToResponse()
     {
-        $formatter = new $this->class();
-
         $resource = $this->createResource(self::EXAMPLE_URI);
         $resource->setData([
             'value' => 'bar',
@@ -99,11 +97,13 @@ abstract class FormatterTest extends TestCase
             $this->createResource(self::EXAMPLE_URI)->setData([])
         ]);
 
+        $formatter = new $this->class(true);
         $this->assertSame(
             $this->readResource($this->toPretty),
             trim($formatter->toResponse($resource, true))
         );
 
+        $formatter = new $this->class(false);
         $this->assertSame(
             $this->readResource($this->toNonPretty),
             trim($formatter->toResponse($resource))

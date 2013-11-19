@@ -4,6 +4,7 @@ namespace Level3\Tests;
 
 use Level3\Resource\Resource;
 use Level3\Resource\Link;
+use Mockery as m;
 use DateTime;
 
 class ResourceTest extends TestCase
@@ -369,34 +370,24 @@ class ResourceTest extends TestCase
         $this->assertSame('bar', $link->getTitle());
     }
 
-    /*public function testToArray()
+    public function testSetFormatter()
     {
-        $link = new Link('bar');
-        $this->resource->setLink('foo', $link);
-        $this->resource->setURI('foo');
+        $formatter = m::mock('Level3\Resource\Formatter');
 
-        $linksExpected = [
-            new Link('bar/foo'),
-            new Link('bar/qux')
-        ];
+        $this->assertSame($this->resource, $this->resource->setFormatter($formatter));
+        $this->assertSame($formatter, $this->resource->getFormatter());
+    }
 
-        $this->resource->setLinks('bar', $linksExpected);
+    public function testToString()
+    {
+        $this->assertSame('', (string) $this->resource);
 
-        $resource = new Resource($this->repository);
-        $this->resource->addResource('foo', $resource);
+        $formatter = m::mock('Level3\Resource\Formatter');
+        $formatter->shouldReceive('toResponse')
+            ->with($this->resource)->once()->andReturn('bar');
 
-        $result = $this->resource->toArray();
-        $this->assertTrue(isset($result['_links']['self']));
-        $this->assertSame($result['_links']['self']['href'], 'foo');
+        $this->resource->setFormatter($formatter);
 
-        $this->assertTrue(isset($result['_links']['foo']));
-        $this->assertSame($result['_links']['foo']['href'], 'bar');
-
-        $this->assertTrue(isset($result['_links']['bar']));
-        $this->assertSame($result['_links']['bar'][0]['href'], 'bar/foo');
-        $this->assertSame($result['_links']['bar'][1]['href'], 'bar/qux');
-
-        $this->assertTrue(isset($result['_embedded']['foo']));
-        $this->assertTrue(is_array($result['_embedded']['foo']));
-    }*/
+        $this->assertSame('bar', (string) $this->resource);
+    }
 }

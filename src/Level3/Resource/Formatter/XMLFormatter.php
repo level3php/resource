@@ -38,12 +38,12 @@ abstract class XMLFormatter extends Formatter
         return $data;
     }
 
-    public function toResponse(Resource $resource, $pretty = false)
+    public function toResponse(Resource $resource)
     {
         $writer = new XMLWriter;
         $writer->openMemory();
         $writer->setIndentString('  ');
-        $writer->setIndent($pretty);
+        $writer->setIndent($this->pretty);
         $writer->startDocument('1.0');
 
         $this->resourceToArray($writer, $resource);
