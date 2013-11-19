@@ -19,7 +19,7 @@ can get stale if you're not careful. It may not be as efficient on an individual
 
 >-- [Steve Klabnik](http://www.steveklabnik.com/)
 
-#### Which Hypermedia specification i should use?
+### Which Hypermedia specification i should use?
 
 Hypermedia is being defined in this days, just the better APIs implements Hypermedia, currently not exists a de 
 facto standard, so you must choose between the differents specifications.
