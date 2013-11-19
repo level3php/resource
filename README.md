@@ -25,8 +25,8 @@ Hypermedia is being defined in this days, just the better APIs implements Hyperm
 facto standard, so you must choose between the differents specifications.
 
 Level3 Resource currenly implements or is planed to implement this specifications:
-* [HAL](http://stateless.co/hal_specification.html): This is the most common and active, has a JSON and a XML version. If you dont need use actions is your better option.
-* [Siren](https://github.com/kevinswiber/siren): Currently being defined. Implements some usefull things like actions, classes, etc. Is a good choice if you want make CRUD
+* [HAL](http://stateless.co/hal_specification.html): This is the most common and active, has a JSON and a XML version.
+* [Siren](https://github.com/kevinswiber/siren): Currently being defined. Implements some usefull things like actions, classes, etc.
 * [Collection+JSON](http://amundsen.com/media-types/collection/): This is fully oriented to make a API CRUD oriented. 
 
 
