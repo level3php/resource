@@ -46,6 +46,10 @@ class JsonFormatter extends BaseJsonFormatter
         }
 
         foreach ($resource->getAllLinks() as $rel => $links) {
+            if (!is_array($links)) {
+                $links = [$links];
+            }
+
             foreach ($links as $link) {
                 $array['links'][] = [
                     'rel' => $rel,

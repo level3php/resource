@@ -152,6 +152,14 @@ echo $resource;
         {
             "rel": "self",
             "href": "/index?page=2"
+        },
+        {
+            "rel": "prev",
+            "href": "/index?page=1"
+        },
+        {
+            "rel": "next",
+            "href": "/index?page=3"
         }
     ]
 }
