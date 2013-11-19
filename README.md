@@ -53,11 +53,16 @@ You can see [the package information on Packagist.](https://packagist.org/packag
 Usage
 -----
 
-### Basis Resource as ```application/hal+json```
+### Basis Resource with Link as ```application/hal+json```
 
 ```php
+use Level3\Resource\Link;
+use Level3\Resource\Resource;
+use Level3\Resource\Formatter\HAL;
+
 $resource = new Resource();
 $resource->setURI('/foo');
+$resource->setLink('foo', new Link('/bar'));
 $resource->setData([
     'foo' => 'bar',
     'baz' => 'qux'
@@ -75,9 +80,12 @@ echo $resource;
     "_links": {
         "self": {
             "href": "/foo"
+        },
+        "foo": {
+            "href": "/bar"
         }
     }
-}⏎
+}
 ```
 
 
