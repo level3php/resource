@@ -20,7 +20,7 @@ class Resource
     protected $data = [];
     protected $lastUpdate;
     protected $cache;
-    protected $formatter;
+    protected $writer;
 
     public function setId($id)
     {
@@ -282,5 +282,26 @@ class Resource
     public function getCache()
     {
         return $this->cache;
+    }
+
+    public function setFormatWriter(Writer $writer)
+    {
+        $this->writer = $writer;
+
+        return $this;
+    }
+
+    public function getFormatWriter()
+    {
+        return $this->writer;
+    }
+
+    public function __toString()
+    {
+        if (!$this->writer) {
+            return '';
+        }
+
+        return $this->writer->execute($this);
     }
 }

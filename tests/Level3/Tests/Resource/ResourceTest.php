@@ -369,4 +369,25 @@ class ResourceTest extends TestCase
         $this->assertSame('qux', $link->getName());
         $this->assertSame('bar', $link->getTitle());
     }
+
+    public function testSetFormatWriter()
+    {
+        $formatter = m::mock('Level3\Resource\Format\Writer');
+
+        $this->assertSame($this->resource, $this->resource->setFormatWriter($formatter));
+        $this->assertSame($formatter, $this->resource->getFormatWriter());
+    }
+
+    public function testToString()
+    {
+        $this->assertSame('', (string) $this->resource);
+
+        $formatter = m::mock('Level3\Resource\Format\Writer');
+        $formatter->shouldReceive('execute')
+            ->with($this->resource)->once()->andReturn('bar');
+
+        $this->resource->setFormatWriter($formatter);
+
+        $this->assertSame('bar', (string) $this->resource);
+    }
 }
