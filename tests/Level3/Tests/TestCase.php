@@ -90,7 +90,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
 
     protected function createFormatterMock()
     {
-        $formatter = m::mock('Level3\Resource\Formatter');
+        $formatter = m::mock('Level3\Resource\Format\Writer');
         $formatter->shouldReceive('getContentType')->andReturn('foo/bar');
 
         return $formatter;

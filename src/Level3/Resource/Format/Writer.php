@@ -1,8 +1,10 @@
 <?php
 
-namespace Level3\Resource;
+namespace Level3\Resource\Format;
 
-abstract class Formatter
+use Level3\Resource\Resource;
+
+abstract class Writer
 {
     const CONTENT_TYPE_ANY = '*/*';
 
@@ -12,9 +14,7 @@ abstract class Formatter
         $this->pretty = $pretty;
     }
 
-    abstract public function toResponse(Resource $resource);
-
-    abstract public function fromRequest($string);
+    abstract public function execute(Resource $resource);
 
     public function getContentType()
     {

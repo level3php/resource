@@ -3,7 +3,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Level3\Resource\Link;
 use Level3\Resource\Resource;
-use Level3\Resource\Formatter\Siren;
+use Level3\Resource\Format\Writer\Siren;
 
 $resource = new Resource();
 $resource->setRepositoryKey('index');
@@ -22,6 +22,5 @@ foreach (range(1, 5) as $value) {
 
 $resource->addResources('subresources', $subresources);
 
-$resource->setFormatter(new Siren\JsonFormatter(true));
-
-echo $resource;
+$writer = new Siren\JsonWriter(true);
+echo $writer->execute($resource);

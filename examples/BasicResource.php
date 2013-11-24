@@ -3,7 +3,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Level3\Resource\Link;
 use Level3\Resource\Resource;
-use Level3\Resource\Formatter\HAL;
+use Level3\Resource\Format\Writer\HAL;
 
 $resource = new Resource();
 $resource->setURI('/foo');
@@ -13,6 +13,5 @@ $resource->setData([
     'baz' => 'qux'
 ]);
 
-$resource->setFormatter(new HAL\JsonFormatter(true));
-
-echo $resource;
+$writer = new HAL\JsonWriter(true);
+echo $writer->execute($resource);

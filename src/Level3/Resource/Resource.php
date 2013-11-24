@@ -2,6 +2,7 @@
 
 namespace Level3\Resource;
 
+use Level3\Resource\Format\Writer;
 use RuntimeException;
 use InvalidArgumentException;
 use DateTime;
@@ -281,26 +282,5 @@ class Resource
     public function getCache()
     {
         return $this->cache;
-    }
-
-    public function setFormatter(Formatter $formatter)
-    {
-        $this->formatter = $formatter;
-    
-        return $this;
-    }
-
-    public function getFormatter()
-    {
-        return $this->formatter;
-    }
-
-    public function __toString()
-    {
-        if (!$this->formatter) {
-            return '';
-        }
-
-        return $this->formatter->toResponse($this);
     }
 }

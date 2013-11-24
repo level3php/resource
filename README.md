@@ -58,7 +58,7 @@ Examples
 ```php
 use Level3\Resource\Link;
 use Level3\Resource\Resource;
-use Level3\Resource\Formatter\HAL;
+use Level3\Resource\Format\Writer\HAL;
 
 $resource = new Resource();
 $resource->setURI('/foo');
@@ -68,9 +68,8 @@ $resource->setData([
     'baz' => 'qux'
 ]);
 
-$resource->setFormatter(new HAL\JsonFormatter(true));
-
-echo $resource;
+$writer = new HAL\JsonWriter(true);
+echo $writer->execute($resource);
 ```
 
 ```js
@@ -93,7 +92,7 @@ echo $resource;
 ```php
 use Level3\Resource\Link;
 use Level3\Resource\Resource;
-use Level3\Resource\Formatter\Siren;
+use Level3\Resource\Format\Writer\Siren;
 
 $resource = new Resource();
 $resource->setRepositoryKey('index');
@@ -112,9 +111,8 @@ foreach (range(1, 5) as $value) {
 
 $resource->addResources('subresources', $subresources);
 
-$resource->setFormatter(new Siren\JsonFormatter(true));
-
-echo $resource;
+$writer = new Siren\JsonWriter(true);
+echo $writer->execute($resource);
 ```
 
 ```json
@@ -170,7 +168,7 @@ echo $resource;
 ```php
 use Level3\Resource\Link;
 use Level3\Resource\Resource;
-use Level3\Resource\Formatter\HAL;
+use Level3\Resource\Format\Writer\HAL;
 
 $author = new Resource();
 $author->setURI('/john-doe');
@@ -181,9 +179,8 @@ $article->setURI('/lorem-ipsum');
 $article->addData('description', 'Lorem ipsum dolor sit amet ...');
 $article->linkResource('author', $author);
 
-$article->setFormatter(new HAL\XMLFormatter(true));
-
-echo $article;
+$writer = new HAL\XMLWriter(true);
+echo $writer->execute($article);
 ```
 
 ```xml

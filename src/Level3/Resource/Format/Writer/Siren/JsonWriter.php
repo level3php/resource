@@ -1,12 +1,12 @@
 <?php
 
-namespace Level3\Resource\Formatter\Siren;
+namespace Level3\Resource\Format\Writer\Siren;
 
-use Level3\Resource\Formatter\JsonFormatter as BaseJsonFormatter;
+use Level3\Resource\Format\Writer\JsonWriter as BaseJsonWriter;
 use Level3\Resource\Resource;
 use Level3\Resource\Link;
 
-class JsonFormatter extends BaseJsonFormatter
+class JsonWriter extends BaseJsonWriter
 {
     const CONTENT_TYPE = 'application/vnd.siren+json';
 

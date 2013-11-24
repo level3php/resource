@@ -1,11 +1,11 @@
 <?php
 
-namespace Level3\Resource\Formatter\HAL;
+namespace Level3\Resource\Format\Writer\HAL;
 
-use Level3\Resource\Formatter\JsonFormatter as BaseJsonFormatter;
+use Level3\Resource\Format\Writer\JsonWriter as BaseJsonWriter;
 use Level3\Resource\Resource;
 
-class JsonFormatter extends BaseJsonFormatter
+class JsonWriter extends BaseJsonWriter
 {
     const CONTENT_TYPE = 'application/hal+json';
 

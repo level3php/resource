@@ -8,15 +8,14 @@
     "authors": [
         {
             "name": "Máximo Cuadros",
-            "email": "maximo@yunait.com",
-            "homepage": "http://yunait.com"
+            "email": "mcuadros@gmail.com"
         }
     ],
     "require": {
         "php": ">=5.4.0"
     },
     "require-dev": {
-        "mockery/mockery": "*",
+        "mockery/mockery": "0.8.0",
         "phpunit/phpunit": "3.7.*"
     },
     "autoload": {

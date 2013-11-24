@@ -1,18 +1,18 @@
 <?php
 
-namespace Level3\Resource\Formatter\HAL;
+namespace Level3\Resource\Format\Writer\HAL;
 
-use Level3\Resource\Formatter\XMLFormatter as BaseXMLFormatter;
+use Level3\Resource\Format\Writer\XMLWriter as BaseXMLWriter;
 use Level3\Resource\Resource;
 use Level3\Resource\Link;
 
-use XMLWriter;
+use XMLWriter as BasicXMLWriter;
 
-class XMLFormatter extends BaseXMLFormatter
+class XMLWriter extends BaseXMLWriter
 {
     const CONTENT_TYPE = 'application/hal+xml';
 
-    protected function resourceToArray(XMLWriter $writer, Resource $resource, $rel = null)
+    protected function resourceToArray(BasicXMLWriter $writer, Resource $resource, $rel = null)
     {
         $writer->startElement('resource');
         if ($rel) {
@@ -31,7 +31,7 @@ class XMLFormatter extends BaseXMLFormatter
         $writer->endElement();
     }
 
-    protected function transformLinks(XMLWriter $writer, Resource $resource)
+    protected function transformLinks(BasicXMLWriter $writer, Resource $resource)
     {
         foreach ($resource->getAllLinks() as $rel => $links) {
             if (!is_array($links)) {
@@ -44,7 +44,7 @@ class XMLFormatter extends BaseXMLFormatter
         }
     }
 
-    protected function transformLinkedResources(XMLWriter $writer, Resource $resource)
+    protected function transformLinkedResources(BasicXMLWriter $writer, Resource $resource)
     {
         foreach ($resource->getAllLinkedResources() as $rel => $resources) {
             if (!is_array($resources)) {
@@ -57,7 +57,7 @@ class XMLFormatter extends BaseXMLFormatter
         }
     }
 
-    private function doTransformLink(XMLWriter $writer, $rel, Link $link)
+    private function doTransformLink(BasicXMLWriter $writer, $rel, Link $link)
     {
         $writer->startElement('link');
         $this->addAttribute($writer, 'rel', $rel);
@@ -69,12 +69,12 @@ class XMLFormatter extends BaseXMLFormatter
         $writer->endElement();
     }
 
-    private function addAttribute(XMLWriter $writer, $name, $value)
+    private function addAttribute(BasicXMLWriter $writer, $name, $value)
     {
         return $writer->writeAttribute($name, $value);
     }
 
-    protected function transformData(XMLWriter $writer, Resource $resource)
+    protected function transformData(BasicXMLWriter $writer, Resource $resource)
     {
         foreach ($resource->getData() as $name => $value) {
             $this->addValue($writer, $name, $value);
@@ -83,7 +83,7 @@ class XMLFormatter extends BaseXMLFormatter
         return;
     }
 
-    private function addValue(XMLWriter $writer, $name, $value)
+    private function addValue(BasicXMLWriter $writer, $name, $value)
     {
         if (!is_array($value)) {
             return $this->doWriteString($writer, $name, $value);
@@ -97,19 +97,19 @@ class XMLFormatter extends BaseXMLFormatter
         }
     }
 
-    private function doWriteString(XMLWriter $writer, $name, $value)
+    private function doWriteString(BasicXMLWriter $writer, $name, $value)
     {
         $writer->writeElement($name, $value);
     }
 
-    private function doWriteArray(XMLWriter $writer, $name, Array $array)
+    private function doWriteArray(BasicXMLWriter $writer, $name, Array $array)
     {
         foreach ($array as $childValue) {
             $this->addValue($writer, $name, $childValue);
         }
     }
 
-    private function doWriteAssocArray(XMLWriter $writer, $name, Array $array)
+    private function doWriteAssocArray(BasicXMLWriter $writer, $name, Array $array)
     {
         $writer->startElement($name);
         foreach ($array as $childName => $childValue) {
@@ -119,7 +119,7 @@ class XMLFormatter extends BaseXMLFormatter
         $writer->endElement();
     }
 
-    protected function transformResources(XMLWriter $writer, Resource $resource)
+    protected function transformResources(BasicXMLWriter $writer, Resource $resource)
     {
         foreach ($resource->getAllResources() as $rel => $resources) {
             if (!is_array($resources)) {

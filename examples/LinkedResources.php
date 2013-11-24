@@ -3,7 +3,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Level3\Resource\Link;
 use Level3\Resource\Resource;
-use Level3\Resource\Formatter\HAL;
+use Level3\Resource\Format\Writer\HAL;
 
 $author = new Resource();
 $author->setURI('/john-doe');
@@ -14,6 +14,5 @@ $article->setURI('/lorem-ipsum');
 $article->addData('description', 'Lorem ipsum dolor sit amet ...');
 $article->linkResource('author', $author);
 
-$article->setFormatter(new HAL\XMLFormatter(true));
-
-echo $article;
+$writer = new HAL\XMLWriter(true);
+echo $writer->execute($article);
