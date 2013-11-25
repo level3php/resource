@@ -6,8 +6,6 @@ class Link
 {
     protected $href;
     protected $templated;
-    protected $type;
-
     protected $name;
     protected $hreflang;
     protected $title;

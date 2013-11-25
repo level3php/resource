@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <resource href="/test">
-  <link rel="quz" href="foo" name="name" hreflang="lang" title="title"/>
-  <link rel="foo" href="foo" name="name" hreflang="lang" title="title"/>
+  <link rel="quz" href="foo" templated="1" name="name" hreflang="lang" title="title"/>
+  <link rel="foo" href="foo" templated="1" name="name" hreflang="lang" title="title"/>
   <link rel="foo" href="qux"/>
   <value>bar</value>
   <bar>1</bar>
@@ -25,7 +25,7 @@
     <resource rel="baz">
       <foo>qux</foo>
     </resource>
-    <link rel="qux" href="/test"/>
+    <link rel="qux" href="/test" title="qux"/>
     <link rel="foo" href="/test"/>
     <link rel="foo" href="/test"/>
   </resource>

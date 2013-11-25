@@ -44,7 +44,8 @@
                         "href": "/test"
                     },
                     "qux": {
-                        "href": "/test"
+                        "href": "/test",
+                        "title": "qux"
                     },
                     "foo": [
                         {
@@ -64,6 +65,7 @@
         },
         "quz": {
             "href": "foo",
+            "templated": true,
             "name": "name",
             "hreflang": "lang",
             "title": "title"
@@ -71,6 +73,7 @@
         "foo": [
             {
                 "href": "foo",
+                "templated": true,
                 "name": "name",
                 "hreflang": "lang",
                 "title": "title"

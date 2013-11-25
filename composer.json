@@ -1,9 +1,12 @@
 {
     "name": "level3/resource",
     "homepage": "http://github.com/level3php/resource",
-    "description": "A library for representing resources in hypermedia formats.",
+    "description": "Level3 Resource is a library for representing resources and consuming in different hypermedia formats.",
     "type": "library",
-    "keywords": ["rest", "restful", "hal", "siren", "hateoas", "api"],
+    "keywords": [
+        "rest", "restful", "hal", "siren", "hateoas", "api",
+        "parser", "consuming", "reader", "writer"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -12,7 +15,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "hampel/json": "1.0.*"
     },
     "require-dev": {
         "mockery/mockery": "0.8.0",

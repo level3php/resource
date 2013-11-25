@@ -33,7 +33,7 @@ abstract class WriterTest extends TestCase
         $link->setName('name');
         $link->setLang('lang');
         $link->setTitle('title');
-        $link->isTemplated(true);
+        $link->setTemplated(true);
 
         $resource->setLink('quz', $link);
 
@@ -60,7 +60,7 @@ abstract class WriterTest extends TestCase
 
         $subResource->linkResource(
             'qux',
-            $this->createResource(self::EXAMPLE_URI)->setData([])
+            $this->createResource(self::EXAMPLE_URI)->setData([])->setTitle('qux')
         );
 
         $subResource->linkResources('foo', [
@@ -79,6 +79,12 @@ abstract class WriterTest extends TestCase
             $this->readResource($this->toNonPretty),
             trim($formatter->execute($resource))
         );
+    }
+
+    public function testGetContentType()
+    {
+        $writer = new $this->class();
+        $this->assertSame($this->mime, $writer->getContentType());
     }
 
     protected function createResource($uri = null)
