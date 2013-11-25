@@ -1,8 +1,10 @@
 Level3 Resource [![Build Status](https://travis-ci.org/level3php/resource.png?branch=master)](https://travis-ci.org/level3php/resource)
 ==============================
 
-Level3 Resource is a library for representing and consuming in different [hypermedia](http://en.wikipedia.org/wiki/Hypermedia) 
-formats. A resource in a [HATEOAS API] (http://en.wikipedia.org/wiki/HATEOAS) must describe its own capabilities 
+Level3 Resource is a library for representing and consuming resources in different [hypermedia](http://en.wikipedia.org/wiki/Hypermedia) 
+formats. 
+
+A resource in a [HATEOAS API] (http://en.wikipedia.org/wiki/HATEOAS) must describe its own capabilities 
 and interconnections, which is the third level of [Three Levels of the REST Maturity Model](http://www.infoq.com/news/2010/03/RESTLevels)
 
 ### Why Hypermedia?
@@ -34,6 +36,7 @@ Requirements
 ------------
 
 * PHP 5.4.x
+* hampel/json >= 1.0
 
 Installation
 ------------
@@ -209,28 +212,12 @@ print_r($resource);
 ```php
 Level3\Resource\Resource Object
 (
-    [id:protected] =>
-    [title:protected] =>
-    [key:protected] =>
-    [relation:protected] =>
     [uri:protected] => /foo
-    [resources:protected] => Array
-        (
-        )
-
-    [linkedResources:protected] => Array
-        (
-        )
-
     [links:protected] => Array
         (
             [foo] => Level3\Resource\Link Object
                 (
                     [href:protected] => /bar
-                    [templated:protected] =>
-                    [name:protected] =>
-                    [hreflang:protected] =>
-                    [title:protected] =>
                 )
 
         )
@@ -241,9 +228,6 @@ Level3\Resource\Resource Object
             [baz] => qux
         )
 
-    [lastUpdate:protected] =>
-    [cache:protected] =>
-    [writer:protected] =>
 )
 ```
 
