@@ -19,7 +19,7 @@ abstract class ReaderTest extends TestCase
 
         $this->assertSame(
             $string,
-            $writer->execute($resource)
+            trim($writer->execute($resource))
         );
     }
 
